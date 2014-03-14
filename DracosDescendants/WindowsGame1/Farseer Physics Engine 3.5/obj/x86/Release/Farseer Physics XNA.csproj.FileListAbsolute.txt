@@ -1,0 +1,6 @@
+C:\Users\Walker White\Desktop\Lab4\XNAPhysics\Farseer Physics Engine 3.5\bin\x86\Release\FarseerPhysics XNA.dll
+C:\Users\Walker White\Desktop\Lab4\XNAPhysics\Farseer Physics Engine 3.5\bin\x86\Release\FarseerPhysics XNA.pdb
+C:\Users\Walker White\Desktop\Lab4\XNAPhysics\Farseer Physics Engine 3.5\obj\x86\Release\Farseer Physics XNA.csprojResolveAssemblyReference.cache
+C:\Users\Walker White\Desktop\Lab4\XNAPhysics\Farseer Physics Engine 3.5\obj\x86\Release\Microsoft.Xna.Framework.RuntimeProfile.txt
+C:\Users\Walker White\Desktop\Lab4\XNAPhysics\Farseer Physics Engine 3.5\obj\x86\Release\FarseerPhysics XNA.dll
+C:\Users\Walker White\Desktop\Lab4\XNAPhysics\Farseer Physics Engine 3.5\obj\x86\Release\FarseerPhysics XNA.pdb
