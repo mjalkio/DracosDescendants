@@ -28,6 +28,7 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DracosD.Views;
 #endregion
 
 /// <summary>
@@ -434,9 +435,9 @@ namespace DracosD.Objects {
         /// <summary>
         /// Draws the physics object.
         /// </summary>
-        /// <param name="canvas">Drawing context</param>
-        public override void Draw(GameCanvas canvas) {
-            canvas.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend);
+        /// <param name="view">Drawing context</param>
+        public override void Draw(GameView view) {
+            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend);
         }
     #endregion
 

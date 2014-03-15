@@ -23,6 +23,7 @@ using FarseerPhysics.Dynamics;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DracosD.Views;
 #endregion
 
 /// <summary>
@@ -145,9 +146,9 @@ namespace DracosD.Objects {
         /// <summary>
         /// Draws the physics object.
         /// </summary>
-        /// <param name="canvas">Drawing context</param>
-        public override void Draw(GameCanvas canvas) {
-            canvas.DrawSprite(texture, Color.White, Position, scale, Rotation);
+        /// <param name="view">Drawing context</param>
+        public override void Draw(GameView view) {
+            view.DrawSprite(texture, Color.White, Position, scale, Rotation);
         }
     #endregion
 

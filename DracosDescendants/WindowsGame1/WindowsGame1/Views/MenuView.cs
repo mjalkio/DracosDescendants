@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DracosD.Views
 {
-    class MenuView
+    public class MenuView
     {
     }
 }

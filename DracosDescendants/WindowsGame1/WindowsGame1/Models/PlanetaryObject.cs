@@ -49,7 +49,7 @@ namespace DracosD.Models
         /// <summary>
         /// Draws the planetary object.
         /// </summary>
-        /// <param name="canvas">Drawing context</param>
+        /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
             view.DrawSprite(texture, Color.White, Position, scale * 2.0f, Rotation);

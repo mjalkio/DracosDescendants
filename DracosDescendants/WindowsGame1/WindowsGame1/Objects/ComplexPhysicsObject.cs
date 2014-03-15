@@ -26,6 +26,7 @@ using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DracosD.Views;
 #endregion
 
 /// <summary>
@@ -305,11 +306,11 @@ namespace DracosD.Objects {
         /// <remarks>
         /// This is sufficient for most complex objects.
         /// </remarks>
-        /// <param name="canvas">Drawing context</param>
-        public override void Draw(GameCanvas canvas) {
+        /// <param name="view">Drawing context</param>
+        public override void Draw(GameView view) {
             // Just pass the drawing to the individual objects.
             foreach (PhysicsObject obj in bodies) {
-                obj.Draw(canvas);
+                obj.Draw(view);
             }
         }
     #endregion

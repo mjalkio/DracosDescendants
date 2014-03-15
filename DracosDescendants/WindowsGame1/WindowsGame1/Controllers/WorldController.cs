@@ -11,6 +11,7 @@ using DracosD.Controllers;
 using FarseerPhysics.Controllers;
 using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
+using DracosD.Views;
 
 namespace DracosD.Controllers
 {
@@ -170,7 +171,7 @@ namespace DracosD.Controllers
         /// Scale of this Farseer world.
         /// </summary>
         /// <remarks>
-        /// The world scale and canvas scale should always agree.
+        /// The world scale and view scale should always agree.
         /// </remarks>
         public Vector2 Scale
         {
@@ -181,7 +182,7 @@ namespace DracosD.Controllers
         /// X-coordinate of the world scale
         /// </summary>
         /// <remarks>
-        /// The world scale and canvas scale should always agree.
+        /// The world scale and view scale should always agree.
         /// </remarks>
         public float SX
         {
@@ -192,7 +193,7 @@ namespace DracosD.Controllers
         /// Y-coordinate of the world scale
         /// </summary>
         /// <remarks>
-        /// The world scale and canvas scale should always agree.
+        /// The world scale and view scale should always agree.
         /// </remarks>
         public float SY
         {
@@ -236,7 +237,7 @@ namespace DracosD.Controllers
             PhysicsObject obj;
 
             Vector2[] points = { new Vector2(0, 0), new Vector2(50, 0), new Vector2(50, .01f), new Vector2(0, .01f) };
-            obj = new PolygonObject(groundTexture, points, Scale);
+            obj = new PolygonObject(null, points, Scale);
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
@@ -327,7 +328,7 @@ namespace DracosD.Controllers
         }
 
         /// <summary>
-        /// Draw the physics objects to the canvas
+        /// Draw the physics objects to the view
         /// </summary>
         /// <remarks>
         /// For simple worlds, this method is enough by itself.  It will need
@@ -337,8 +338,8 @@ namespace DracosD.Controllers
         /// To keep from combining passes, it checks the draw type of each
         /// object, and switches the pass whenever necessary.
         /// </remarks>
-        /// <param name="canvas">Drawing context</param>
-        public virtual void Draw(GameView canvas)
+        /// <param name="view">Drawing context</param>
+        public virtual void Draw(GameView view)
         {
             DrawState state = DrawState.Inactive;
             foreach (PhysicsObject obj in Objects)
@@ -346,29 +347,29 @@ namespace DracosD.Controllers
                 // Need to change the current drawing pass.
                 if (state != obj.DrawState)
                 {
-                    EndPass(canvas, state);
+                    EndPass(view, state);
                     state = obj.DrawState;
-                    BeginPass(canvas, state);
+                    BeginPass(view, state);
                 }
-                obj.Draw(canvas);
+                obj.Draw(view);
             }
-            EndPass(canvas, state);
+            EndPass(view, state);
         }
 
         /// <summary>
         /// Helper method to begin a new drawing pass
         /// </summary>
-        /// <param name="canvas">Drawing canvas</param>
+        /// <param name="view">Drawing view</param>
         /// <param name="state">Pass to activate</param>
-        private void BeginPass(GameView canvas, DrawState state)
+        private void BeginPass(GameView view, DrawState state)
         {
             switch (state)
             {
                 case DrawState.PolygonPass:
-                    canvas.BeginPolygonPass();
+                    view.BeginPolygonPass();
                     break;
                 case DrawState.SpritePass:
-                    canvas.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
+                    view.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
                     break;
                 default:
                     break;
@@ -378,17 +379,17 @@ namespace DracosD.Controllers
         /// <summary>
         /// Helper method to end a new drawing pass
         /// </summary>
-        /// <param name="canvas">Drawing canvas</param>
+        /// <param name="view">Drawing view</param>
         /// <param name="state">Pass to deactivate</param>
-        private void EndPass(GameView canvas, DrawState state)
+        private void EndPass(GameView view, DrawState state)
         {
             switch (state)
             {
                 case DrawState.PolygonPass:
-                    canvas.EndPolygonPass();
+                    view.EndPolygonPass();
                     break;
                 case DrawState.SpritePass:
-                    canvas.EndSpritePass();
+                    view.EndSpritePass();
                     break;
                 default:
                     break;
@@ -413,8 +414,9 @@ namespace DracosD.Controllers
 
             // Read from the input and add the force to the rocket model
             // But DO NOT apply the force yet (look at RocketObject.cs).
-            dragon.FY = playerInput.Vertical * dragon.Thrust;
-            dragon.FX = playerInput.Horizontal * dragon.Thrust;
+            float FY = playerInput.Vertical * dragon.Thrust;
+            float FX = playerInput.Horizontal * dragon.Thrust;
+            dragon.Force = new Vector2(FX, FY);
 
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)

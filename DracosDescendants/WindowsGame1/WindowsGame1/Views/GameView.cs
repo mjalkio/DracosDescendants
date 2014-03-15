@@ -15,7 +15,7 @@ namespace DracosD.Views
     /// Draw states to keep track of our current drawing pass
     /// </summary>
     /// <remarks>
-    /// There is no order on drawing passes for this canvas, but the canvas
+    /// There is no order on drawing passes for this view, but the view
     /// can only be in one drawing pass at a time.  If you wish to change
     /// the current drawing state, you must ifrst end any pass that is 
     /// currently active.  In particular, the sprite pass is not drawn to
@@ -30,7 +30,7 @@ namespace DracosD.Views
     #endregion
 
 
-    class GameView
+    public class GameView
     {
         
     #region Constants
@@ -69,7 +69,7 @@ namespace DracosD.Views
         protected Vector2 worldScale;
 
         //camera for scrolling
-        protected Camera camera;
+        private Camera camera;
     #endregion
 
     #region Properties (READ-WRITE)
@@ -97,7 +97,7 @@ namespace DracosD.Views
         /// <remarks>
         /// This code has some VERY Windows specific code in it that is
         /// incompatible with MonoGame. If you wish to use MonoGame, you 
-        /// need to use the GameCanvas version for that engine.
+        /// need to use the Gameview version for that engine.
         /// 
         /// This value cannot be reset during an active drawing pass.
         /// </remarks>
@@ -134,7 +134,7 @@ namespace DracosD.Views
         /// <remarks>
         /// This code has some VERY Windows specific code in it that is
         /// incompatible with MonoGame. If you wish to use MonoGame, you 
-        /// need to use the GameCanvas version for that engine.
+        /// need to use the Gameview version for that engine.
         /// 
         /// This value cannot be reset during an active drawing pass.
         /// </remarks>
@@ -161,7 +161,7 @@ namespace DracosD.Views
         /// <remarks>
         /// This code has some VERY Windows specific code in it that is
         /// incompatible with MonoGame. If you wish to use MonoGame, you 
-        /// need to use the GameCanvas version for that engine.
+        /// need to use the Gameview version for that engine.
         /// 
         /// This value cannot be reset during an active drawing pass.
         /// </remarks>
@@ -183,7 +183,7 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// The width of this drawing canvas
+        /// The width of this drawing view
         /// </summary>
         /// <remarks>
         /// This value cannot be reset during an active drawing pass.
@@ -206,7 +206,7 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// The height of this drawing canvas
+        /// The height of this drawing view
         /// </summary>
         /// <remarks>
         /// This value cannot be reset during an active drawing pass.
@@ -229,10 +229,10 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// The global scale of this drawing canvas
+        /// The global scale of this drawing view
         /// </summary>
         /// <remarks>
-        /// Altering this value will zoom in or out of the canvas (anchored at 
+        /// Altering this value will zoom in or out of the view (anchored at 
         /// the bottom left corner).
         /// 
         /// This value cannot be reset during an active drawing pass.
@@ -248,7 +248,7 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// The global X-axis scale of this drawing canvas
+        /// The global X-axis scale of this drawing view
         /// </summary>
         /// <remarks>
         /// This value cannot be reset during an active drawing pass.
@@ -264,7 +264,7 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// The global Y-axis scale of this drawing canvas
+        /// The global Y-axis scale of this drawing view
         /// </summary>
         /// <remarks>
         /// This value cannot be reset during an active drawing pass.
@@ -290,15 +290,15 @@ namespace DracosD.Views
 
     #region Initialization
         /// <summary>
-        /// Constructor to create a new instance of our canvas.
+        /// Constructor to create a new instance of our view.
         /// </summary>
         /// <remarks>
         /// Note that we initialize the graphics device manager as soon
-        /// as this canvas is constructed. However, we do NOT create a
+        /// as this view is constructed. However, we do NOT create a
         /// new SpriteBatch yet.  We have to wait for the graphics manager 
         /// to initialize before we do that. 
         /// </remarks>
-        /// <param name="game">The root game engine for this canvas</param>
+        /// <param name="game">The root game engine for this view</param>
         public GameView(Game game) {
             // Create a new graphics manager.
             fullscreen = false;
@@ -312,14 +312,14 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// Initialize the SpriteBatch for this canvas and prepare for drawing.
+        /// Initialize the SpriteBatch for this view and prepare for drawing.
         /// </summary>
         /// <remarks>
         /// This method is called by the Initialize method of the game engine,
         /// after all of the game has finished all necessary off-screen
         /// initialization.
         /// </remarks>
-        /// <param name="game">The root game engine for this canvas</param>
+        /// <param name="game">The root game engine for this view</param>
         public void Initialize(Game game) {
             // Override window position at start-up
             window = game.Window;
@@ -344,7 +344,7 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// Load all default graphics resources for the canvas
+        /// Load all default graphics resources for the view
         /// </summary>
         /// <param name='content'>
         /// Reference to global content manager.
@@ -369,7 +369,7 @@ namespace DracosD.Views
 
     #region Drawing Methods
         /// <summary>
-        /// Clear the canvas and reset the drawing state for a new animation frame.
+        /// Clear the view and reset the drawing state for a new animation frame.
         /// </summary>
         public void Reset() {
             graphics.GraphicsDevice.Clear(Color.CornflowerBlue);
@@ -417,7 +417,7 @@ namespace DracosD.Views
             camera = new Camera(graphics.GraphicsDevice.Viewport, 40, 20,50.0f);
             camera.Pos = position;
             //Console.WriteLine("here");
-            // Set up the drawing canvas to use the appropriate blending.
+            // Set up the drawing view to use the appropriate blending.
             // Deferred sorting guarantees Sprites are drawn in order given.
             spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, camera.GetTransformation());
             
@@ -429,19 +429,19 @@ namespace DracosD.Views
             state = DrawState.SpritePass;
 
             //Console.WriteLine("here");
-            // Set up the drawing canvas to use the appropriate blending.
+            // Set up the drawing view to use the appropriate blending.
             // Deferred sorting guarantees Sprites are drawn in order given.
             spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, transform);
         }
         /// <summary>
-        /// Draw a sprite on this drawing canvas.
+        /// Draw a sprite on this drawing view.
         /// </summary>
         /// <remarks>
-        /// The image is scaled according to the canvas Scale attribute.
+        /// The image is scaled according to the view Scale attribute.
         /// </remarks>
         /// <param name="image">Sprite to draw</param>
         /// <param name="tint">Color to tint sprite</param>
-        /// <param name="position">Location to draw image on canvas</param>
+        /// <param name="position">Location to draw image on view</param>
         public void DrawSprite(Texture2D image, Color tint, Vector2 position) {
             // Enforce pass invariants.
             Debug.Assert(state == DrawState.SpritePass, "Drawing state is invalid (expected SpritePass)");
@@ -455,14 +455,14 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// Draw a sprite on this drawing canvas.
+        /// Draw a sprite on this drawing view.
         /// </summary>
         /// <remarks>
-        /// The image is scaled according to the canvas Scale attribute.
+        /// The image is scaled according to the view Scale attribute.
         /// </remarks>
         /// <param name="image">Sprite to draw</param>
         /// <param name="tint">Color to tint sprite</param>
-        /// <param name="position">Location to draw image on canvas</param>
+        /// <param name="position">Location to draw image on view</param>
         /// <param name="scale">Amount to scale image (in addition to global scale)</param>
         /// <param name="angle">Amount to rotate image in radians</param>
         public void DrawSprite(Texture2D image, Color tint, Vector2 position, Vector2 scale, float angle) {
@@ -477,14 +477,14 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// Draw a sprite on this drawing canvas.
+        /// Draw a sprite on this drawing view.
         /// </summary>
         /// <remarks>
-        /// The image is scaled according to the canvas Scale attribute.
+        /// The image is scaled according to the view Scale attribute.
         /// </remarks>
         /// <param name="image">Sprite to draw</param>
         /// <param name="tint">Color to tint sprite</param>
-        /// <param name="position">Location to draw image on canvas</param>
+        /// <param name="position">Location to draw image on view</param>
         /// <param name="scale">Amount to scale image (in addition to global scale)</param>
         /// <param name="angle">Amount to rotate image in radians</param>
         /// <param name="effects">Sprite effect to flip image</param>
@@ -500,7 +500,7 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// Animate a sprite on this drawing canvas.
+        /// Animate a sprite on this drawing view.
         /// </summary>
         /// <remarks>
         /// This version of the drawing method will animate an image over a 
@@ -509,7 +509,7 @@ namespace DracosD.Views
         /// </remarks>
         /// <param name="image">Sprite to draw</param>
         /// <param name="tint">Color to tint sprite</param>
-        /// <param name="position">Location to draw image on canvas</param>
+        /// <param name="position">Location to draw image on view</param>
         /// <param name="scale">Amount to scale image (in addition to global scale)</param>
         /// <param name="angle">Amount to rotate image in radians</param>
         /// <param name="frame">Current animation frame</param>
@@ -586,7 +586,7 @@ namespace DracosD.Views
         /// </summary>
         /// <remarks>
         /// Text is scaled by the global scale factor, just like any other image.
-        /// Text is drawn with the built-in canvas font.
+        /// Text is drawn with the built-in view font.
         /// </remarks>
         /// <param name="text">Text to draw</param>
         /// <param name="tint">Text color</param>
@@ -644,7 +644,7 @@ namespace DracosD.Views
         /// Draw the given textured polygon.
         /// </summary>
         /// <remarks>
-        /// The polygon is scaled according to the canvas Scale attribute.
+        /// The polygon is scaled according to the view Scale attribute.
         /// </remarks>
         /// <param name="vertices">Vertices with texture mapping</param>
         /// <param name="texture">Texture to apply to polygon</param>
@@ -656,7 +656,7 @@ namespace DracosD.Views
         /// Draw the given textured polygon.
         /// </summary>
         /// <remarks>
-        /// The polygon is scaled according to the canvas Scale attribute.
+        /// The polygon is scaled according to the view Scale attribute.
         /// </remarks>
         /// <param name="vertices">Vertices with texture mapping</param>
         /// <param name="texture">Texture to apply to polygon</param>
@@ -672,7 +672,7 @@ namespace DracosD.Views
         /// Draw the given textured polygon.
         /// </summary>
         /// <remarks>
-        /// The polygon is scaled according to the canvas Scale attribute.
+        /// The polygon is scaled according to the view Scale attribute.
         /// </remarks>
         /// <param name="vertices">Vertices with texture mapping</param>
         /// <param name="texture">Texture to apply to polygon</param>
