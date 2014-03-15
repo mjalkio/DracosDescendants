@@ -27,6 +27,7 @@ using FarseerPhysics.Dynamics.Joints;
 using FarseerPhysics.Factories;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using DracosD.Models;
 #endregion
 
 /// <summary>
@@ -324,7 +325,7 @@ namespace DracosD.Objects {
         /// Draws the physics object.
         /// </summary>
         /// <param name="canvas">Drawing context</param>
-        public abstract void Draw(GameCanvas canvas);
+        public abstract void Draw(GameView canvas);
     #endregion
 
     }

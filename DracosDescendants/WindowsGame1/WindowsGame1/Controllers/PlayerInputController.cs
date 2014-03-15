@@ -22,15 +22,15 @@ using Microsoft.Xna.Framework.Net;
 #endregion
 
 /// <summary>
-/// Subnamespace for the rocket game.
+/// Subnamespace for controllers.
 /// </summary>
-namespace DracosD.Rocket
+namespace DracosD.Controllers
 {
 
     /// <summary>
     /// Input control to move the rocket
     /// </summary>
-    public class RocketInputController
+    public class PlayerInputController
     {
 
         #region Fields
@@ -61,7 +61,7 @@ namespace DracosD.Rocket
         /// <summary>
         /// Creates a new input controller.
         /// </summary>
-        public RocketInputController() { }
+        public PlayerInputController() { }
 
         /// <summary>
         /// Reads the input for the player and converts the result into game logic.

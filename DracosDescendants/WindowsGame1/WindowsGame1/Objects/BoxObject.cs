@@ -23,7 +23,8 @@ using FarseerPhysics.Factories;
 using FarseerPhysics.Collision.Shapes;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Color = Microsoft.Xna.Framework.Color; // Stupid Box2DX name collision!
+using Color = Microsoft.Xna.Framework.Color;
+using DracosD.Models; // Stupid Box2DX name collision!
 #endregion
 
 /// <summary>
@@ -184,7 +185,7 @@ namespace DracosD.Objects {
         /// Draws the physics object.
         /// </summary>
         /// <param name="canvas">Drawing context</param>
-        public override void Draw(GameCanvas canvas) {
+        public override void Draw(GameView canvas) {
             canvas.DrawSprite(texture,Color.White, Position, scale, Rotation);
         }
     #endregion

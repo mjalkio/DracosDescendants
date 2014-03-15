@@ -1,12 +1,458 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using FarseerPhysics.Collision;
+using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using DracosD.Objects;
+using Microsoft.Xna.Framework.Content;
+using DracosD.Controllers;
+using FarseerPhysics.Controllers;
+using DracosD.Models;
+using FarseerPhysics.Dynamics.Contacts;
 
-namespace DracosD
+namespace DracosD.Controllers
 {
-    class WorldController
-    {
+    class WorldController {
         // USES BOTH RocketWorldController and RocketForceController
+
+        #region constants
+        public const float DEFAULT_SCALE = 50.0f;
+        // Dimensions of the game world
+        private const float WIDTH = 50.0f;
+        private const float HEIGHT = 20.0f;
+        private const float GRAVITY = 8.0f;
+
+        // Physics constants for initialization
+        private const float BASIC_DENSITY = 0.0f;
+        private const float BASIC_FRICTION = 0.1f;
+        private const float BASIC_RESTITION = 0.1f;
+        #endregion
+
+        #region Graphics Resources
+        // Textures for all the game objects
+        private static Texture2D dragonTexture;
+        private static Texture2D regularPlanetTexture;
+
+        /// <summary>
+        /// Load images for this class
+        /// </summary>
+        /// <param name="content">Content manager to access pipeline</param>
+        public static void LoadContent(ContentManager content)
+        {
+            // Earth tiles are unique in each world
+            dragonTexture = content.Load<Texture2D>("Rocket\\rocket");
+            regularPlanetTexture = content.Load<Texture2D>("Rocket\\venus-no-background");
+        }
+
+        /// <summary>
+        /// UnloadContent will be called once per game and is the place to unload
+        /// all content.
+        /// </summary>
+        public static void UnloadContent()
+        {
+            // TODO: Unload any non ContentManager content here
+        }
+        #endregion
+
+        #region Fields (Game Geography)
+        // Locations of all the boxes
+        private static Vector2[] planetLocations = new Vector2[]
+        {
+            new Vector2(7.25f, 2.5f),
+            //new Vector2(6.5f, 4), new Vector2(8.0f, 4),
+            //new Vector2(5.75f, 5.5f), new Vector2(7.25f, 5.5f), new Vector2(8.75f, 5.5f),
+            //new Vector2(6.5f, 7), new Vector2(8.0f, 7),
+            new Vector2(5.75f, 8.5f)//, new Vector2(7.25f, 8.5f), new Vector2(8.75f, 8.5f),
+            //new Vector2(5,10), new Vector2(6.5f, 10), new Vector2(8, 10), new Vector2(9.5f, 10)
+        };
+
+        // Other game objects
+        private static Vector2 rocketPos = new Vector2(2, 10);
+        #endregion
+
+        #region Fields
+        // All the objects in the world
+        private LinkedList<PhysicsObject> objects = new LinkedList<PhysicsObject>();
+
+        // Queue for adding objects
+        private Queue<PhysicsObject> addQueue = new Queue<PhysicsObject>();
+
+        // The Box2D world
+        protected World world;
+        protected Vector4 bounds;
+        protected Vector2 scale;
+
+        // Have we won yet?
+        private bool succeeded;
+        private bool failed;
+        #endregion
+
+        #region Properties (Read-Write)
+        /// <summary>
+        /// Whether the player has succeeded at this world (e.g. finished the race)
+        /// </summary>
+        public bool Succeeded
+        {
+            get { return succeeded; }
+            set { succeeded = value; }
+        }
+        public LinkedList<PhysicsObject> Objects
+        {
+            get { return objects; }
+        }
+
+        /// <summary>
+        /// Whether the player has failed at this world (e.g. died)
+        /// </summary>
+        public bool Failed
+        {
+            get { return failed; }
+            set { failed = value; }
+        }
+        #endregion
+
+        #region Properties (Read-Only)
+        /// <summary>
+        /// Reference to Farseer World for collision detection.
+        /// </summary>
+        public World World
+        {
+            get { return world; }
+        }
+
+        /// <summary>
+        /// Bounds of this Farseer world. 
+        /// </summary>
+        /// <remarks>
+        /// The bounds are a 4-vector with the left-hand side, top boundary,
+        /// right-hand side, and bottom-boundary of the window.
+        /// </remarks>
+        public Vector4 Bounds
+        {
+            get { return bounds; }
+        }
+
+        /// <summary>
+        /// Left-hand side of this world
+        /// </summary>
+        public float X
+        {
+            get { return bounds.X; }
+        }
+
+        /// <summary>
+        /// Bottom edge of this world
+        /// </summary>
+        public float Y
+        {
+            get { return bounds.Y; }
+        }
+
+        /// <summary>
+        /// Width of this world
+        /// </summary>
+        public float Width
+        {
+            get { return bounds.Z - bounds.X; }
+        }
+
+        /// <summary>
+        /// Height of this world
+        /// </summary>
+        public float Height
+        {
+            get { return bounds.W - bounds.Y; }
+        }
+
+        /// <summary>
+        /// Scale of this Farseer world.
+        /// </summary>
+        /// <remarks>
+        /// The world scale and canvas scale should always agree.
+        /// </remarks>
+        public Vector2 Scale
+        {
+            get { return scale; }
+        }
+
+        /// <summary>
+        /// X-coordinate of the world scale
+        /// </summary>
+        /// <remarks>
+        /// The world scale and canvas scale should always agree.
+        /// </remarks>
+        public float SX
+        {
+            get { return scale.X; }
+        }
+
+        /// <summary>
+        /// Y-coordinate of the world scale
+        /// </summary>
+        /// <remarks>
+        /// The world scale and canvas scale should always agree.
+        /// </remarks>
+        public float SY
+        {
+            get { return scale.Y; }
+        }
+        #endregion
+
+        #region Initialization
+        /// <summary>
+        /// Create a new game world.
+        /// </summary>
+        /// <remarks>
+        /// The bounds are a 4-vector with the left-hand side, top boundary,
+        /// right-hand side, and bottom-boundary of the window.
+        /// </remarks>
+        /// <param name="bounds">Object boundary for this world</param>
+        /// <param name="gravity">Global gravity constant</param>
+        protected WorldController(Vector4 bounds, Vector2 gravity) :
+            this(bounds, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) { }
+
+        /// <summary>
+        /// Create a new game world.
+        /// </summary>
+        /// <remarks>
+        /// The bounds are a 4-vector with the left-hand side, top boundary,
+        /// right-hand side, and bottom-boundary of the window.
+        /// </remarks>
+        /// <param name="bounds">Object boundary for this world</param>
+        /// <param name="gravity">Global gravity constant</param>
+        /// <param name="scale">Global scaling attribute</param>
+        protected WorldController(Vector4 bounds, Vector2 gravity, Vector2 scale)
+        {
+            world = new World(new Vector2(0, 0));
+            this.bounds = bounds;
+            this.scale = scale;
+            succeeded = failed = false;
+        }
+
+        private void PopulateLevel() {
+            //Create a bounding box around the level (for now, will add wraparound later)
+            PhysicsObject obj;
+
+            Vector2[] points = { new Vector2(0, 0), new Vector2(50, 0), new Vector2(50, .01f), new Vector2(0, .01f) };
+            obj = new PolygonObject(groundTexture, points, Scale);
+            obj.BodyType = BodyType.Static;
+            obj.Density = BASIC_DENSITY;
+            obj.Restitution = BASIC_RESTITION;
+            AddObject(obj);
+        }
+
+        /// <summary>
+        /// Adds physics object in to the add queue.
+        /// </summary>
+        /// <remarks>
+        /// Objects on the queue are added just before collision
+        /// processing.  We do this to control object creation.
+        /// </remarks>
+        /// <param name="obj">Object to add</param>
+        public void AddQueuedObject(PhysicsObject obj)
+        {
+            Debug.Assert(InBounds(obj), "Object is not in bounds");
+            addQueue.Enqueue(obj);
+        }
+
+        /// <summary>
+        /// Immediately adds the object to the physics world
+        /// </summary>
+        /// <param name="obj">Object to add</param>
+        protected void AddObject(PhysicsObject obj)
+        {
+            Debug.Assert(InBounds(obj), "Object is not in bounds");
+            objects.AddLast(obj);
+            obj.ActivatePhysics(world);
+        }
+
+        /// <summary>
+        /// Checks if an object is in in-bounds (for debugging purposes)
+        /// </summary>
+        /// <param name="obj">Object to check</param>
+        /// <returns>True, if object is in world bounds</returns>
+        public bool InBounds(PhysicsObject obj)
+        {
+            bool horiz = (bounds.X <= obj.X && obj.X <= bounds.Z);
+            bool vert = (bounds.Y <= obj.Y && obj.Y <= bounds.W);
+            return horiz && vert;
+        }
+        #endregion    
+
+        #region Fields (Game Logic)
+        // Physics objects for the game
+        protected SensorObject goalDoor;
+
+        protected Dragon dragon;
+        protected List<PlanetaryObject> planets = new List<PlanetaryObject>();
+
+
+        public Dragon Dragon
+        {
+            get { return dragon; }
+        }
+
+        // Controller to move the rocket
+        // protected RocketForceController forceController;
+        // Game specific player input
+        protected PlayerInputController playerInput;
+        #endregion
+
+
+        #region Game Loop
+
+        /// <summary>
+        /// Callback method for collisions
+        /// </summary>
+        /// <remarks>
+        /// This method is called when we get a collision between two objects.  We use 
+        /// this method to test if it is the "right" kind of collision.
+        /// </remarks>
+        /// <param name="contact">The two bodies that collided</param>
+        /// <returns><c>true</c> if we want the collision recognized</returns>
+        private bool ContactAdded(Contact contact)
+        {
+            Body body1 = contact.FixtureA.Body;
+            Body body2 = contact.FixtureB.Body;
+
+            if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
+                (body1.UserData == goalDoor && body2.UserData == dragon))
+            {
+                Succeeded = true;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Draw the physics objects to the canvas
+        /// </summary>
+        /// <remarks>
+        /// For simple worlds, this method is enough by itself.  It will need
+        /// to be overriden if the world needs fancy backgrounds or the like.
+        /// 
+        /// The method draws all objects in the order that they were added.
+        /// To keep from combining passes, it checks the draw type of each
+        /// object, and switches the pass whenever necessary.
+        /// </remarks>
+        /// <param name="canvas">Drawing context</param>
+        public virtual void Draw(GameView canvas)
+        {
+            DrawState state = DrawState.Inactive;
+            foreach (PhysicsObject obj in Objects)
+            {
+                // Need to change the current drawing pass.
+                if (state != obj.DrawState)
+                {
+                    EndPass(canvas, state);
+                    state = obj.DrawState;
+                    BeginPass(canvas, state);
+                }
+                obj.Draw(canvas);
+            }
+            EndPass(canvas, state);
+        }
+
+        /// <summary>
+        /// Helper method to begin a new drawing pass
+        /// </summary>
+        /// <param name="canvas">Drawing canvas</param>
+        /// <param name="state">Pass to activate</param>
+        private void BeginPass(GameView canvas, DrawState state)
+        {
+            switch (state)
+            {
+                case DrawState.PolygonPass:
+                    canvas.BeginPolygonPass();
+                    break;
+                case DrawState.SpritePass:
+                    canvas.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to end a new drawing pass
+        /// </summary>
+        /// <param name="canvas">Drawing canvas</param>
+        /// <param name="state">Pass to deactivate</param>
+        private void EndPass(GameView canvas, DrawState state)
+        {
+            switch (state)
+            {
+                case DrawState.PolygonPass:
+                    canvas.EndPolygonPass();
+                    break;
+                case DrawState.SpritePass:
+                    canvas.EndSpritePass();
+                    break;
+                default:
+                    break;
+            }
+        }
+
+
+        /// <summary>
+        /// The core update loop of any physics world.
+        /// </summary>
+        /// <remarks>
+        /// As the update loop is game-specific, this loop is obviously incomplete.  
+        /// This is the portion of the loop that processes physics, updates objects
+        /// for one last time, and garbage collects objects.  It should be called
+        /// last, or close-to-last, in any overriding method
+        /// </remarks>
+        /// <param name="dt">Timing values from parent loop</param>
+        public void Update(float dt)
+        {
+            // Read input and assign actions to rocket
+            playerInput.ReadInput();
+
+            // Read from the input and add the force to the rocket model
+            // But DO NOT apply the force yet (look at RocketObject.cs).
+            dragon.FY = playerInput.Vertical * dragon.Thrust;
+            dragon.FX = playerInput.Horizontal * dragon.Thrust;
+
+            // Add any objects created by actions
+            foreach (PhysicsObject o in addQueue)
+            {
+                AddObject(o);
+            }
+            addQueue.Clear();
+
+            // Turn the physics engine crank.
+            world.Step(dt);
+
+            // Garbage collect the deleted objects.
+            // Note how we use the linked list nodes to delete O(1) in place.
+            // This is O(n) without copying.  
+            LinkedListNode<PhysicsObject> node = objects.First;
+            LinkedListNode<PhysicsObject> next;
+            PhysicsObject obj;
+            while (node != null)
+            {
+                obj = node.Value;
+                next = node.Next;
+                // Delete O(1) in place
+                if (obj.Remove)
+                {
+                    obj.DeactivatePhysics(world);
+                    objects.Remove(node);
+                }
+                else
+                {
+                    // Note that update is called last!
+                    obj.Update(dt);
+                }
+                node = next;
+            }
+        }
+
+
+        #endregion
+
     }
 }
