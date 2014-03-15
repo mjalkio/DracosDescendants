@@ -1,2 +1,9 @@
 DracosDescendants/DracosDescendants.suo
 *.cache
+*.dll
+*.pdb
+DracosDescendants/WindowsGame1/Farseer Physics Engine 3.5/bin/x86/Debug/FarseerPhysics.xml
+*.txt
+DracosDescendants/WindowsGame1/WindowsGame1Content/obj/x86/Debug/ContentPipeline.xml
+*.cache
+*.exe
