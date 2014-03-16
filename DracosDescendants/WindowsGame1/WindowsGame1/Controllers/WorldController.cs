@@ -17,7 +17,7 @@ namespace DracosD.Controllers
 {
     class WorldController {
         
-        #region constants
+        #region Constants
         public const float DEFAULT_SCALE = 50.0f;
         // Dimensions of the game world
         private const float WIDTH = 50.0f;
@@ -67,6 +67,8 @@ namespace DracosD.Controllers
 
         #region Fields
         // All the objects in the world
+        private Level level;
+
         private LinkedList<PhysicsObject> objects = new LinkedList<PhysicsObject>();
 
         // Queue for adding objects
@@ -90,7 +92,7 @@ namespace DracosD.Controllers
             get { return dragon; }
         }
 
-        // Controller to move the rocket
+        // Controller to move the dragon
         protected ForceController forceController;
         // Game specific player input
 
@@ -218,15 +220,15 @@ namespace DracosD.Controllers
         /// </remarks>
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
-        protected WorldController(Vector4 bounds, Vector2 gravity) :
-            this(bounds, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) {
+        public WorldController(Vector2 gravity, Level thisLevel) :
+            this(new Vector4(0,0,WIDTH,HEIGHT), new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) {
                 playerInput = new PlayerInputController();
-
+                level = thisLevel;
                 PopulateLevel();
 
                 // Attach the force controller to the rocket.
                 forceController = new ForceController(dragon, planets);
-                world.AddController(forceController);
+                world.AddController(forceController); 
 
                 world.ContactManager.BeginContact += ContactAdded;
             }
@@ -259,6 +261,8 @@ namespace DracosD.Controllers
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
             AddObject(obj);
+
+
         }
 
         /// <summary>

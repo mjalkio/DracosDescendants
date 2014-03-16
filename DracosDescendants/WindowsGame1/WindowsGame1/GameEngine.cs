@@ -12,6 +12,9 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Net;
+using DracosD.Controllers;
+using DracosD.Views;
+using DracosD.Models;
 #endregion
 
 namespace DracosD
@@ -29,10 +32,10 @@ namespace DracosD
         protected WorldController currentWorld;
 
         // Draws the current menu if required, based on the Menu model (VIEW CLASS)
-        protected DracosD.Models.MenuView gameMenuView;
+        protected MenuView gameMenuView;
 
         // draws information defined by level (camera) and HUD based elements
-        protected DracosD.Models.GameView gameView;
+        protected GameView gameView;
 
         // Used to play the sounds (Techically, VIEW CLASS)
         protected SoundBank soundBank;
@@ -52,8 +55,8 @@ namespace DracosD
             // Tell the program to load all files relative to the "Content" directory.
             content = new ContentManager(Services);
             content.RootDirectory = "Content";
-            gameMenuView = new DracosD.Models.MenuView();
-            gameView = new DracosD.Models.GameView();
+            gameMenuView = new MenuView();
+            gameView = new GameView(this);
         }
 
         /// <summary>
@@ -64,9 +67,9 @@ namespace DracosD
         {
             gameLevelController = new LevelController();
             currLevel = gameLevelController.parse(parse the XML file here);
-            currentWorld = new WorldController();
-            gameMenuView.initialize();
-            gameView.initialize();
+            currentWorld = new WorldController(new Vector2(0, 0), currLevel);
+            // gameMenuView.Initialize();
+            gameView.Initialize(this);
             base.Initialize();
         }
 
@@ -76,7 +79,7 @@ namespace DracosD
         protected override void LoadContent()
         {
             // load all graphic contents for the views
-            gameMenuView.LoadContent(content);
+            // gameMenuView.LoadContent(content);
             gameView.LoadContent(content);
 
             // Sound banks allow us to play a sound "on top of itself"
@@ -104,7 +107,7 @@ namespace DracosD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            currentWorld.update();
+            currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);
         }
 
@@ -114,10 +117,10 @@ namespace DracosD
         protected override void Draw(GameTime gameTime)
         {
             // World specific drawing
-            gameView.Draw(currLevel);
-            gameMenuView.Draw();
+            currentWorld.Draw(gameView);
+            // gameMenuView.Draw();
 
-            // Final message
+            /*/ Final message
             if (currentWorld.Succeeded && !currentWorld.Failed)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
@@ -129,7 +132,7 @@ namespace DracosD
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 gameView.DrawOverlay(failure, Color.White, false);
                 gameView.EndSpritePass();
-            }
+            }*/
             base.Draw(gameTime);
         }
         #endregion
