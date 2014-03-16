@@ -16,8 +16,7 @@ using DracosD.Views;
 namespace DracosD.Controllers
 {
     class WorldController {
-        // USES BOTH RocketWorldController and RocketForceController
-
+        
         #region constants
         public const float DEFAULT_SCALE = 50.0f;
         // Dimensions of the game world
@@ -60,14 +59,7 @@ namespace DracosD.Controllers
         #region Fields (Game Geography)
         // Locations of all the boxes
         private static Vector2[] planetLocations = new Vector2[]
-        {
-            new Vector2(7.25f, 2.5f),
-            //new Vector2(6.5f, 4), new Vector2(8.0f, 4),
-            //new Vector2(5.75f, 5.5f), new Vector2(7.25f, 5.5f), new Vector2(8.75f, 5.5f),
-            //new Vector2(6.5f, 7), new Vector2(8.0f, 7),
-            new Vector2(5.75f, 8.5f)//, new Vector2(7.25f, 8.5f), new Vector2(8.75f, 8.5f),
-            //new Vector2(5,10), new Vector2(6.5f, 10), new Vector2(8, 10), new Vector2(9.5f, 10)
-        };
+        {  };
 
         // Other game objects
         private static Vector2 rocketPos = new Vector2(2, 10);
@@ -88,6 +80,21 @@ namespace DracosD.Controllers
         // Have we won yet?
         private bool succeeded;
         private bool failed;
+
+        protected Dragon dragon;
+        protected List<PlanetaryObject> planets = new List<PlanetaryObject>();
+
+
+        public Dragon Dragon
+        {
+            get { return dragon; }
+        }
+
+        // Controller to move the rocket
+        protected ForceController forceController;
+        // Game specific player input
+
+        protected PlayerInputController playerInput;
         #endregion
 
         #region Properties (Read-Write)
@@ -212,7 +219,17 @@ namespace DracosD.Controllers
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
         protected WorldController(Vector4 bounds, Vector2 gravity) :
-            this(bounds, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) { }
+            this(bounds, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) {
+                playerInput = new PlayerInputController();
+
+                PopulateLevel();
+
+                // Attach the force controller to the rocket.
+                forceController = new ForceController(dragon, planets);
+                world.AddController(forceController);
+
+                world.ContactManager.BeginContact += ContactAdded;
+            }
 
         /// <summary>
         /// Create a new game world.
@@ -282,26 +299,6 @@ namespace DracosD.Controllers
         }
         #endregion    
 
-        #region Fields (Game Logic)
-        // Physics objects for the game
-        protected SensorObject goalDoor;
-
-        protected Dragon dragon;
-        protected List<PlanetaryObject> planets = new List<PlanetaryObject>();
-
-
-        public Dragon Dragon
-        {
-            get { return dragon; }
-        }
-
-        // Controller to move the rocket
-        // protected RocketForceController forceController;
-        // Game specific player input
-        protected PlayerInputController playerInput;
-        #endregion
-
-
         #region Game Loop
 
         /// <summary>
@@ -318,11 +315,11 @@ namespace DracosD.Controllers
             Body body1 = contact.FixtureA.Body;
             Body body2 = contact.FixtureB.Body;
 
-            if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
+            /*if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
                 (body1.UserData == goalDoor && body2.UserData == dragon))
             {
                 Succeeded = true;
-            }
+            }*/
 
             return true;
         }
