@@ -74,6 +74,9 @@ namespace DracosD.Controllers
         // Queue for adding objects
         private Queue<PhysicsObject> addQueue = new Queue<PhysicsObject>();
 
+        //Dictionary to keep track of which index (i.e. which gate) of the gate list a dragon racer is on
+        private Dictionary<Dragon, int> currentGates;
+
         // The Box2D world
         protected World world;
         protected Vector4 bounds;
@@ -223,15 +226,19 @@ namespace DracosD.Controllers
         public WorldController(Vector2 gravity, Level thisLevel) :
             this(new Vector4(0,0,WIDTH,HEIGHT), new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) {
                 playerInput = new PlayerInputController();
+                currentGates = new Dictionary<Dragon, int>();
                 level = thisLevel;
                 PopulateLevel();
+
+                //level is populated so initialize and populate the current gates for each racer
 
                 // Attach the force controller to the rocket.
                 forceController = new ForceController(dragon, planets);
                 world.AddController(forceController); 
 
                 world.ContactManager.BeginContact += ContactAdded;
-            }
+        }
+
 
         /// <summary>
         /// Create a new game world.
@@ -250,6 +257,17 @@ namespace DracosD.Controllers
             this.scale = scale;
             succeeded = failed = false;
         }
+        
+        /// <summary>
+        /// This method takes in a list of dragon racers, and for each racer, it adds it to the map
+        /// with the first gate as the starting gate
+        /// </summary>
+        /// <param name="gates">Dictionary of racers the index of the gate they are on</param>
+        /// <param name="racers">List of all dragon racers in the level</param>
+        private void initializeGates(Dictionary<Dragon, int> gates, List<Dragon> racers)
+        {
+            
+        }
 
         private void PopulateLevel() {
             //Create a bounding box around the level (for now, will add wraparound later)
@@ -261,7 +279,6 @@ namespace DracosD.Controllers
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
             AddObject(obj);
-
 
         }
 
@@ -318,6 +335,10 @@ namespace DracosD.Controllers
         {
             Body body1 = contact.FixtureA.Body;
             Body body2 = contact.FixtureB.Body;
+
+            /*TODO if the body is dragon and the other is the current gate hes on,
+             then increment the gate hes on and change the texture of the gate using gate model
+             to be the passed texture...maybe also add in later once all gates on the level have been passed then display a win screen*/
 
             /*if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
                 (body1.UserData == goalDoor && body2.UserData == dragon))
