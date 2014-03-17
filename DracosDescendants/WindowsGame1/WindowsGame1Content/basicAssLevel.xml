@@ -14,7 +14,7 @@
     <y>11</y>
   </planet>
   <gate>
-    <planet1>1</planet2>
-    <planet2>2</planet2>
+    <planet1>0</planet1>
+    <planet2>1</planet2>
   </gate>
 </level>

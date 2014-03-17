@@ -58,7 +58,7 @@ namespace DracosD.Controllers
             levelWidth = 0;
         }
 
-        public LevelController(string fileName, Dictionary<string,Texture2D> textures)
+        public LevelController(string fileName, Dictionary<string,Texture2D> textures) : this()
         {
             var xml = XDocument.Load(fileName);
 

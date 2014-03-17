@@ -75,9 +75,6 @@ namespace DracosD
         /// </summary>
         protected override void Initialize()
         {
-            gameLevelController = new LevelController("..\\..\\..\\..\\WindowsGame1Content\\basicAssLevel.xml", graphicsDictionary);
-            //create a new level using the level controller
-            currentWorld = new WorldController(new Vector2(0, 0), gameLevelController);
             // gameMenuView.Initialize();
             gameView.Initialize(this);
             base.Initialize();
@@ -105,10 +102,16 @@ namespace DracosD
             gateTexture = content.Load<Texture2D>("barrier");
             graphicsDictionary.Add("gate", gateTexture);
 
+            /*
             // Sound banks allow us to play a sound "on top of itself"
             audioEngine = new AudioEngine("Content\\sounds\\torpedo40.xgs");
             waveBank = new WaveBank(audioEngine, "Content\\sounds\\Wave Bank.xwb");
             soundBank = new SoundBank(audioEngine, "Content\\sounds\\Sound Bank.xsb");
+            */
+
+            gameLevelController = new LevelController("..\\..\\..\\..\\WindowsGame1Content\\basicAssLevel.xml", graphicsDictionary);
+            //create a new level using the level controller
+            currentWorld = new WorldController(new Vector2(0, 0), gameLevelController);
         }
 
         /// <summary>
