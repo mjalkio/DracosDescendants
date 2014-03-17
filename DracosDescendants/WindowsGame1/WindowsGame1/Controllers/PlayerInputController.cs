@@ -37,6 +37,15 @@ namespace DracosD.Controllers
         // Fields to manage ship movement
         private float horizontal;		// Horizontal movement
         private float vertical;         // Vertical movement
+        protected bool moreGravPressed;
+        protected bool lessGravPressed;
+        protected bool moreRestPressed;
+        protected bool lessRestPressed;
+        protected bool moreSpeedPressed;
+        protected bool lessSpeedPressed;
+        protected bool moreDampenPressed;
+        protected bool lessDampenPressed;
+
         #endregion
 
         #region Properties (READ-ONLY)
@@ -55,6 +64,71 @@ namespace DracosD.Controllers
         {
             get { return vertical; }
         }
+
+        /// <summary>
+        /// Whether the player pressed to lower effect of gravity.
+        /// </summary>
+        public bool gravUp
+        {
+            get { return moreGravPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to lower effect of gravity.
+        /// </summary>
+        public bool gravDown
+        {
+            get { return lessGravPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to raise collision restitution.
+        /// </summary>
+        public bool restUp
+        {
+            get { return moreRestPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to lower collision restitution.
+        /// </summary>
+        public bool restDown
+        {
+            get { return lessRestPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to move to raise max speed.
+        /// </summary>
+        public bool speedUp
+        {
+            get { return moreSpeedPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to move to lower max speed.
+        /// </summary>
+        public bool speedDown
+        {
+            get { return lessSpeedPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to raise speed dampening.
+        /// </summary>
+        public bool dampUp
+        {
+            get { return moreDampenPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to lower dampening.
+        /// </summary>
+        public bool dampDown
+        {
+            get { return lessDampenPressed; }
+        }
+
         #endregion
 
         #region Methods

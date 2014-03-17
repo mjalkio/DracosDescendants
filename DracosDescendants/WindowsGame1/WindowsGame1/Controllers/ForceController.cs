@@ -14,7 +14,7 @@ namespace DracosD.Controllers
 
         #region Constants
         
-        private float G = 7.0f;
+        //private float G = 7.0f;
         
         #endregion
 
@@ -22,14 +22,15 @@ namespace DracosD.Controllers
         // Reference to the rocket
         private Dragon dragon;
         private List<PlanetaryObject> planets;
+        private float G = 7.0f;
     #endregion
 
     #region Properties (READ-WRITE)
         /// <summary>
-        /// The currently active rocket
+        /// The currently active dragon
         /// </summary>
         /// <remarks>
-        /// The controller can only affect one rocket at a time.
+        /// The controller can only affect one dragon at a time.
         /// </remarks>
         public Dragon Dragon {
             get { return dragon;  }
@@ -40,6 +41,12 @@ namespace DracosD.Controllers
         {
             get { return planets; }
             set { planets = value; }
+        }
+
+        public float Gravity
+        {
+            get { return G; }
+            set { G = value;  }
         }
     #endregion
 
