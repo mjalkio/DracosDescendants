@@ -37,13 +37,15 @@ namespace DracosD
         // draws information defined by level (camera) and HUD based elements
         protected GameView gameView;
 
+        private Texture2D victory;
+
         // Used to play the sounds (Techically, VIEW CLASS)
         protected SoundBank soundBank;
         protected AudioEngine audioEngine;
         protected WaveBank waveBank;
 
         //stores the current level
-        protected Level currLevel;
+        protected LevelController currLevel;
         #endregion
 
         #region Initialization
@@ -83,6 +85,8 @@ namespace DracosD
             // gameMenuView.LoadContent(content);
             gameView.LoadContent(content);
 
+            victory = content.Load<Texture2D>("victory");
+
             // Sound banks allow us to play a sound "on top of itself"
             audioEngine = new AudioEngine("Content\\sounds\\torpedo40.xgs");
             waveBank = new WaveBank(audioEngine, "Content\\sounds\\Wave Bank.xwb");
@@ -121,19 +125,13 @@ namespace DracosD
             currentWorld.Draw(gameView);
             // gameMenuView.Draw();
 
-            /*/ Final message
-            if (currentWorld.Succeeded && !currentWorld.Failed)
+            // Final message
+            if (currentWorld.Succeeded)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 gameView.DrawOverlay(victory, Color.White, false); 
                 gameView.EndSpritePass();
             }
-            else if (currentWorld.Failed)
-            {
-                gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(failure, Color.White, false);
-                gameView.EndSpritePass();
-            }*/
             base.Draw(gameTime);
         }
         #endregion

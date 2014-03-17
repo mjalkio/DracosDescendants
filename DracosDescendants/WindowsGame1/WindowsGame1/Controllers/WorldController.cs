@@ -42,8 +42,8 @@ namespace DracosD.Controllers
         public static void LoadContent(ContentManager content)
         {
             // Earth tiles are unique in each world
-            dragonTexture = content.Load<Texture2D>("Rocket\\rocket");
-            regularPlanetTexture = content.Load<Texture2D>("Rocket\\venus-no-background");
+            dragonTexture = content.Load<Texture2D>("rocket");
+            regularPlanetTexture = content.Load<Texture2D>("venus-no-background");
         }
 
         /// <summary>
@@ -67,7 +67,7 @@ namespace DracosD.Controllers
 
         #region Fields
         // All the objects in the world
-        private Level level;
+        private LevelController level;
 
         private LinkedList<PhysicsObject> objects = new LinkedList<PhysicsObject>();
 
@@ -214,6 +214,7 @@ namespace DracosD.Controllers
         #endregion
 
         #region Initialization
+        
         /// <summary>
         /// Create a new game world.
         /// </summary>
@@ -223,14 +224,17 @@ namespace DracosD.Controllers
         /// </remarks>
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
-        public WorldController(Vector2 gravity, Level thisLevel) :
-            this(new Vector4(0,0,WIDTH,HEIGHT), new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE)) {
+        public WorldController(Vector2 gravity, LevelController thisLevel) :
+            this(thisLevel.Dimensions,new Vector2(0,0), new Vector2(DEFAULT_SCALE,DEFAULT_SCALE)){
                 playerInput = new PlayerInputController();
                 currentGates = new Dictionary<Dragon, int>();
                 level = thisLevel;
                 PopulateLevel();
 
+                succeeded = false;
+
                 //level is populated so initialize and populate the current gates for each racer
+                initializeGates(currentGates, level.Racers);
 
                 // Attach the force controller to the rocket.
                 forceController = new ForceController(dragon, planets);
@@ -266,7 +270,9 @@ namespace DracosD.Controllers
         /// <param name="racers">List of all dragon racers in the level</param>
         private void initializeGates(Dictionary<Dragon, int> gates, List<Dragon> racers)
         {
-            
+            foreach(Dragon drag in racers){
+                gates.Add(drag, 0);
+            }
         }
 
         private void PopulateLevel() {
@@ -339,7 +345,25 @@ namespace DracosD.Controllers
             /*TODO if the body is dragon and the other is the current gate hes on,
              then increment the gate hes on and change the texture of the gate using gate model
              to be the passed texture...maybe also add in later once all gates on the level have been passed then display a win screen*/
+            foreach (Dragon drag in level.Racers)
+            {
+                Gate currGate = level.Gates[currentGates[drag]];
+                //if the racer passes through the current gate hes on...
+                if ((body1.UserData == dragon && body2.UserData == currGate) ||
+                    (body1.UserData == currGate && body2.UserData == dragon))
+                {
+                    //If you pass the last gate, you win
+                    if (currentGates[drag] == level.Gates.Count - 1)
+                    {
+                        Succeeded = true;
+                    }
+                    else
+                    {
+                        currentGates[drag]++;
+                    }
 
+                }
+            }
             /*if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
                 (body1.UserData == goalDoor && body2.UserData == dragon))
             {
@@ -366,14 +390,18 @@ namespace DracosD.Controllers
             DrawState state = DrawState.Inactive;
             foreach (PhysicsObject obj in Objects)
             {
-                // Need to change the current drawing pass.
-                if (state != obj.DrawState)
+                //draw only the current gate and all other objects that are not gates
+                if (!(obj is Gate) || (obj is Gate && level.Gates[currentGates[dragon]].Equals((Gate)obj)))
                 {
-                    EndPass(view, state);
-                    state = obj.DrawState;
-                    BeginPass(view, state);
+                    // Need to change the current drawing pass.
+                    if (state != obj.DrawState)
+                    {
+                        EndPass(view, state);
+                        state = obj.DrawState;
+                        BeginPass(view, state);
+                    }
+                    obj.Draw(view);
                 }
-                obj.Draw(view);
             }
             EndPass(view, state);
         }

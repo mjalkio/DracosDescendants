@@ -97,6 +97,10 @@ namespace DracosD.Models
         /// </summary>
         /// <param name="dt">Timing values from parent loop</param>
         public override void Update(float dt) {
+            if (base.LinearVelocity.Length() > 3.0f)
+            {
+                base.LinearVelocity = base.LinearVelocity * 0.95f;
+            }
             base.Update(dt);
         }
 
