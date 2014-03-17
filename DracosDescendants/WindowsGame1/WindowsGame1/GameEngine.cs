@@ -66,7 +66,8 @@ namespace DracosD
         protected override void Initialize()
         {
             gameLevelController = new LevelController();
-            currLevel = gameLevelController.parse(parse the XML file here);
+            //create a new level using the level controller
+            //currLevel = gameLevelController.parse(parse the XML file here);
             currentWorld = new WorldController(new Vector2(0, 0), currLevel);
             // gameMenuView.Initialize();
             gameView.Initialize(this);
