@@ -16,8 +16,12 @@ namespace DracosD.Models
 {
     class RegularPlanet : PlanetaryObject
     {
-        public RegularPlanet(Texture2D texture, Vector2 pos, float radius, float density) :
-            base(texture, pos, radius, density)
+        private const float DEFAULT_DENSITY = 8.0f;
+        private const float DEFAULT_FRICTION = 0.6f;
+        private const float DEFAULT_RESTITUTION = 0.5f;
+
+        public RegularPlanet(Texture2D texture, Vector2 pos, float radius) :
+            base(texture, pos, radius, DEFAULT_DENSITY, DEFAULT_FRICTION, DEFAULT_RESTITUTION)
         {
         }
     }

@@ -19,19 +19,14 @@ namespace DracosD.Models
 {
     abstract class PlanetaryObject : CircleObject
     {
-        #region Constants
-        private const float DEFAULT_FRICTION = 0.1f;
-        private const float DEFAULT_RESTITUTION = 0.4f;
-        #endregion
-
         #region Initialization
-        public PlanetaryObject(Texture2D texture, Vector2 pos, float radius, float density) :
+        public PlanetaryObject(Texture2D texture, Vector2 pos, float radius, float density, float friction, float restitution) :
             base(texture, pos, radius)
         {
             BodyType = BodyType.Static;
             Density = density;
-            Friction = DEFAULT_FRICTION;
-            Restitution = DEFAULT_RESTITUTION;
+            Friction = friction;
+            Restitution = restitution;
         }
         #endregion
 
