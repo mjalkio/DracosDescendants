@@ -47,7 +47,7 @@ namespace DracosD.Models
             this(texture, new Vector2[]
                     {
                         new Vector2(p1.Position.X-0.5f,p1.Position.Y), new Vector2(p1.Position.X+0.5f,p1.Position.Y),
-                        new Vector2(p2.Position.X-0.5f,p2.Position.Y), new Vector2(p2.Position.X+0.5f,p2.Position.Y)
+                        new Vector2(p2.Position.X,p2.Position.Y)
                     }, scale, p1, p2) { }
 
         /// <summary>

@@ -99,7 +99,7 @@ namespace DracosD
             graphicsDictionary.Add("regular", regularPlanetTexture);
             graphicsDictionary.Add("lava", regularPlanetTexture);
             graphicsDictionary.Add("gaseous", regularPlanetTexture);
-            gateTexture = content.Load<Texture2D>("barrier");
+            gateTexture = content.Load<Texture2D>("earthtile");
             graphicsDictionary.Add("gate", gateTexture);
 
             /*
@@ -111,7 +111,8 @@ namespace DracosD
 
             gameLevelController = new LevelController("..\\..\\..\\..\\WindowsGame1Content\\basicAssLevel.xml", graphicsDictionary);
             //create a new level using the level controller
-            currentWorld = new WorldController(new Vector2(0, 0), gameLevelController);
+            currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);
+            //currentWorld.LoadContent(content);
         }
 
         /// <summary>

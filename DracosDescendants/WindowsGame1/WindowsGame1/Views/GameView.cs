@@ -351,10 +351,10 @@ namespace DracosD.Views
         /// </param>
         public void LoadContent(ContentManager content) {
             // Load sprite font
-            font = content.Load<SpriteFont>("Shared\\PhysicsFont");
+            //font = content.Load<SpriteFont>("Shared\\PhysicsFont");
             
             //load background
-            background = content.Load<Texture2D>("Shared\\PrimaryBackground");
+            //background = content.Load<Texture2D>("Shared\\PrimaryBackground");
         }
 
         /// <summary>

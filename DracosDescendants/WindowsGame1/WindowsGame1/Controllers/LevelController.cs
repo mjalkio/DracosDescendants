@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Xml.Linq;
 using System.Linq;
 using System;
+using System.Diagnostics;
 #endregion
 
 namespace DracosD.Controllers
@@ -106,6 +107,7 @@ namespace DracosD.Controllers
 
             foreach (var gate in gates)
             {
+                //Debug.Print(planetList[Convert.ToInt32(gate.Planet1)].Position.X + "," + planetList[Convert.ToInt32(gate.Planet1)].Position.Y);
                 Gate newGate = new Gate(textures["gate"], new Vector2(50.0f,50.0f), planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
                 gateList.Add(newGate);
             }

@@ -38,12 +38,13 @@ namespace DracosD.Controllers
         private static Texture2D regularPlanetTexture;
         private static Texture2D gateTexture;
         private static Dictionary<string, Texture2D> graphicsDictionary; */
+        private Texture2D regularPlanetTexture;
 
         /// <summary>
         /// Load images for this class
         /// </summary>
         /// <param name="content">Content manager to access pipeline</param>
-        public static void LoadContent(ContentManager content)
+        public  void LoadContent(ContentManager content)
         {
             // Earth tiles are unique in each world
             /*dragonTexture = content.Load<Texture2D>("rocket");
@@ -54,6 +55,7 @@ namespace DracosD.Controllers
             graphicsDictionary.Add("gaseous", regularPlanetTexture);
             gateTexture = content.Load<Texture2D>("barrier");
             graphicsDictionary.Add("gate", gateTexture);*/
+            regularPlanetTexture = content.Load<Texture2D>("earthtile");
         }
 
         /// <summary>
@@ -234,11 +236,12 @@ namespace DracosD.Controllers
         /// </remarks>
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
-        public WorldController(Vector2 gravity, LevelController thisLevel) :
+        public WorldController(Vector2 gravity, LevelController thisLevel,ContentManager content) :
             this(thisLevel.Dimensions,new Vector2(0,0), new Vector2(DEFAULT_SCALE,DEFAULT_SCALE)){
                 playerInput = new PlayerInputController();
                 currentGates = new Dictionary<Dragon, int>();
                 level = thisLevel;
+                LoadContent(content);
                 PopulateLevel();
 
                 succeeded = false;
@@ -290,7 +293,7 @@ namespace DracosD.Controllers
             PhysicsObject obj;
 
             Vector2[] points = { new Vector2(0, 0), new Vector2(50, 0), new Vector2(50, .01f), new Vector2(0, .01f) };
-            obj = new PolygonObject(null, points, Scale);
+            obj = new PolygonObject(regularPlanetTexture, points, Scale);
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
