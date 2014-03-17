@@ -62,8 +62,8 @@ namespace DracosD.Controllers
         {
             var xml = XDocument.Load(fileName);
 
-            var height = xml.Root.Element("levelheight");
-            var width = xml.Root.Element("levelwidth");
+            var height = xml.Root.Element("levelheight").Value ;
+            var width = xml.Root.Element("levelwidth").Value;
             levelHeight = Convert.ToInt32(height);
             levelWidth = Convert.ToInt32(width);
             background = textures["background"];

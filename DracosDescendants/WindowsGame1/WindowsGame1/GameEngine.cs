@@ -15,6 +15,9 @@ using Microsoft.Xna.Framework.Net;
 using DracosD.Controllers;
 using DracosD.Views;
 using DracosD.Models;
+using System.Xml;
+using System.Xml.Linq;
+using System.Diagnostics;
 #endregion
 
 namespace DracosD
@@ -38,6 +41,11 @@ namespace DracosD
         protected GameView gameView;
 
         private Texture2D victory;
+        private static Texture2D dragonTexture;
+        private static Texture2D regularPlanetTexture;
+        private static Texture2D gateTexture;
+        private static Texture2D backgroundTexture;
+        private static Dictionary<string, Texture2D> graphicsDictionary;
 
         // Used to play the sounds (Techically, VIEW CLASS)
         protected SoundBank soundBank;
@@ -67,10 +75,9 @@ namespace DracosD
         /// </summary>
         protected override void Initialize()
         {
-            gameLevelController = new LevelController();
+            gameLevelController = new LevelController("..\\..\\..\\..\\WindowsGame1Content\\basicAssLevel.xml", graphicsDictionary);
             //create a new level using the level controller
-            //currLevel = gameLevelController.parse(parse the XML file here);
-            currentWorld = new WorldController(new Vector2(0, 0), currLevel);
+            currentWorld = new WorldController(new Vector2(0, 0), gameLevelController);
             // gameMenuView.Initialize();
             gameView.Initialize(this);
             base.Initialize();
@@ -86,6 +93,17 @@ namespace DracosD
             gameView.LoadContent(content);
 
             victory = content.Load<Texture2D>("victory");
+            dragonTexture = content.Load<Texture2D>("rocket");
+            graphicsDictionary = new Dictionary<string, Texture2D>();
+            graphicsDictionary.Add("player", dragonTexture);
+            backgroundTexture = content.Load<Texture2D>("PrimaryBackground");
+            graphicsDictionary.Add("background", backgroundTexture);
+            regularPlanetTexture = content.Load<Texture2D>("venus-no-background");
+            graphicsDictionary.Add("regular", regularPlanetTexture);
+            graphicsDictionary.Add("lava", regularPlanetTexture);
+            graphicsDictionary.Add("gaseous", regularPlanetTexture);
+            gateTexture = content.Load<Texture2D>("barrier");
+            graphicsDictionary.Add("gate", gateTexture);
 
             // Sound banks allow us to play a sound "on top of itself"
             audioEngine = new AudioEngine("Content\\sounds\\torpedo40.xgs");

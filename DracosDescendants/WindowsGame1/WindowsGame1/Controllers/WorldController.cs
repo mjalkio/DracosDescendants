@@ -34,10 +34,10 @@ namespace DracosD.Controllers
 
         #region Graphics Resources
         // Textures for all the game objects
-        private static Texture2D dragonTexture;
+        /*private static Texture2D dragonTexture;
         private static Texture2D regularPlanetTexture;
         private static Texture2D gateTexture;
-        private static Dictionary<string, Texture2D> graphicsDictionary;
+        private static Dictionary<string, Texture2D> graphicsDictionary; */
 
         /// <summary>
         /// Load images for this class
@@ -46,14 +46,14 @@ namespace DracosD.Controllers
         public static void LoadContent(ContentManager content)
         {
             // Earth tiles are unique in each world
-            dragonTexture = content.Load<Texture2D>("rocket");
+            /*dragonTexture = content.Load<Texture2D>("rocket");
             graphicsDictionary.Add("player", dragonTexture);
             regularPlanetTexture = content.Load<Texture2D>("venus-no-background");
             graphicsDictionary.Add("regular", regularPlanetTexture);
             graphicsDictionary.Add("lava", regularPlanetTexture);
             graphicsDictionary.Add("gaseous", regularPlanetTexture);
             gateTexture = content.Load<Texture2D>("barrier");
-            graphicsDictionary.Add("gate", gateTexture);
+            graphicsDictionary.Add("gate", gateTexture);*/
         }
 
         /// <summary>
