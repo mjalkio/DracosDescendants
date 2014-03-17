@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using DracosD;
 
 namespace WindowsGame1
 {
@@ -10,7 +12,7 @@ namespace WindowsGame1
         /// </summary>
         static void Main(string[] args)
         {
-            using (Game1 game = new Game1())
+            using (GameEngine game = new GameEngine())
             {
                 game.Run();
             }
