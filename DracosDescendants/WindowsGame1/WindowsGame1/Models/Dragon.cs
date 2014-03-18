@@ -28,11 +28,23 @@ namespace DracosD.Models
 
         // Thrust amount to convert player input into thrust
         private const float DEFAULT_THRUST = 3000.0f;
+        private const int NUM_FRAMES = 9;
         #endregion
 
         #region Fields
         private Vector2 force;
         private bool isOnFire;
+
+        // texture for dragon
+        private Texture2D flapEffect;
+
+        // To animate the rocket flames
+        private int animationFrame = 0;
+        private bool frameDirection = true;
+
+        //delayed time for animation frame
+        private int delay = 1;
+        private int elapsed;
         #endregion
 
         #region Properties (READ-WRITE)
@@ -66,10 +78,11 @@ namespace DracosD.Models
         #endregion
 
         #region Initialization
-        public Dragon(Texture2D texture, Vector2 pos) : 
-            base(texture, pos, new Vector2((float)texture.Width, (float)texture.Height)*.1f) 
+        public Dragon(Texture2D effect, Vector2 pos) :
+            base(effect, pos, new Vector2((float)effect.Width / (NUM_FRAMES * 2), (float)effect.Height) * .1f) 
         {
             BodyType = BodyType.Dynamic;
+            flapEffect = effect;
             Density  = DEFAULT_DENSITY;
             Friction = DEFAULT_FRICTION;
             Restitution = DEFAULT_RESTITUTION;
@@ -103,7 +116,50 @@ namespace DracosD.Models
             {
                 base.LinearVelocity = base.LinearVelocity * 0.95f;
             }
+
+
+            // Picks which frame of the dragon animation effect
+            if (LinearVelocity.Y < -1)
+            {
+                // Turn on the flames and go back and forth
+                if (animationFrame == 0)
+                {
+                    frameDirection = true;
+                }
+                else if (animationFrame == (NUM_FRAMES - 1))
+                {
+                    frameDirection = false;
+                }
+
+                // Increment 
+                if (frameDirection)
+                {
+                    elapsed++;
+                    if (elapsed > delay)
+                    {
+                        animationFrame++;
+                        elapsed = 0;
+                    }
+                }
+                else
+                {
+                    elapsed++;
+                    if (elapsed > delay)
+                    {
+                        animationFrame = 0;
+                        elapsed = 0;
+                    }
+                }
+            }
+            else
+            {
+                // Turn off the flames
+                animationFrame = 0;
+            }
+
             base.Update(dt);
+
+
         }
 
         /// <summary>
@@ -112,7 +168,7 @@ namespace DracosD.Models
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
-            view.DrawSprite(texture, Color.White, Position, scale, Rotation);
+            view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES);
         }
         #endregion
     }
