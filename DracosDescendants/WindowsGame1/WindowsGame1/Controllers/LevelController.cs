@@ -98,8 +98,18 @@ namespace DracosD.Controllers
             levelHeight = Convert.ToInt32(height);
             levelWidth = Convert.ToInt32(width);
 
-            Dragon playerDragon = new Dragon(dragonTexture, new Vector2(20.0f, levelHeight / 2.0f));
-            racerList.Add(playerDragon);
+            var dragons = from d in xml.Root.Descendants("dragon")
+                          select new
+                          {
+                              X = d.Element("x").Value,
+                              Y = d.Element("y").Value
+                          };
+
+            foreach (var dragon in dragons)
+            {
+                Dragon playerDragon = new Dragon(dragonTexture, new Vector2(Convert.ToInt32(dragon.X), Convert.ToInt32(dragon.Y)));
+                racerList.Add(playerDragon);
+            }
             
             var planets = from p in xml.Root.Descendants("planet") select new {
                 Type=p.Element("type").Value,
