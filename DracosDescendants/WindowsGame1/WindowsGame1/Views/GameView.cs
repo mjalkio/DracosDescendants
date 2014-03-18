@@ -356,6 +356,13 @@ namespace DracosD.Views
             state = DrawState.Inactive;
         }
 
+        public void LoadContent(ContentManager content)
+        {
+            //load background
+            background = content.Load<Texture2D>("stars");
+        }
+
+
         /// <summary>
         /// Eliminate any resources that prevent garbage collection.
         /// </summary>

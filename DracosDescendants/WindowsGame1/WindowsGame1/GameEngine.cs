@@ -72,6 +72,7 @@ namespace DracosD
         /// </summary>
         protected override void LoadContent()
         {
+            gameView.LoadContent(content);
             gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
             gameView.LevelWidth = gameLevelController.Width;
             gameView.LevelHeight = gameLevelController.Height;
@@ -109,6 +110,7 @@ namespace DracosD
         /// </summary>
         protected override void Draw(GameTime gameTime)
         {
+            gameView.Reset();
             // World specific drawing
             currentWorld.Draw(gameView);
             // gameMenuView.Draw();
