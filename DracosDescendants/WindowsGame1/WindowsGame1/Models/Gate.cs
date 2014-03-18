@@ -16,11 +16,12 @@ using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using DracosD.Objects;
 using DracosD.Views;
+using System;
 #endregion
 
 namespace DracosD.Models
 {
-    class Gate : PolygonObject
+    class Gate : SensorObject
     {
         #region Fields
         private Texture2D gateTexture;
@@ -43,12 +44,8 @@ namespace DracosD.Models
         #endregion
 
         #region Initialization
-        public Gate(Texture2D texture, Vector2 scale, PlanetaryObject p1, PlanetaryObject p2) :
-            this(texture, new Vector2[]
-                    {
-                        new Vector2(p1.Position.X-0.5f,p1.Position.Y), new Vector2(p1.Position.X+0.5f,p1.Position.Y),
-                        new Vector2(p2.Position.X,p2.Position.Y)
-                    }, scale, p1, p2) { }
+        public Gate(Texture2D texture, PlanetaryObject p1, PlanetaryObject p2) :
+            this(texture, ((p1.Position - p2.Position) / 2.0f) + p2.Position, new Vector2(0.5f, (p1.Position - p2.Position).Length()), p1, p2, (p1.Position - p2.Position)) { }
 
         /// <summary>
         /// Creates the Gate object between two planets
@@ -58,15 +55,12 @@ namespace DracosD.Models
         /// <param name="scale">The scale of the world (use the default)</param>
         /// <param name="p1">The first planet anchor of this gate</param>
         /// <param name="p2">The second planet anchor of this gate</param>
-        public Gate(Texture2D texture, Vector2[] points, Vector2 scale, PlanetaryObject p1, PlanetaryObject p2) :
-            base(texture, points, scale)
+        public Gate(Texture2D texture, Vector2 pos, Vector2 dimension, PlanetaryObject p1, PlanetaryObject p2, Vector2 angleVector) :
+            base(texture, pos, dimension)
         {
             planet1 = p1;
             planet2 = p2;
-            BodyType = BodyType.Static;
-            Density = 0.0f;
-            Friction = 0.0f;
-            Restitution = 0.0f;
+            Rotation = (float)Math.Atan2(angleVector.X, -angleVector.Y);
         }
 
         /// <summary>

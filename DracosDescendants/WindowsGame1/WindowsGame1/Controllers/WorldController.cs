@@ -12,11 +12,13 @@ using FarseerPhysics.Controllers;
 using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
+using FarseerPhysics.Factories;
 
 namespace DracosD.Controllers
 {
-    class WorldController {
-        
+    class WorldController
+    {
+
         #region Constants
         public const float DEFAULT_SCALE = 50.0f;
         // Dimensions of the game world
@@ -39,7 +41,7 @@ namespace DracosD.Controllers
         /// Load images for this class
         /// </summary>
         /// <param name="content">Content manager to access pipeline</param>
-        public  void LoadContent(ContentManager content)
+        public void LoadContent(ContentManager content)
         {
             regularPlanetTexture = content.Load<Texture2D>("earthtile");
         }
@@ -56,8 +58,7 @@ namespace DracosD.Controllers
 
         #region Fields (Game Geography)
         // Locations of all the boxes
-        private static Vector2[] planetLocations = new Vector2[]
-        {  };
+        private static Vector2[] planetLocations = new Vector2[] { };
 
         // Other game objects
         private static Vector2 rocketPos = new Vector2(2, 10);
@@ -212,7 +213,7 @@ namespace DracosD.Controllers
         #endregion
 
         #region Initialization
-        
+
         /// <summary>
         /// Create a new game world.
         /// </summary>
@@ -222,24 +223,25 @@ namespace DracosD.Controllers
         /// </remarks>
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
-        public WorldController(Vector2 gravity, LevelController thisLevel,ContentManager content) :
-            this(thisLevel.Dimensions,new Vector2(0,0), new Vector2(DEFAULT_SCALE,DEFAULT_SCALE)){
-                playerInput = new PlayerInputController();
-                currentGates = new Dictionary<Dragon, int>();
-                level = thisLevel;
-                LoadContent(content);
-                PopulateLevel();
+        public WorldController(Vector2 gravity, LevelController thisLevel, ContentManager content) :
+            this(thisLevel.Dimensions, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE))
+        {
+            playerInput = new PlayerInputController();
+            currentGates = new Dictionary<Dragon, int>();
+            level = thisLevel;
+            LoadContent(content);
+            PopulateLevel();
 
-                succeeded = false;
+            succeeded = false;
 
-                //level is populated so initialize and populate the current gates for each racer
-                initializeGates(currentGates, level.Racers);
+            //level is populated so initialize and populate the current gates for each racer
+            initializeGates(currentGates, level.Racers);
 
-                // Attach the force controller to the rocket.
-                forceController = new ForceController(dragon, planets);
-                world.AddController(forceController); 
+            // Attach the force controller to the rocket.
+            forceController = new ForceController(dragon, planets);
+            world.AddController(forceController);
 
-                world.ContactManager.BeginContact += ContactAdded;
+            world.ContactManager.BeginContact += ContactAdded;
         }
 
 
@@ -260,7 +262,7 @@ namespace DracosD.Controllers
             this.scale = scale;
             succeeded = failed = false;
         }
-        
+
         /// <summary>
         /// This method takes in a list of dragon racers, and for each racer, it adds it to the map
         /// with the first gate as the starting gate
@@ -269,34 +271,38 @@ namespace DracosD.Controllers
         /// <param name="racers">List of all dragon racers in the level</param>
         private void initializeGates(Dictionary<Dragon, int> gates, List<Dragon> racers)
         {
-            foreach(Dragon drag in racers){
+            foreach (Dragon drag in racers)
+            {
                 gates.Add(drag, 0);
             }
         }
 
-        private void PopulateLevel() {
+        private void PopulateLevel()
+        {
             //Create a bounding box around the level (for now, will add wraparound later)
-            PhysicsObject obj;
+            /*PhysicsObject obj;
 
             Vector2[] points = { new Vector2(0, 0), new Vector2(50, 0), new Vector2(50, .01f), new Vector2(0, .01f) };
             obj = new PolygonObject(regularPlanetTexture, points, Scale);
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
-            //AddObject(obj);
+            //AddObject(obj);*/
 
             dragon = level.Racers[0];
             AddObject(dragon);
-
-            foreach(PlanetaryObject planet in level.Planets){
-                planets.Add(planet);
-                AddObject(planet);
-            }
 
             foreach (Gate gate in level.Gates)
             {
                 AddObject(gate);
             }
+
+            foreach (PlanetaryObject planet in level.Planets)
+            {
+                planets.Add(planet);
+                AddObject(planet);
+            }
+
         }
 
         /// <summary>
@@ -335,7 +341,7 @@ namespace DracosD.Controllers
             bool vert = (bounds.Y <= obj.Y && obj.Y <= bounds.W);
             return horiz && vert;
         }
-        #endregion    
+        #endregion
 
         #region Game Loop
 
@@ -358,21 +364,25 @@ namespace DracosD.Controllers
              to be the passed texture...maybe also add in later once all gates on the level have been passed then display a win screen*/
             foreach (Dragon drag in level.Racers)
             {
-                Gate currGate = level.Gates[currentGates[drag]];
-                //if the racer passes through the current gate hes on...
-                if ((body1.UserData == dragon && body2.UserData == currGate) ||
-                    (body1.UserData == currGate && body2.UserData == dragon))
+                if (currentGates[dragon] < level.Gates.Count)
                 {
-                    //If you pass the last gate, you win
-                    if (currentGates[drag] == level.Gates.Count - 1)
+                    Gate currGate = level.Gates[currentGates[drag]];
+                    //if the racer passes through the current gate hes on...
+                    if ((body1.UserData == dragon && body2.UserData == currGate) ||
+                        (body1.UserData == currGate && body2.UserData == dragon))
                     {
-                        Succeeded = true;
-                    }
-                    else
-                    {
-                        currentGates[drag]++;
-                    }
+                        //If you pass the last gate, you win
+                        if (currentGates[drag] == level.Gates.Count - 1)
+                        {
+                            Succeeded = true;
+                            currentGates[drag]++;
+                        }
+                        else
+                        {
+                            currentGates[drag]++;
+                        }
 
+                    }
                 }
             }
             /*if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
@@ -402,7 +412,7 @@ namespace DracosD.Controllers
             foreach (PhysicsObject obj in Objects)
             {
                 //draw only the current gate and all other objects that are not gates
-                if (!(obj is Gate) || (obj is Gate && level.Gates[currentGates[dragon]].Equals((Gate)obj)))
+                if (!(obj is Gate) || (obj is Gate && currentGates[dragon] < level.Gates.Count && level.Gates[currentGates[dragon]].Equals((Gate)obj)))
                 {
                     // Need to change the current drawing pass.
                     if (state != obj.DrawState)
@@ -478,7 +488,7 @@ namespace DracosD.Controllers
             float FY = playerInput.Vertical * dragon.Thrust;
             float FX = playerInput.Horizontal * dragon.Thrust;
             dragon.Force = new Vector2(FX, FY);
-            Debug.Print("" + dragon.Position);
+            //Debug.Print("" + dragon.Position);
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)
             {
