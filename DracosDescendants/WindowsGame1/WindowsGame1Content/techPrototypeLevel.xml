@@ -1,21 +1,136 @@
 <level>
   <levelwidth>50</levelwidth>
   <levelheight>20</levelheight>
+
+  <dragon>
+    <x>3</x>
+    <y>12</y>
+  </dragon>
+
   <planet>
     <type>regular</type>
     <radius>2</radius>
-    <x>10</x>
-    <y>8</y>
+    <x>12</x>
+    <y>6</y>
   </planet>
   <planet>
     <type>regular</type>
     <radius>3</radius>
-    <x>20</x>
-    <y>20</y>
+    <x>12</x>
+    <y>21</y>
   </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>18</x>
+    <y>14</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>22</x>
+    <y>17</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>27</x>
+    <y>8</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>27</x>
+    <y>23</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>30</x>
+    <y>15</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>4</radius>
+    <x>32</x>
+    <y>4</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>39</x>
+    <y>5</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>39</x>
+    <y>13</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>45</x>
+    <y>18</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>48</x>
+    <y>5</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>4</radius>
+    <x>49</x>
+    <y>21</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>51</x>
+    <y>17</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>53</x>
+    <y>23</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>57</x>
+    <y>3</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>57</x>
+    <y>15</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>58</x>
+    <y>10</y>
+  </planet>
+  
 
   <gate>
     <planet1>0</planet1>
     <planet2>1</planet2>
+  </gate>
+  <gate>
+    <planet1>5</planet1>
+    <planet2>6</planet2>
+  </gate>
+  <gate>
+    <planet1>8</planet1>
+    <planet2>9</planet2>
+  </gate>
+  <gate>
+    <planet1>16</planet1>
+    <planet2>17</planet2>
   </gate>
 </level>
