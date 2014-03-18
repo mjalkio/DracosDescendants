@@ -27,7 +27,6 @@ namespace DracosD.Models
         private const float DEFAULT_RESTITUTION = 0.4f;
 
         // Thrust amount to convert player input into thrust
-        private const float DEFAULT_THRUST = 3000.0f;
         private const int NUM_FRAMES = 9;
         #endregion
 
@@ -45,6 +44,9 @@ namespace DracosD.Models
         //delayed time for animation frame
         private int delay = 1;
         private int elapsed;
+        private float thrust = 2000.0f;
+        private float dampeningFactor = 0.95f;
+        private float dampeningThreshold = 20.0f;
         #endregion
 
         #region Properties (READ-WRITE)
@@ -65,16 +67,34 @@ namespace DracosD.Models
             get { return isOnFire; }
             set { isOnFire = value; }
         }
+        /// <summary>
+        /// The amount of thrust this rocket has.  Multiply this by input to give force.
+        /// </summary>
+        public float Thrust
+        {
+            get { return thrust; }
+            set { thrust = value; }
+        }
+        /// <summary>
+        /// The dampening factoron the dragon's top speed.  Multiply this by input to give force.
+        /// </summary>
+        public float Dampen
+        {
+            get { return dampeningFactor; }
+            set { dampeningFactor = value; }
+        }
+
+        public float DampenThreshold
+        {
+            get { return dampeningThreshold; }
+            set { dampeningThreshold = value; }
+        }
         #endregion
 
         #region Properties (READ-ONLY)
         /// <summary>
         /// The amount of thrust this rocket has.  Multiply this by input to give force.
         /// </summary>
-        public float Thrust
-        {
-            get { return DEFAULT_THRUST; }
-        }
         #endregion
 
         #region Initialization
@@ -112,9 +132,9 @@ namespace DracosD.Models
         /// </summary>
         /// <param name="dt">Timing values from parent loop</param>
         public override void Update(float dt) {
-            if (base.LinearVelocity.Length() > 3.0f)
+            if (base.LinearVelocity.Length() > dampeningThreshold)
             {
-                base.LinearVelocity = base.LinearVelocity * 0.95f;
+                base.LinearVelocity = base.LinearVelocity * dampeningFactor;
             }
 
 

@@ -45,6 +45,8 @@ namespace DracosD.Controllers
         protected bool lessSpeedPressed;
         protected bool moreDampenPressed;
         protected bool lessDampenPressed;
+        protected bool moreDampenThresholdPressed;
+        protected bool lessDampenThresholdPressed;
 
         #endregion
 
@@ -129,6 +131,22 @@ namespace DracosD.Controllers
             get { return lessDampenPressed; }
         }
 
+        /// <summary>
+        /// Whether the player pressed to raise speed dampening.
+        /// </summary>
+        public bool dampThreshUp
+        {
+            get { return moreDampenThresholdPressed; }
+        }
+
+        /// <summary>
+        /// Whether the player pressed to lower dampening.
+        /// </summary>
+        public bool dampThreshDown
+        {
+            get { return lessDampenThresholdPressed; }
+        }
+
         #endregion
 
         #region Methods
@@ -191,6 +209,67 @@ namespace DracosD.Controllers
             if (keyboard.IsKeyDown(Keys.Down))
             {
                 vertical += 1.0f;
+            }
+
+
+            /* Q/A control restitution
+             * W/S control gravity
+             * E/D control speed
+             * R/F control strength of dampening factor
+             * T/G control the threshold when dampening takes effect */
+            moreGravPressed = false;
+            lessGravPressed = false;
+            if (keyboard.IsKeyDown(Keys.W))
+            {
+                moreGravPressed=true;
+            }
+            if (keyboard.IsKeyDown(Keys.S))
+            {
+                lessGravPressed=true;
+            }
+
+            moreRestPressed = false;
+            lessRestPressed = false;
+            if (keyboard.IsKeyDown(Keys.Q))
+            {
+                moreRestPressed = true;
+            }
+            if (keyboard.IsKeyDown(Keys.A))
+            {
+                lessRestPressed = true;
+            }
+
+            moreSpeedPressed = false;
+            lessSpeedPressed = false;
+            if (keyboard.IsKeyDown(Keys.E))
+            {
+                moreSpeedPressed = true;
+            }
+            if (keyboard.IsKeyDown(Keys.D))
+            {
+                lessSpeedPressed = true;
+            }
+
+            moreDampenPressed = false;
+            lessDampenPressed = false;
+            if (keyboard.IsKeyDown(Keys.R))
+            {
+                moreDampenPressed = true;
+            }
+            if (keyboard.IsKeyDown(Keys.F))
+            {
+                lessDampenPressed = true;
+            }
+
+            moreDampenThresholdPressed = false;
+            lessDampenThresholdPressed = false;
+            if (keyboard.IsKeyDown(Keys.T))
+            {
+                moreDampenThresholdPressed = true;
+            }
+            if (keyboard.IsKeyDown(Keys.G))
+            {
+                lessDampenThresholdPressed = true;
             }
         }
         #endregion

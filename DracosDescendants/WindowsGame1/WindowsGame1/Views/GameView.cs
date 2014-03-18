@@ -356,8 +356,21 @@ namespace DracosD.Views
             state = DrawState.Inactive;
         }
 
+<<<<<<< Updated upstream
         public void LoadContent(ContentManager content)
         {
+=======
+        /// <summary>
+        /// Load all default graphics resources for the view
+        /// </summary>
+        /// <param name='content'>
+        /// Reference to global content manager.
+        /// </param>
+        public void LoadContent(ContentManager content) {
+            // Load sprite font
+            font = content.Load<SpriteFont>("PhysicsFont");
+            
+>>>>>>> Stashed changes
             //load background
             background = content.Load<Texture2D>("stars");
         }
@@ -440,6 +453,33 @@ namespace DracosD.Views
             // Deferred sorting guarantees Sprites are drawn in order given.
             spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, transform);
         }
+
+        /// <summary>
+        /// Start a new pass to draw text sprites specifically
+        /// </summary>
+        /// <remarks>
+        /// Once a pass has begin, you cannot change attributes or draw polygons
+        /// until it has ended.
+        /// </remarks>
+        /// <param name="blend">Blending mode for combining sprites</param>
+        public void BeginTextSpritePass(BlendState blend, Vector2 position)
+        {
+            // Check that state invariant is satisfied.
+            Debug.Assert(state == DrawState.Inactive, "Drawing state is invalid (expected Inactive)");
+            state = DrawState.SpritePass;
+
+            //Define the Camera
+            camera = new Camera(graphics.GraphicsDevice.Viewport, 100, 100, 20.0f);
+
+            camera.Pos = position;
+            //Console.WriteLine("here");
+            // Set up the drawing view to use the appropriate blending.
+            // Deferred sorting guarantees Sprites are drawn in order given.
+            spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null);
+
+        }
+
+
         /// <summary>
         /// Draw a sprite on this drawing view.
         /// </summary>

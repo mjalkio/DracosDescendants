@@ -408,6 +408,7 @@ namespace DracosD.Controllers
         /// <param name="view">Drawing context</param>
         public virtual void Draw(GameView view)
         {
+            //view.Scale = scale;
             DrawState state = DrawState.Inactive;
             foreach (PhysicsObject obj in Objects)
             {
@@ -425,6 +426,16 @@ namespace DracosD.Controllers
                 }
             }
             EndPass(view, state);
+            state = DrawState.SpritePass;
+            BeginTextPass(view, state);
+            
+            view.DrawText("Q/A Restitution: " + planets[0].Restitution, Color.White, new Vector2(0.0f, 0.0f));
+            view.DrawText("W/S Gravity Constant: " + forceController.Gravity, Color.White, new Vector2(0.0f, 0.5f));
+            view.DrawText("E/D Dragon Thrust: " + dragon.Thrust, Color.White, new Vector2(0.0f, 1.0f));
+            view.DrawText("R/F Dampening Factor: " + dragon.Dampen, Color.White, new Vector2(0.0f, 1.5f));
+            view.DrawText("T/G Top Speed: " + dragon.DampenThreshold, Color.White, new Vector2(0.0f, 2.0f));
+            view.DrawText("Current Speed: " + dragon.LinearVelocity.Length(), Color.White, new Vector2(0.0f, 2.5f));
+            EndPass(view, state);
         }
 
         /// <summary>
@@ -441,6 +452,26 @@ namespace DracosD.Controllers
                     break;
                 case DrawState.SpritePass:
                     view.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Helper method to begin a new drawing pass
+        /// </summary>
+        /// <param name="view">Drawing view</param>
+        /// <param name="state">Pass to activate</param>
+        private void BeginTextPass(GameView view, DrawState state)
+        {
+            switch (state)
+            {
+                case DrawState.PolygonPass:
+                    view.BeginPolygonPass();
+                    break;
+                case DrawState.SpritePass:
+                    view.BeginTextSpritePass(BlendState.AlphaBlend, dragon.Position);
                     break;
                 default:
                     break;
@@ -480,8 +511,53 @@ namespace DracosD.Controllers
         /// <param name="dt">Timing values from parent loop</param>
         public void Update(float dt)
         {
+            
+
             // Read input and assign actions to rocket
             playerInput.ReadInput();
+
+
+            // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
+            // Control and bound gravity
+            if (playerInput.gravUp) forceController.Gravity = forceController.Gravity + .01f;
+            if (playerInput.gravDown && forceController.Gravity >0.0f) forceController.Gravity = forceController.Gravity - .01f;
+            if (forceController.Gravity < 0.0f) forceController.Gravity = 0.0f;
+
+            // Control and bound thrust
+            if (playerInput.speedUp) dragon.Thrust = dragon.Thrust + 10.0f;
+            if (playerInput.speedDown && dragon.Thrust > 0.0f) dragon.Thrust = dragon.Thrust - 10.0f;
+            if (dragon.Thrust < 0.0f) dragon.Thrust = 0.0f;
+
+            // Control and bound dampening factor
+            if (playerInput.dampDown && dragon.Dampen > 0.5f) dragon.Dampen = dragon.Dampen - 0.001f;
+            if (playerInput.dampUp && dragon.Dampen < 1.0f) dragon.Dampen = dragon.Dampen + 0.001f;
+            if (dragon.Dampen < 0.5f) dragon.Dampen = .5f;
+            if (dragon.Dampen > 1.0f) dragon.Dampen = 1.0f;
+
+            // Contrl and bound top speed
+            if (playerInput.dampThreshUp) dragon.DampenThreshold = dragon.DampenThreshold + 0.2f;
+            if (playerInput.dampThreshDown && dragon.DampenThreshold > 1.0f) dragon.DampenThreshold = dragon.DampenThreshold - 0.2f;
+            if (dragon.DampenThreshold < 1.0f) dragon.DampenThreshold = 1.0f;
+
+            // Control and bound restitution
+            if (playerInput.restUp)
+            {
+                foreach (PlanetaryObject planet in planets)
+                {
+                    if(planet.Restitution<3.0f) planet.Restitution = planet.Restitution + 0.01f;
+                    if (planet.Restitution > 3.0f) planet.Restitution = 3.0f;
+                }
+            }
+            if (playerInput.restDown)
+            {
+                foreach (PlanetaryObject planet in planets)
+                {
+                    if (planet.Restitution > 0.0f) planet.Restitution = planet.Restitution - 0.01f;
+                    if (planet.Restitution < 0.0f) planet.Restitution = 0.0f;
+                }
+            }
+
+
 
             // Read from the input and add the force to the rocket model
             // But DO NOT apply the force yet (look at RocketObject.cs).
