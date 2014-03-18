@@ -11,18 +11,11 @@ namespace DracosD.Controllers
 {
     class ForceController : Controller
     {
-
-        #region Constants
-        
-        //private float G = 7.0f;
-        
-        #endregion
-
         #region Fields
         // Reference to the rocket
         private Dragon dragon;
         private List<PlanetaryObject> planets;
-        private float G = 0.0f;
+        private float G = 2.0f;
     #endregion
 
     #region Properties (READ-WRITE)

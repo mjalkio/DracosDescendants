@@ -46,7 +46,7 @@
   <planet>
     <type>regular</type>
     <radius>2</radius>
-    <x>60</x>
+    <x>65</x>
     <y>30</y>
   </planet>
   <planet>
@@ -107,7 +107,7 @@
     <type>regular</type>
     <radius>3</radius>
     <x>114</x>
-    <y>30</y>
+    <y>40</y>
   </planet>
   <planet>
     <type>regular</type>
@@ -126,8 +126,8 @@
     <planet2>6</planet2>
   </gate>
   <gate>
-    <planet1>8</planet1>
-    <planet2>9</planet2>
+    <planet1>9</planet1>
+    <planet2>10</planet2>
   </gate>
   <gate>
     <planet1>16</planet1>

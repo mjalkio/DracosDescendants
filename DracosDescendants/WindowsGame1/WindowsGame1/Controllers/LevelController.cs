@@ -20,10 +20,10 @@ namespace DracosD.Controllers
         private List<PlanetaryObject> planetList;
         private int levelHeight;
         private int levelWidth;
-        private Texture2D background;
 
         private static Texture2D dragonTexture;
         private static Texture2D regularPlanetTexture;
+        private static Texture2D otherPlanetTexture;
         private static Texture2D gateTexture;
         private static Texture2D backgroundTexture;
         #endregion
@@ -86,7 +86,8 @@ namespace DracosD.Controllers
         {
             dragonTexture = content.Load<Texture2D>("rocket");
             backgroundTexture = content.Load<Texture2D>("PrimaryBackground");
-            regularPlanetTexture = content.Load<Texture2D>("venus-no-background");
+            regularPlanetTexture = content.Load<Texture2D>("planet");
+            otherPlanetTexture = content.Load<Texture2D>("venus-no-background");
             gateTexture = content.Load<Texture2D>("earthtile");
             parseLevelFromXML(xmlFile);
         }
@@ -99,11 +100,19 @@ namespace DracosD.Controllers
             var width = xml.Root.Element("levelwidth").Value;
             levelHeight = Convert.ToInt32(height);
             levelWidth = Convert.ToInt32(width);
-            //background = textures["background"];
 
+            var dragons = from d in xml.Root.Descendants("dragon")
+                          select new
+                          {
+                              X = d.Element("x").Value,
+                              Y = d.Element("y").Value
+                          };
 
-            Dragon playerDragon = new Dragon(dragonTexture, new Vector2(20.0f, levelHeight / 2.0f));
-            racerList.Add(playerDragon);
+            foreach (var dragon in dragons)
+            {
+                Dragon playerDragon = new Dragon(dragonTexture, new Vector2(Convert.ToInt32(dragon.X), Convert.ToInt32(dragon.Y)));
+                racerList.Add(playerDragon);
+            }
 
             var planets = from p in xml.Root.Descendants("planet")
                           select new
@@ -119,20 +128,21 @@ namespace DracosD.Controllers
                 PlanetaryObject newPlanet;
                 Vector2 pos = new Vector2(Convert.ToInt32(planet.X), Convert.ToInt32(planet.Y));
                 float radius = Convert.ToSingle(planet.Radius);
-                if (planet.Type == "gaseous")
+                if (planet.Type == "regular")
                 {
-                    //newPlanet = new GaseousPlanet(textures["gaseous"], pos, radius);
-                    newPlanet = new GaseousPlanet(regularPlanetTexture, pos, radius);
+                    newPlanet = new RegularPlanet(regularPlanetTexture, pos, radius);
+                }
+                else if (planet.Type == "gaseous")
+                {
+                    newPlanet = new GaseousPlanet(otherPlanetTexture, pos, radius);
                 }
                 else if (planet.Type == "lava")
                 {
-                    //newPlanet = new LavaPlanet(textures["lava"], pos, radius);
-                    newPlanet = new LavaPlanet(regularPlanetTexture, pos, radius);
+                    newPlanet = new LavaPlanet(otherPlanetTexture, pos, radius);
                 }
                 else
                 {
-                    //newPlanet = new RegularPlanet(textures["regular"], pos, radius);
-                    newPlanet = new RegularPlanet(regularPlanetTexture, pos, radius);
+                    newPlanet = null;
                 }
                 planetList.Add(newPlanet);
             }
@@ -146,7 +156,6 @@ namespace DracosD.Controllers
 
             foreach (var gate in gates)
             {
-                //Debug.Print(planetList[Convert.ToInt32(gate.Planet1)].Position.X + "," + planetList[Convert.ToInt32(gate.Planet1)].Position.Y);
                 Gate newGate = new Gate(gateTexture, planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
                 gateList.Add(newGate);
             }
