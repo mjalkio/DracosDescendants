@@ -41,11 +41,6 @@ namespace DracosD
         protected GameView gameView;
 
         private Texture2D victory;
-
-        // Used to play the sounds (Techically, VIEW CLASS)
-        protected SoundBank soundBank;
-        protected AudioEngine audioEngine;
-        protected WaveBank waveBank;
         #endregion
 
         #region Initialization
@@ -78,6 +73,8 @@ namespace DracosD
         protected override void LoadContent()
         {
             gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
+            gameView.LevelWidth = gameLevelController.Width;
+            gameView.LevelHeight = gameLevelController.Height;
 
             victory = content.Load<Texture2D>("victory");
             currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);

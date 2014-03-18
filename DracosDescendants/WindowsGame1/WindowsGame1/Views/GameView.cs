@@ -70,6 +70,9 @@ namespace DracosD.Views
 
         //camera for scrolling
         private Camera camera;
+
+        private int levelWidth;
+        private int levelHeight;
     #endregion
 
     #region Properties (READ-WRITE)
@@ -286,6 +289,16 @@ namespace DracosD.Views
             get { return font; }
             set { font = value; }
         }
+
+        public int LevelWidth
+        {
+            set { levelWidth = value; }
+        }
+
+        public int LevelHeight
+        {
+            set { levelHeight = value; }
+        }
     #endregion
 
     #region Initialization
@@ -400,7 +413,7 @@ namespace DracosD.Views
             state = DrawState.SpritePass;
 
             //Define the Camera
-            camera = new Camera(graphics.GraphicsDevice.Viewport, 100, 100,20.0f);
+            camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight,20.0f);
 
             camera.Pos = position;
             //Console.WriteLine("here");

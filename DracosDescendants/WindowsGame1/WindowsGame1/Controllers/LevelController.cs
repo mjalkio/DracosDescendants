@@ -48,6 +48,16 @@ namespace DracosD.Controllers
             get { return new Vector4(0, 0, levelWidth, levelHeight); }
         }
 
+        public int Width
+        {
+            get { return levelWidth; }
+        }
+
+        public int Height
+        {
+            get { return levelHeight; }
+        }
+
         public Texture2D Background
         {
             get { return backgroundTexture; }
