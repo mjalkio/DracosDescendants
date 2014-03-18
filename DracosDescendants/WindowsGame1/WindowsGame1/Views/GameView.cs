@@ -356,10 +356,6 @@ namespace DracosD.Views
             state = DrawState.Inactive;
         }
 
-<<<<<<< Updated upstream
-        public void LoadContent(ContentManager content)
-        {
-=======
         /// <summary>
         /// Load all default graphics resources for the view
         /// </summary>
@@ -369,8 +365,6 @@ namespace DracosD.Views
         public void LoadContent(ContentManager content) {
             // Load sprite font
             font = content.Load<SpriteFont>("PhysicsFont");
-            
->>>>>>> Stashed changes
             //load background
             background = content.Load<Texture2D>("stars");
         }
