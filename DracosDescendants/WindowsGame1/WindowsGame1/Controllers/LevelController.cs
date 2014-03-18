@@ -7,6 +7,7 @@ using System.Xml.Linq;
 using System.Linq;
 using System;
 using System.Diagnostics;
+using Microsoft.Xna.Framework.Content;
 #endregion
 
 namespace DracosD.Controllers
@@ -19,7 +20,11 @@ namespace DracosD.Controllers
         private List<PlanetaryObject> planetList;
         private int levelHeight;
         private int levelWidth;
-        private Texture2D background;
+
+        private static Texture2D dragonTexture;
+        private static Texture2D regularPlanetTexture;
+        private static Texture2D gateTexture;
+        private static Texture2D backgroundTexture;
         #endregion
 
         #region Properties (READ-ONLY)
@@ -45,7 +50,7 @@ namespace DracosD.Controllers
 
         public Texture2D Background
         {
-            get { return background; }
+            get { return backgroundTexture; }
         }
         #endregion
 
@@ -59,7 +64,22 @@ namespace DracosD.Controllers
             levelWidth = 0;
         }
 
-        public LevelController(string fileName, Dictionary<string,Texture2D> textures) : this()
+        /// <summary>
+        /// Load all default graphics resources and the XML information for the level
+        /// </summary>
+        /// <param name='content'>
+        /// Reference to global content manager.
+        /// </param>
+        public void LoadContent(ContentManager content, string xmlFile)
+        {
+            dragonTexture = content.Load<Texture2D>("rocket");
+            backgroundTexture = content.Load<Texture2D>("PrimaryBackground");
+            regularPlanetTexture = content.Load<Texture2D>("venus-no-background");
+            gateTexture = content.Load<Texture2D>("earthtile");
+            parseLevelFromXML(xmlFile);
+        }
+
+        public void parseLevelFromXML(string fileName)
         {
             var xml = XDocument.Load(fileName);
 
@@ -67,9 +87,8 @@ namespace DracosD.Controllers
             var width = xml.Root.Element("levelwidth").Value;
             levelHeight = Convert.ToInt32(height);
             levelWidth = Convert.ToInt32(width);
-            background = textures["background"];
 
-            Dragon playerDragon = new Dragon(textures["player"], new Vector2(20.0f, levelHeight / 2.0f));
+            Dragon playerDragon = new Dragon(dragonTexture, new Vector2(20.0f, levelHeight / 2.0f));
             racerList.Add(playerDragon);
             
             var planets = from p in xml.Root.Descendants("planet") select new {
@@ -86,15 +105,15 @@ namespace DracosD.Controllers
                 float radius = Convert.ToSingle(planet.Radius);
                 if (planet.Type == "gaseous")
                 {
-                    newPlanet = new GaseousPlanet(textures["gaseous"], pos, radius);
+                    newPlanet = new GaseousPlanet(regularPlanetTexture, pos, radius);
                 }
                 else if (planet.Type == "lava")
                 {
-                    newPlanet = new LavaPlanet(textures["lava"], pos, radius);
+                    newPlanet = new LavaPlanet(regularPlanetTexture, pos, radius);
                 }
                 else
                 {
-                    newPlanet = new RegularPlanet(textures["regular"], pos, radius);
+                    newPlanet = new RegularPlanet(regularPlanetTexture, pos, radius);
                 }
                 planetList.Add(newPlanet);
             }
@@ -108,7 +127,7 @@ namespace DracosD.Controllers
             foreach (var gate in gates)
             {
                 //Debug.Print(planetList[Convert.ToInt32(gate.Planet1)].Position.X + "," + planetList[Convert.ToInt32(gate.Planet1)].Position.Y);
-                Gate newGate = new Gate(textures["gate"], new Vector2(50.0f,50.0f), planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
+                Gate newGate = new Gate(gateTexture, new Vector2(50.0f,50.0f), planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
                 gateList.Add(newGate);
             }
         }

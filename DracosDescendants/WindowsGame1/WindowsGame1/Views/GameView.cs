@@ -344,20 +344,6 @@ namespace DracosD.Views
         }
 
         /// <summary>
-        /// Load all default graphics resources for the view
-        /// </summary>
-        /// <param name='content'>
-        /// Reference to global content manager.
-        /// </param>
-        public void LoadContent(ContentManager content) {
-            // Load sprite font
-            //font = content.Load<SpriteFont>("Shared\\PhysicsFont");
-            
-            //load background
-            //background = content.Load<Texture2D>("Shared\\PrimaryBackground");
-        }
-
-        /// <summary>
         /// Eliminate any resources that prevent garbage collection.
         /// </summary>
         public void Dispose() {

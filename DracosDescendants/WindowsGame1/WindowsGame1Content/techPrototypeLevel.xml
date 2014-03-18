@@ -1,0 +1,21 @@
+<level>
+  <levelwidth>50</levelwidth>
+  <levelheight>20</levelheight>
+  <planet>
+    <type>regular</type>
+    <radius>2</radius>
+    <x>10</x>
+    <y>8</y>
+  </planet>
+  <planet>
+    <type>regular</type>
+    <radius>3</radius>
+    <x>20</x>
+    <y>20</y>
+  </planet>
+
+  <gate>
+    <planet1>0</planet1>
+    <planet2>1</planet2>
+  </gate>
+</level>
