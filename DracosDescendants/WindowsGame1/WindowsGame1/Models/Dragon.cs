@@ -27,7 +27,7 @@ namespace DracosD.Models
         private const float DEFAULT_RESTITUTION = 0.4f;
 
         // Thrust amount to convert player input into thrust
-        private const float DEFAULT_THRUST = 30.0f;
+        private const float DEFAULT_THRUST = 3000.0f;
         #endregion
 
         #region Fields
@@ -67,7 +67,7 @@ namespace DracosD.Models
 
         #region Initialization
         public Dragon(Texture2D texture, Vector2 pos) : 
-            base(texture, pos, new Vector2((float)texture.Width, (float)texture.Height)) 
+            base(texture, pos, new Vector2((float)texture.Width, (float)texture.Height)*.1f) 
         {
             BodyType = BodyType.Dynamic;
             Density  = DEFAULT_DENSITY;
@@ -112,7 +112,7 @@ namespace DracosD.Models
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
-            view.DrawSprite(texture, Color.White, Position, scale*.1f, Rotation);
+            view.DrawSprite(texture, Color.White, Position, scale, Rotation);
         }
         #endregion
     }

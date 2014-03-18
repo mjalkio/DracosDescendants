@@ -22,7 +22,7 @@ namespace DracosD.Controllers
         // Reference to the rocket
         private Dragon dragon;
         private List<PlanetaryObject> planets;
-        private float G = 7.0f;
+        private float G = 2.0f;
     #endregion
 
     #region Properties (READ-WRITE)
@@ -72,6 +72,8 @@ namespace DracosD.Controllers
                 gravity = gravity * force;
 
                 dragon.Body.ApplyForce(gravity);
+
+                Debug.Print("GRAVITY: " + gravity);
             }
                 
         }
@@ -88,6 +90,7 @@ namespace DracosD.Controllers
 
             // Get thrust from rocket and orient with rotation.
             Vector2 force = dragon.Force;
+            Debug.Print("Dragonforce: " + force);
             force = Vector2.Transform(force, Matrix.CreateRotationZ(dragon.Rotation));
 
             // Apply force to the rocket BODY, not the rocket

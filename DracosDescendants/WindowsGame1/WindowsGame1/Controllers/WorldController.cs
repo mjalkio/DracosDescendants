@@ -302,8 +302,14 @@ namespace DracosD.Controllers
             dragon = level.Racers[0];
             AddObject(dragon);
 
-            foreach(PhysicsObject planet in level.Planets){
+            foreach(PlanetaryObject planet in level.Planets){
+                planets.Add(planet);
                 AddObject(planet);
+            }
+
+            foreach (Gate gate in level.Gates)
+            {
+                AddObject(gate);
             }
         }
 
