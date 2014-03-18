@@ -51,9 +51,6 @@ namespace DracosD
         protected SoundBank soundBank;
         protected AudioEngine audioEngine;
         protected WaveBank waveBank;
-
-        //stores the current level
-        protected LevelController currLevel;
         #endregion
 
         #region Initialization
@@ -134,6 +131,7 @@ namespace DracosD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            gameView.Scale = currentWorld.Scale;
             currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
             base.Update(gameTime);
         }

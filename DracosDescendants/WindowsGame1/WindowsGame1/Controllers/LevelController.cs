@@ -69,7 +69,7 @@ namespace DracosD.Controllers
             levelWidth = Convert.ToInt32(width);
             background = textures["background"];
 
-            Dragon playerDragon = new Dragon(textures["player"], new Vector2(5.0f, levelHeight / 2));
+            Dragon playerDragon = new Dragon(textures["player"], new Vector2(20.0f, levelHeight / 2.0f));
             racerList.Add(playerDragon);
             
             var planets = from p in xml.Root.Descendants("planet") select new {

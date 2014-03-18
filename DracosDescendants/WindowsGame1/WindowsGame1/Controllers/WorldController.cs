@@ -297,8 +297,14 @@ namespace DracosD.Controllers
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
-            AddObject(obj);
+            //AddObject(obj);
 
+            dragon = level.Racers[0];
+            AddObject(dragon);
+
+            foreach(PhysicsObject planet in level.Planets){
+                AddObject(planet);
+            }
         }
 
         /// <summary>
@@ -480,7 +486,7 @@ namespace DracosD.Controllers
             float FY = playerInput.Vertical * dragon.Thrust;
             float FX = playerInput.Horizontal * dragon.Thrust;
             dragon.Force = new Vector2(FX, FY);
-
+            Debug.Print("" + dragon.Position);
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)
             {

@@ -414,7 +414,8 @@ namespace DracosD.Views
             state = DrawState.SpritePass;
 
             //Define the Camera
-            camera = new Camera(graphics.GraphicsDevice.Viewport, 40, 20,50.0f);
+            camera = new Camera(graphics.GraphicsDevice.Viewport, 100, 100,20.0f);
+
             camera.Pos = position;
             //Console.WriteLine("here");
             // Set up the drawing view to use the appropriate blending.

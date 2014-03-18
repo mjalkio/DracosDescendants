@@ -87,7 +87,9 @@ namespace DracosD.Models
         public override bool ActivatePhysics(World world)
         {
             // Get the box body from our parent class
-            return base.ActivatePhysics(world);
+            bool success = base.ActivatePhysics(world);
+            body.FixedRotation = true;
+            return success;
         }
         #endregion
 
@@ -110,7 +112,7 @@ namespace DracosD.Models
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
-            view.DrawSprite(texture, Color.White, Position, scale, Rotation);
+            view.DrawSprite(texture, Color.White, Position, scale*.1f, Rotation);
         }
         #endregion
     }
