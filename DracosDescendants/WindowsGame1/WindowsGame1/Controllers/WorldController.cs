@@ -559,11 +559,15 @@ namespace DracosD.Controllers
 
 
 
-            // Read from the input and add the force to the rocket model
-            // But DO NOT apply the force yet (look at RocketObject.cs).
-            float FY = playerInput.Vertical * dragon.Thrust;
-            float FX = playerInput.Horizontal * dragon.Thrust;
-            dragon.Force = new Vector2(FX, FY);
+            // Read from the input and add the force to the dragon model
+            float distance = (float) Math.Sqrt(playerInput.Horizontal * playerInput.Horizontal + playerInput.Vertical * playerInput.Vertical);
+            //To prevent division by zero
+            if (distance == 0)
+            {
+                distance = 1;
+            }
+            Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
+            dragon.Force = normalizedDirection *dragon.Thrust;
             //Debug.Print("" + dragon.Position);
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)
