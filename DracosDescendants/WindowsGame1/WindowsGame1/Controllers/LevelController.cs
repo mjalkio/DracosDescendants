@@ -26,6 +26,8 @@ namespace DracosD.Controllers
         private static Texture2D otherPlanetTexture;
         private static Texture2D gateTexture;
         private static Texture2D backgroundTexture;
+        private static Texture2D gaseousTexture;
+        private static Texture2D lavaTexture;
         #endregion
 
         #region Properties (READ-ONLY)
@@ -89,6 +91,8 @@ namespace DracosD.Controllers
             regularPlanetTexture = content.Load<Texture2D>("planet");
             otherPlanetTexture = content.Load<Texture2D>("venus-no-background");
             gateTexture = content.Load<Texture2D>("earthtile");
+            gaseousTexture = content.Load<Texture2D>("gaseous planet");
+            lavaTexture = content.Load<Texture2D>("lava planet");
             parseLevelFromXML(xmlFile);
         }
 
@@ -134,7 +138,7 @@ namespace DracosD.Controllers
                 }
                 else if (planet.Type == "gaseous")
                 {
-                    newPlanet = new GaseousPlanet(otherPlanetTexture, pos, radius);
+                    newPlanet = new GaseousPlanet(gaseousTexture, pos, radius, lavaTexture);
                 }
                 else if (planet.Type == "lava")
                 {

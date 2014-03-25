@@ -25,6 +25,7 @@ namespace DracosD.Models
         private const float DEFAULT_DENSITY = 1.0f;
         private const float DEFAULT_FRICTION = 0.1f;
         private const float DEFAULT_RESTITUTION = 0.4f;
+        private const int COOLDOWN = 60; //in ticks
 
         // Thrust amount to convert player input into thrust
         private const int NUM_FRAMES = 9;
@@ -47,6 +48,8 @@ namespace DracosD.Models
         private float thrust = 2000.0f;
         private float dampeningFactor = 0.95f;
         private float dampeningThreshold = 20.0f;
+
+        private int currCooldown;
         #endregion
 
         #region Properties (READ-WRITE)
@@ -92,9 +95,10 @@ namespace DracosD.Models
         #endregion
 
         #region Properties (READ-ONLY)
-        /// <summary>
-        /// The amount of thrust this rocket has.  Multiply this by input to give force.
-        /// </summary>
+        public bool CanMove
+        {
+            get { return currCooldown == 0; }
+        }
         #endregion
 
         #region Initialization
@@ -107,6 +111,7 @@ namespace DracosD.Models
             Friction = DEFAULT_FRICTION;
             Restitution = DEFAULT_RESTITUTION;
             isOnFire = false;
+            currCooldown = 0;
         }
 
         /// <summary>
@@ -132,6 +137,11 @@ namespace DracosD.Models
         /// </summary>
         /// <param name="dt">Timing values from parent loop</param>
         public override void Update(float dt) {
+            if (!CanMove)
+            {
+                Burn(true);
+            }
+
             if (base.LinearVelocity.Length() > dampeningThreshold)
             {
                 base.LinearVelocity = base.LinearVelocity * dampeningFactor;
@@ -180,6 +190,21 @@ namespace DracosD.Models
             base.Update(dt);
 
 
+        }
+        /// <summary>
+        /// Decrement or resets (to
+        /// </summary>
+        /// <param name="decr"></param>
+        public void Burn(bool decr)
+        {
+            if (decr && currCooldown > 0)
+            {
+                currCooldown--;
+            }
+            else if (!decr)
+            {
+                currCooldown = COOLDOWN;
+            }
         }
 
         /// <summary>

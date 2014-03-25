@@ -359,9 +359,7 @@ namespace DracosD.Controllers
             Body body1 = contact.FixtureA.Body;
             Body body2 = contact.FixtureB.Body;
 
-            /*TODO if the body is dragon and the other is the current gate hes on,
-             then increment the gate hes on and change the texture of the gate using gate model
-             to be the passed texture...maybe also add in later once all gates on the level have been passed then display a win screen*/
+            //handle the racer to gate collisions
             foreach (Dragon drag in level.Racers)
             {
                 if (currentGates[dragon] < level.Gates.Count)
@@ -385,11 +383,28 @@ namespace DracosD.Controllers
                     }
                 }
             }
-            /*if ((body1.UserData == dragon && body2.UserData == goalDoor) ||
-                (body1.UserData == goalDoor && body2.UserData == dragon))
+            
+            //handle the racer to onFire gas planet collision
+            Dragon curr_drag = null;
+            GaseousPlanet gp = null;
+            if (body1.UserData is Dragon && body2.UserData is GaseousPlanet)
             {
-                Succeeded = true;
-            }*/
+                curr_drag = body1.UserData as Dragon;
+                gp = body2.UserData as GaseousPlanet;
+
+            }
+            else if (body1.UserData is GaseousPlanet && body2.UserData is Dragon)
+            {
+                curr_drag = body2.UserData as Dragon;
+                gp = body1.UserData as GaseousPlanet;
+            }
+            if (curr_drag != null && gp != null)
+            {
+                if (gp.OnFire)
+                {
+                    curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
+                }
+            }
 
             return true;
         }
@@ -568,6 +583,18 @@ namespace DracosD.Controllers
             }
             Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
             dragon.Force = normalizedDirection *dragon.Thrust;
+            // Read from the input and add the force to the rocket model
+            // But DO NOT apply the force yet (look at RocketObject.cs).
+            float FY = playerInput.Vertical * dragon.Thrust;
+            float FX = playerInput.Horizontal * dragon.Thrust;
+            dragon.Force = new Vector2(FX, FY);
+
+            //TODO: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
+            if (!dragon.CanMove)
+            {
+                dragon.Force = new Vector2(0f, 0f);
+            }
+
             //Debug.Print("" + dragon.Position);
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)
