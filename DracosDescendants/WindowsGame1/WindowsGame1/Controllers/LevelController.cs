@@ -23,6 +23,7 @@ namespace DracosD.Controllers
 
         private static Texture2D dragonTexture;
         private static Texture2D regularPlanetTexture;
+        private static Texture2D lavaPlanetTexture;
         private static Texture2D otherPlanetTexture;
         private static Texture2D gateTexture;
         private static Texture2D backgroundTexture;
@@ -89,6 +90,7 @@ namespace DracosD.Controllers
             dragonTexture = content.Load<Texture2D>("rocket");
             backgroundTexture = content.Load<Texture2D>("PrimaryBackground");
             regularPlanetTexture = content.Load<Texture2D>("planet");
+            lavaPlanetTexture = content.Load<Texture2D>("lava planet");
             otherPlanetTexture = content.Load<Texture2D>("venus-no-background");
             gateTexture = content.Load<Texture2D>("earthtile");
             gaseousTexture = content.Load<Texture2D>("gaseous planet");
@@ -142,7 +144,7 @@ namespace DracosD.Controllers
                 }
                 else if (planet.Type == "lava")
                 {
-                    newPlanet = new LavaPlanet(otherPlanetTexture, pos, radius);
+                    newPlanet = new LavaPlanet(lavaPlanetTexture, pos, radius);
                 }
                 else
                 {

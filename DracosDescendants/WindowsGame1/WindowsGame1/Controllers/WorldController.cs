@@ -36,6 +36,8 @@ namespace DracosD.Controllers
 
         #region Graphics Resources
         private Texture2D regularPlanetTexture;
+        private Texture2D lavaPlanetTexture;
+        private Texture2D lavaProjTexture;
 
         /// <summary>
         /// Load images for this class
@@ -44,6 +46,8 @@ namespace DracosD.Controllers
         public void LoadContent(ContentManager content)
         {
             regularPlanetTexture = content.Load<Texture2D>("earthtile");
+            lavaPlanetTexture = content.Load<Texture2D>("lava planet");
+            lavaProjTexture = content.Load<Texture2D>("lava projectile");
         }
 
         /// <summary>
@@ -87,6 +91,7 @@ namespace DracosD.Controllers
 
         protected Dragon dragon;
         protected List<PlanetaryObject> planets = new List<PlanetaryObject>();
+        private Random rand;
 
 
         public Dragon Dragon
@@ -260,6 +265,7 @@ namespace DracosD.Controllers
             world = new World(new Vector2(0, 0));
             this.bounds = bounds;
             this.scale = scale;
+            rand = new Random();
             succeeded = failed = false;
         }
 
@@ -404,6 +410,41 @@ namespace DracosD.Controllers
                 {
                     curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
                 }
+            }
+
+            LavaProjectile fireObject = null;
+            if (body1.UserData is Dragon && body2.UserData is LavaProjectile)
+            {
+                curr_drag = body1.UserData as Dragon;
+                fireObject = body2.UserData as LavaProjectile;
+
+            }
+            else if (body1.UserData is LavaProjectile && body2.UserData is Dragon)
+            {
+                curr_drag = body2.UserData as Dragon;
+                fireObject = body1.UserData as LavaProjectile;
+            }
+
+            if (curr_drag != null && fireObject != null)
+            {
+                    curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
+            }
+
+            LavaPlanet lavaObject = null;
+            if (body1.UserData is Dragon && body2.UserData is LavaPlanet)
+            {
+                curr_drag = body1.UserData as Dragon;
+                lavaObject = body2.UserData as LavaPlanet;
+            }
+            else if (body1.UserData is LavaPlanet && body2.UserData is Dragon)
+            {
+                curr_drag = body2.UserData as Dragon;
+                lavaObject = body1.UserData as LavaPlanet;
+            }
+
+            if (curr_drag != null && lavaObject != null)
+            {
+                curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
             }
 
             return true;
@@ -572,6 +613,17 @@ namespace DracosD.Controllers
                 }
             }
 
+            foreach (PhysicsObject obje in objects){
+                if (obje is LavaPlanet)
+                {
+                    LavaPlanet lavaplan = (LavaPlanet)obje;
+                    if (((LavaPlanet)lavaplan).Fire)
+                    {
+                        createLavaProjectile((LavaPlanet)lavaplan);
+                        lavaplan.Fire = false;
+                    }
+                }
+            }
 
 
             // Read from the input and add the force to the dragon model
@@ -634,5 +686,31 @@ namespace DracosD.Controllers
 
         #endregion
 
+        #region Methods
+
+        private void createLavaProjectile(LavaPlanet planet)
+        {
+            const float BULLET_OFFSET = 0.5f;
+
+            float radius = lavaProjTexture.Width / (SX);
+            LavaProjectile bullet = new LavaProjectile(lavaProjTexture, planet.Position, radius);
+            bullet.Density = .5f;
+
+            // Compute position and velocity
+            float offset = (lavaProjTexture.Width + BULLET_OFFSET) / SX;
+            float speed = rand.Next(5,15);
+            float randomDirection = (float)(rand.NextDouble() * Math.PI * 2.0);
+            float randomDirection2 = (float)(rand.NextDouble() * Math.PI * 2.0);
+            Vector2 randomDirection2Vec = new Vector2((float)Math.Cos(randomDirection2), (float)Math.Sin(randomDirection2));
+            randomDirection2Vec.Normalize();
+
+            Vector2 bulletDirection =  new Vector2((float)Math.Cos(randomDirection), (float)Math.Sin(randomDirection));
+            bulletDirection.Normalize();
+
+            bullet.Position = planet.Position + bulletDirection;
+            bullet.LinearVelocity = (speed*bulletDirection) + randomDirection2Vec;
+            AddQueuedObject(bullet);
+        }
+        #endregion
     }
 }

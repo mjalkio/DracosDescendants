@@ -40,7 +40,7 @@ namespace DracosD.Models
             base(texture, pos, radius, DEFAULT_DENSITY, DEFAULT_FRICTION, DEFAULT_RESTITUTION)
         {
             flame_texture = fireTexture;
-            onFire = true;
+            onFire = false;
         }
 
         #region GameLoop (update & draw)
