@@ -126,6 +126,7 @@
     <Compile Include="Models\HUD.cs" />
     <Compile Include="Models\IceAsteroid.cs" />
     <Compile Include="Models\LavaPlanet.cs" />
+    <Compile Include="Models\LavaProjectile.cs" />
     <Compile Include="Models\Menu.cs" />
     <Compile Include="Objects\BoxObject.cs" />
     <Compile Include="Objects\CircleObject.cs" />

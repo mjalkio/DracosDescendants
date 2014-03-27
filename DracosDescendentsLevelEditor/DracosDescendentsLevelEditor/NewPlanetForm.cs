@@ -22,28 +22,20 @@ namespace DracosDescendentsLevelEditor
         {
             InitializeComponent();
             this.planetList = planetList;
+            planetComboBox.SelectedIndex = 0; //So that the default value is regular planet
         }
+
 
         private void planetComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void createButton_Click(object sender, EventArgs e)
         {
-            Planet newPlanet = new Planet(planetComboBox.SelectedText, Convert.ToSingle(textBox1.Text), Convert.ToSingle(textBox2.Text), Convert.ToSingle(textBox3.Text));
+            Planet newPlanet = new Planet(planetComboBox.SelectedItem.ToString(), Convert.ToSingle(textBox1.Text), Convert.ToSingle(textBox2.Text), Convert.ToSingle(textBox3.Text));
             planetList.Add(newPlanet);
             this.Dispose();
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox2_TextChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

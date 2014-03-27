@@ -19,5 +19,10 @@ namespace DracosDescendentsLevelEditor
             this.x = x;
             this.y = y;
         }
+
+        public string Display
+        {
+            get { return type + " planet (" + x + ", " + y + ")"; }
+        }
     }
 }
