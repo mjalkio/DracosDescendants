@@ -32,10 +32,28 @@ namespace DracosDescendentsLevelEditor
             planetForm.Show();
         }
 
+        private void managePlanetsButton_Click(object sender, EventArgs e)
+        {
+            ManagePlanetsForm planetsForm = new ManagePlanetsForm(planetList);
+            planetsForm.Show();
+        }
+
         private void addGateButton_Click(object sender, EventArgs e)
         {
             NewGateForm gateForm = new NewGateForm(gateList, planetList);
             gateForm.Show();
+        }
+
+        private void manageGatesButton_Click(object sender, EventArgs e)
+        {
+            ManageGatesForm gatesForm = new ManageGatesForm(gateList, planetList);
+            gatesForm.Show();
+        }
+
+        private void manageDragonsButton_Click(object sender, EventArgs e)
+        {
+            ManageDragonsForm dragonsForm = new ManageDragonsForm(dragonList);
+            dragonsForm.Show();
         }
 
         private void previewButton_Click(object sender, EventArgs e)
@@ -52,7 +70,7 @@ namespace DracosDescendentsLevelEditor
         /// </summary>
         private void addDragons()
         {
-            dragonList.Add(new Dragon(5, 5));
+            dragonList.Add(new Dragon(5, 5, true));
         }
 
         private void exportButton_Click(object sender, EventArgs e)

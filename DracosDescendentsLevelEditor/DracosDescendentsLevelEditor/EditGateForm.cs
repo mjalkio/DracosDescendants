@@ -9,19 +9,20 @@ using System.Windows.Forms;
 
 namespace DracosDescendentsLevelEditor
 {
-    public partial class NewGateForm : Form
+    public partial class EditGateForm : Form
     {
+        private Gate gate;
         private List<Gate> gateList;
 
-        public NewGateForm()
+        public EditGateForm()
         {
             InitializeComponent();
         }
 
-        public NewGateForm(List<Gate> gateList, List<Planet> planetList)
+        public EditGateForm(Gate gate, List<Gate> gateList, List<Planet> planetList)
         {
             InitializeComponent();
-            this.gateList = gateList;
+            this.gate = gate;
 
             foreach (Planet p in planetList)
             {
@@ -31,7 +32,10 @@ namespace DracosDescendentsLevelEditor
 
             foreach (Gate g in gateList)
             {
-                gateBox.Items.Add(g);
+                if (g != gate)
+                {
+                    gateBox.Items.Add(g);
+                }
             }
 
             //Telling the boxes what to use as the text
@@ -39,22 +43,22 @@ namespace DracosDescendentsLevelEditor
             planet2Box.DisplayMember = "Display";
             gateBox.DisplayMember = "Display";
 
+            planet1Box.SelectedItem = gate.planet1;
+            planet2Box.SelectedItem = gate.planet2;
+            gateBox.SelectedIndex = gateBox.Items.Count - 1;
         }
 
-        private void createButton_Click(object sender, EventArgs e)
+        private void saveButton_Click(object sender, EventArgs e)
         {
-            Gate newGate = new Gate((Planet) planet1Box.SelectedItem, (Planet) planet2Box.SelectedItem);
+            gate.planet1 = (Planet) planet1Box.SelectedItem;
+            gate.planet2 = (Planet)planet2Box.SelectedItem;
             if (gateBox.SelectedItem != null)
             {
-                Gate gate = (Gate)gateBox.SelectedItem;
-                gateList.Insert(gateList.IndexOf(gate)+1, newGate);
-            }
-            else
-            {
-                gateList.Add(newGate);
+                gateList.Remove(gate);
+                Gate insertAfterMe = (Gate)gateBox.SelectedItem;
+                gateList.Insert(gateList.IndexOf(insertAfterMe), gate);
             }
             this.Dispose();
         }
-
     }
 }

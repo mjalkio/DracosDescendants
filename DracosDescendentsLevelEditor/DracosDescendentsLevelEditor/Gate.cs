@@ -15,5 +15,16 @@ namespace DracosDescendentsLevelEditor
             this.planet1 = planet1;
             this.planet2 = planet2;
         }
+
+        /// <summary>
+        /// Used to display the gate's info for ComboBoxes
+        /// </summary>
+        public string Display
+        {
+            get
+            {
+                return "Gate between (" + planet1.x + ", " + planet1.y + ") and (" + planet2.x + ", " + planet2.y + ")";
+            }
+        }
     }
 }

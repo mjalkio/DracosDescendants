@@ -34,6 +34,8 @@
             this.planet1Box = new System.Windows.Forms.ComboBox();
             this.planet2Box = new System.Windows.Forms.ComboBox();
             this.createButton = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.gateBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // label1
@@ -49,7 +51,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(64, 87);
+            this.label2.Location = new System.Drawing.Point(64, 70);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(46, 13);
             this.label2.TabIndex = 2;
@@ -58,7 +60,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(64, 128);
+            this.label3.Location = new System.Drawing.Point(64, 99);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(46, 13);
             this.label3.TabIndex = 3;
@@ -67,7 +69,7 @@
             // planet1Box
             // 
             this.planet1Box.FormattingEnabled = true;
-            this.planet1Box.Location = new System.Drawing.Point(137, 84);
+            this.planet1Box.Location = new System.Drawing.Point(137, 67);
             this.planet1Box.Name = "planet1Box";
             this.planet1Box.Size = new System.Drawing.Size(121, 21);
             this.planet1Box.TabIndex = 4;
@@ -75,14 +77,14 @@
             // planet2Box
             // 
             this.planet2Box.FormattingEnabled = true;
-            this.planet2Box.Location = new System.Drawing.Point(137, 125);
+            this.planet2Box.Location = new System.Drawing.Point(137, 96);
             this.planet2Box.Name = "planet2Box";
             this.planet2Box.Size = new System.Drawing.Size(121, 21);
             this.planet2Box.TabIndex = 5;
             // 
             // createButton
             // 
-            this.createButton.Location = new System.Drawing.Point(106, 179);
+            this.createButton.Location = new System.Drawing.Point(106, 197);
             this.createButton.Name = "createButton";
             this.createButton.Size = new System.Drawing.Size(75, 23);
             this.createButton.TabIndex = 10;
@@ -90,11 +92,30 @@
             this.createButton.UseVisualStyleBackColor = true;
             this.createButton.Click += new System.EventHandler(this.createButton_Click);
             // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(64, 138);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(190, 13);
+            this.label4.TabIndex = 11;
+            this.label4.Text = "Select the gate to place this gate after:";
+            // 
+            // gateBox
+            // 
+            this.gateBox.FormattingEnabled = true;
+            this.gateBox.Location = new System.Drawing.Point(67, 162);
+            this.gateBox.Name = "gateBox";
+            this.gateBox.Size = new System.Drawing.Size(187, 21);
+            this.gateBox.TabIndex = 12;
+            // 
             // NewGateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
+            this.Controls.Add(this.gateBox);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.createButton);
             this.Controls.Add(this.planet2Box);
             this.Controls.Add(this.planet1Box);
@@ -116,5 +137,7 @@
         private System.Windows.Forms.ComboBox planet1Box;
         private System.Windows.Forms.ComboBox planet2Box;
         private System.Windows.Forms.Button createButton;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.ComboBox gateBox;
     }
 }

@@ -47,11 +47,47 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dragon.cs" />
+    <Compile Include="EditDragonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditDragonForm.Designer.cs">
+      <DependentUpon>EditDragonForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditGateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditGateForm.Designer.cs">
+      <DependentUpon>EditGateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditPlanetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditPlanetForm.Designer.cs">
+      <DependentUpon>EditPlanetForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="LevelEditorForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="LevelEditorForm.Designer.cs">
       <DependentUpon>LevelEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageDragonsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageDragonsForm.Designer.cs">
+      <DependentUpon>ManageDragonsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageGatesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageGatesForm.Designer.cs">
+      <DependentUpon>ManageGatesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManagePlanetsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManagePlanetsForm.Designer.cs">
+      <DependentUpon>ManagePlanetsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="NewGateForm.cs">
       <SubType>Form</SubType>
@@ -75,8 +111,26 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditDragonForm.resx">
+      <DependentUpon>EditDragonForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditGateForm.resx">
+      <DependentUpon>EditGateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditPlanetForm.resx">
+      <DependentUpon>EditPlanetForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="LevelEditorForm.resx">
       <DependentUpon>LevelEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageDragonsForm.resx">
+      <DependentUpon>ManageDragonsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageGatesForm.resx">
+      <DependentUpon>ManageGatesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManagePlanetsForm.resx">
+      <DependentUpon>ManagePlanetsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="NewGateForm.resx">
       <DependentUpon>NewGateForm.cs</DependentUpon>

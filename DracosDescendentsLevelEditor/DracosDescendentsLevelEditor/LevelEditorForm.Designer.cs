@@ -165,6 +165,7 @@
             this.managePlanetsButton.TabIndex = 9;
             this.managePlanetsButton.Text = "Manage Planets";
             this.managePlanetsButton.UseVisualStyleBackColor = true;
+            this.managePlanetsButton.Click += new System.EventHandler(this.managePlanetsButton_Click);
             // 
             // manageGatesButton
             // 
@@ -174,6 +175,7 @@
             this.manageGatesButton.TabIndex = 10;
             this.manageGatesButton.Text = "Manage Gates";
             this.manageGatesButton.UseVisualStyleBackColor = true;
+            this.manageGatesButton.Click += new System.EventHandler(this.manageGatesButton_Click);
             // 
             // manageDragonsButton
             // 
@@ -183,6 +185,7 @@
             this.manageDragonsButton.TabIndex = 11;
             this.manageDragonsButton.Text = "Manage Dragons";
             this.manageDragonsButton.UseVisualStyleBackColor = true;
+            this.manageDragonsButton.Click += new System.EventHandler(this.manageDragonsButton_Click);
             // 
             // saveXML
             // 
