@@ -40,6 +40,7 @@
             this.managePlanetsButton = new System.Windows.Forms.Button();
             this.manageGatesButton = new System.Windows.Forms.Button();
             this.manageDragonsButton = new System.Windows.Forms.Button();
+            this.saveXML = new System.Windows.Forms.SaveFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.levelHeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelWidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -154,6 +155,7 @@
             this.exportButton.TabIndex = 8;
             this.exportButton.Text = "Export Level";
             this.exportButton.UseVisualStyleBackColor = true;
+            this.exportButton.Click += new System.EventHandler(this.exportButton_Click);
             // 
             // managePlanetsButton
             // 
@@ -181,6 +183,11 @@
             this.manageDragonsButton.TabIndex = 11;
             this.manageDragonsButton.Text = "Manage Dragons";
             this.manageDragonsButton.UseVisualStyleBackColor = true;
+            // 
+            // saveXML
+            // 
+            this.saveXML.DefaultExt = "xml";
+            this.saveXML.FileOk += new System.ComponentModel.CancelEventHandler(this.saveXML_FileOk);
             // 
             // LevelEditorForm
             // 
@@ -222,6 +229,7 @@
         private System.Windows.Forms.Button managePlanetsButton;
         private System.Windows.Forms.Button manageGatesButton;
         private System.Windows.Forms.Button manageDragonsButton;
+        private System.Windows.Forms.SaveFileDialog saveXML;
     }
 }
 

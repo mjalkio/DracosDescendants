@@ -29,7 +29,7 @@ namespace DracosDescendentsLevelEditor
                 planet2Box.Items.Add(p);
             }
 
-            //Telling the boxes what to use as the 
+            //Telling the boxes what to use as the text
             planet1Box.DisplayMember = "Display";
             planet2Box.DisplayMember = "Display";
 

@@ -31,7 +31,7 @@ namespace DracosDescendentsLevelEditor
 
         public void Draw()
         {
-            SolidBrush myBrush = new SolidBrush(Color.RosyBrown);
+            SolidBrush myBrush = new SolidBrush(Color.White);
             Graphics formGraphics = this.CreateGraphics();
 
             foreach (Planet planet in planetList)
