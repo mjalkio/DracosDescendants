@@ -6,6 +6,7 @@ using DracosD.Objects;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework;
 using FarseerPhysics.Dynamics;
+using DracosD.Views;
 
 namespace DracosD.Models
 {
@@ -73,6 +74,15 @@ namespace DracosD.Models
 
         
     #endregion
+
+        /// <summary>
+        /// Draws the planetary object.
+        /// </summary>
+        /// <param name="view">Drawing context</param>
+        public override void Draw(GameView view)
+        {
+            view.DrawSprite(texture, Color.White, Position, scale * 2.0f, Rotation);
+        }
 
     }
 }

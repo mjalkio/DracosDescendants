@@ -16,7 +16,7 @@ namespace DracosD.Models
 {
     class RegularPlanet : PlanetaryObject
     {
-        private const float DEFAULT_DENSITY = 8.0f;
+        private const float DEFAULT_DENSITY = 4.0f;
         private const float DEFAULT_FRICTION = 0.6f;
         private const float DEFAULT_RESTITUTION = 0.5f;
 

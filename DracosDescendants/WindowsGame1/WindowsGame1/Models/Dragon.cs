@@ -46,8 +46,8 @@ namespace DracosD.Models
         private int delay = 1;
         private int elapsed;
         private float thrust = 2000.0f;
-        private float dampeningFactor = 0.95f;
-        private float dampeningThreshold = 20.0f;
+        private float dampeningFactor = 0.97f;
+        private float dampeningThreshold = 40.0f;
 
         private int currCooldown;
         #endregion
@@ -102,8 +102,8 @@ namespace DracosD.Models
         #endregion
 
         #region Initialization
-        public Dragon(Texture2D effect, Vector2 pos) :
-            base(effect, pos, new Vector2((float)effect.Width / (NUM_FRAMES * 2), (float)effect.Height) * .1f) 
+        public Dragon(Texture2D effect, Vector2 pos, Vector2 dimension) :
+            base(effect, pos, new Vector2((dimension.X / (NUM_FRAMES * 2)), dimension.Y) ) 
         {
             BodyType = BodyType.Dynamic;
             flapEffect = effect;
@@ -144,6 +144,7 @@ namespace DracosD.Models
 
             if (base.LinearVelocity.Length() > dampeningThreshold)
             {
+                
                 base.LinearVelocity = base.LinearVelocity * dampeningFactor;
             }
 

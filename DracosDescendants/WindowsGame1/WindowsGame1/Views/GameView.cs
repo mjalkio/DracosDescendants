@@ -427,7 +427,7 @@ namespace DracosD.Views
             state = DrawState.SpritePass;
 
             //Define the Camera
-            camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight,20.0f);
+            camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight,10.0f);
 
             camera.Pos = position;
             //Console.WriteLine("here");
@@ -463,9 +463,9 @@ namespace DracosD.Views
             state = DrawState.SpritePass;
 
             //Define the Camera
-            camera = new Camera(graphics.GraphicsDevice.Viewport, 100, 100, 20.0f);
+            //camera = new Camera(graphics.GraphicsDevice.Viewport, 100, 100, 20.0f);
 
-            camera.Pos = position;
+            // camera.Pos = position;
             //Console.WriteLine("here");
             // Set up the drawing view to use the appropriate blending.
             // Deferred sorting guarantees Sprites are drawn in order given.

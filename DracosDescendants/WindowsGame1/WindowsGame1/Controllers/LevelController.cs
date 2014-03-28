@@ -29,6 +29,7 @@ namespace DracosD.Controllers
         private static Texture2D backgroundTexture;
         private static Texture2D gaseousTexture;
         private static Texture2D lavaTexture;
+
         #endregion
 
         #region Properties (READ-ONLY)
@@ -100,6 +101,7 @@ namespace DracosD.Controllers
 
         public void parseLevelFromXML(string fileName)
         {
+           float worldscale = WorldController.DEFAULT_SCALE;
             var xml = XDocument.Load(fileName);
 
             var height = xml.Root.Element("levelheight").Value;
@@ -116,7 +118,8 @@ namespace DracosD.Controllers
 
             foreach (var dragon in dragons)
             {
-                Dragon playerDragon = new Dragon(dragonTexture, new Vector2(Convert.ToInt32(dragon.X), Convert.ToInt32(dragon.Y)));
+                Dragon playerDragon = new Dragon(dragonTexture, new Vector2((Convert.ToInt32(dragon.X) / worldscale), 
+                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width/worldscale,dragonTexture.Height/worldscale));
                 racerList.Add(playerDragon);
             }
 
@@ -132,8 +135,9 @@ namespace DracosD.Controllers
             foreach (var planet in planets)
             {
                 PlanetaryObject newPlanet;
-                Vector2 pos = new Vector2(Convert.ToInt32(planet.X), Convert.ToInt32(planet.Y));
-                float radius = Convert.ToSingle(planet.Radius);
+                Vector2 pos = new Vector2(Convert.ToInt32(planet.X) / WorldController.DEFAULT_SCALE, 
+                    Convert.ToInt32(planet.Y) / WorldController.DEFAULT_SCALE);
+                float radius = Convert.ToSingle(planet.Radius)/WorldController.DEFAULT_SCALE;
                 if (planet.Type == "regular")
                 {
                     newPlanet = new RegularPlanet(regularPlanetTexture, pos, radius);

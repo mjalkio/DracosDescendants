@@ -20,10 +20,10 @@ namespace DracosD.Controllers
     {
 
         #region Constants
-        public const float DEFAULT_SCALE = 50.0f;
+        public const float DEFAULT_SCALE = 10.0f;
         // Dimensions of the game world
-        private const float WIDTH = 50.0f;
-        private const float HEIGHT = 20.0f;
+        private const float WIDTH = 80.0f;
+        private const float HEIGHT = 60.0f;
         private const float GRAVITY = 8.0f;
 
         // Physics constants for initialization
@@ -31,8 +31,6 @@ namespace DracosD.Controllers
         private const float BASIC_FRICTION = 0.1f;
         private const float BASIC_RESTITION = 0.1f;
         #endregion
-
-
 
         #region Graphics Resources
         private Texture2D regularPlanetTexture;
@@ -229,7 +227,7 @@ namespace DracosD.Controllers
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
         public WorldController(Vector2 gravity, LevelController thisLevel, ContentManager content) :
-            this(thisLevel.Dimensions, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE))
+            this(thisLevel.Dimensions / DEFAULT_SCALE, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE))
         {
             playerInput = new PlayerInputController();
             currentGates = new Dictionary<Dragon, int>();
@@ -435,7 +433,7 @@ namespace DracosD.Controllers
             {
                 curr_drag = body1.UserData as Dragon;
                 lavaObject = body2.UserData as LavaPlanet;
-            }
+            } 
             else if (body1.UserData is LavaPlanet && body2.UserData is Dragon)
             {
                 curr_drag = body2.UserData as Dragon;
@@ -464,7 +462,7 @@ namespace DracosD.Controllers
         /// <param name="view">Drawing context</param>
         public virtual void Draw(GameView view)
         {
-            //view.Scale = scale;
+            // view.Scale = scale;
             DrawState state = DrawState.Inactive;
             foreach (PhysicsObject obj in Objects)
             {
@@ -567,7 +565,8 @@ namespace DracosD.Controllers
         /// <param name="dt">Timing values from parent loop</param>
         public void Update(float dt)
         {
-            
+            Debug.Print("" + scale);//dragon.LinearVelocity.Length());
+            // Debug.Print("" + dragon.Thrust);
 
             // Read input and assign actions to rocket
             playerInput.ReadInput();
@@ -692,13 +691,13 @@ namespace DracosD.Controllers
         {
             const float BULLET_OFFSET = 0.5f;
 
-            float radius = lavaProjTexture.Width / (SX);
+            float radius = planet.Radius / 6.0f;
             LavaProjectile bullet = new LavaProjectile(lavaProjTexture, planet.Position, radius);
             bullet.Density = .5f;
 
             // Compute position and velocity
-            float offset = (lavaProjTexture.Width + BULLET_OFFSET) / SX;
-            float speed = rand.Next(5,15);
+            float offset = (lavaProjTexture.Width + BULLET_OFFSET);
+            float speed = rand.Next(100,300);
             float randomDirection = (float)(rand.NextDouble() * Math.PI * 2.0);
             float randomDirection2 = (float)(rand.NextDouble() * Math.PI * 2.0);
             Vector2 randomDirection2Vec = new Vector2((float)Math.Cos(randomDirection2), (float)Math.Sin(randomDirection2));

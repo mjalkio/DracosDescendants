@@ -60,7 +60,6 @@ namespace DracosD.Models
         {
             //fireProjectile = false;
             lastFlare += dt;
-            Debug.Print(""+randomdouble);
 
             if ((lastFlare / maxTime) > (float)randomdouble)
             {
