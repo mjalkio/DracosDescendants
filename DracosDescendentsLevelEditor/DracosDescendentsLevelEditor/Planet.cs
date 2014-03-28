@@ -19,5 +19,13 @@ namespace DracosDescendentsLevelEditor
             this.x = x;
             this.y = y;
         }
+
+        /// <summary>
+        /// Used to display the planet's info for ComboBoxes
+        /// </summary>
+        public string Display
+        {
+            get { return type + " planet (" + x + ", " + y + ")"; }
+        }
     }
 }

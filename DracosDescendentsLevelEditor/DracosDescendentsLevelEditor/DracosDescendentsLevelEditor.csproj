@@ -1,0 +1,168 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{CB2575E0-BC73-401E-B3BB-3E91D3F0A390}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DracosDescendentsLevelEditor</RootNamespace>
+    <AssemblyName>DracosDescendentsLevelEditor</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Dragon.cs" />
+    <Compile Include="EditDragonForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditDragonForm.Designer.cs">
+      <DependentUpon>EditDragonForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditGateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditGateForm.Designer.cs">
+      <DependentUpon>EditGateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="EditPlanetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="EditPlanetForm.Designer.cs">
+      <DependentUpon>EditPlanetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="LevelEditorForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LevelEditorForm.Designer.cs">
+      <DependentUpon>LevelEditorForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageDragonsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageDragonsForm.Designer.cs">
+      <DependentUpon>ManageDragonsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManageGatesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManageGatesForm.Designer.cs">
+      <DependentUpon>ManageGatesForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ManagePlanetsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ManagePlanetsForm.Designer.cs">
+      <DependentUpon>ManagePlanetsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NewGateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewGateForm.Designer.cs">
+      <DependentUpon>NewGateForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Gate.cs" />
+    <Compile Include="NewPlanetForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NewPlanetForm.Designer.cs">
+      <DependentUpon>NewPlanetForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Planet.cs" />
+    <Compile Include="PreviewLevelForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="PreviewLevelForm.Designer.cs">
+      <DependentUpon>PreviewLevelForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="EditDragonForm.resx">
+      <DependentUpon>EditDragonForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditGateForm.resx">
+      <DependentUpon>EditGateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="EditPlanetForm.resx">
+      <DependentUpon>EditPlanetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="LevelEditorForm.resx">
+      <DependentUpon>LevelEditorForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageDragonsForm.resx">
+      <DependentUpon>ManageDragonsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManageGatesForm.resx">
+      <DependentUpon>ManageGatesForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ManagePlanetsForm.resx">
+      <DependentUpon>ManagePlanetsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewGateForm.resx">
+      <DependentUpon>NewGateForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="NewPlanetForm.resx">
+      <DependentUpon>NewPlanetForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

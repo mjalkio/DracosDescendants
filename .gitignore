@@ -13,3 +13,7 @@ DracosDescendants/WindowsGame1/WindowsGame1Content/obj/x86/Debug/ContentPipeline
 *.cachefile
 *.db
 DracosDescendants/WindowsGame1/WindowsGame1Content/PhysicsFont.spritefont
+*.suo
+DracosDescendentsLevelEditor/DracosDescendentsLevelEditor/DracosDescendentsLevelEditor.csproj.user
+*.resources
+DracosDescendants/WindowsGame1/WindowsGame1Content/DracosDescendants Content.contentproj
