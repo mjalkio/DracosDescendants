@@ -25,7 +25,8 @@ namespace DracosD.Views
     {
         Inactive,       // Not in the middle of any pass.
         SpritePass,     // In the middle of a SpriteBatch pass.
-        PolygonPass     // In the middle of a Polygon pass.
+        PolygonPass,     // In the middle of a Polygon pass.
+        BackgroundPass
     };
     #endregion
 
@@ -53,7 +54,7 @@ namespace DracosD.Views
 
         //the background of the game
         protected Texture2D background;
-        protected Vector2 backgroundSize;
+        protected Texture2D m_background;
 
         // Track the current drawing pass. 
         protected DrawState state;
@@ -70,6 +71,8 @@ namespace DracosD.Views
 
         //camera for scrolling
         private Camera camera;
+        //camera for drawing background
+        private Camera backcamera;
 
         private int levelWidth;
         private int levelHeight;
@@ -314,7 +317,8 @@ namespace DracosD.Views
         /// <param name="game">The root game engine for this view</param>
         public GameView(Game game) {
             // Create a new graphics manager.
-            fullscreen = false;
+            
+            fullscreen = true;
             graphics = new GraphicsDeviceManager(game);
             graphics.IsFullScreen = fullscreen;
 
@@ -367,6 +371,7 @@ namespace DracosD.Views
             font = content.Load<SpriteFont>("PhysicsFont");
             //load background
             background = content.Load<Texture2D>("stars");
+            m_background = content.Load<Texture2D>("stars-parallax middle");
         }
 
 
@@ -389,26 +394,6 @@ namespace DracosD.Views
 
             // Allow either pass to follow.
             state = DrawState.Inactive;
-
-            //draw our customized background here
-            DrawBackground();
-        }
-
-        /// <summary>
-        /// Draws the background image. Uses and closes a SpriteBatch.
-        /// </summary>
-        private void DrawBackground()
-        {
-            // Only use of spritebatch in game.
-            spriteBatch.Begin();
-
-            backgroundSize = new Vector2((float)bounds.Width / (float)background.Width,
-                                         (float)bounds.Height / (float)background.Height);
-
-            spriteBatch.Draw(background, Vector2.Zero, null, Color.White, 0.0f, Vector2.Zero,
-                             backgroundSize, SpriteEffects.None, 1.0f);
-
-            spriteBatch.End();
         }
 
         #region Sprite Pass
@@ -434,8 +419,8 @@ namespace DracosD.Views
             // Set up the drawing view to use the appropriate blending.
             // Deferred sorting guarantees Sprites are drawn in order given.
             spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, camera.GetTransformation());
-            
         }
+
         public void BeginSpritePass(BlendState blend)
         {
             // Check that state invariant is satisfied.
@@ -758,6 +743,46 @@ namespace DracosD.Views
 
         #endregion
 
+
+        #region Background Pass
+
+        public void BeginBackgroundPass(BlendState blend, Vector2 position)
+        {
+            // Check that state invariant is satisfied.
+            Debug.Assert(state == DrawState.Inactive, "Drawing state is invalid (expected Inactive)");
+            state = DrawState.BackgroundPass;
+
+            backcamera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 1.0f);
+
+            backcamera.Pos = position;
+
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null,backcamera.GetTransformation2(0.1f));
+            spriteBatch.Draw(background, -position/4, Color.White);
+            spriteBatch.Draw(m_background, -position/2, Color.White);
+            /*
+            spriteBatch.Draw(background, backcamera.Pos/4, new Rectangle((int)(-backcamera.Pos.X * 0.5f), (int)(-backcamera.Pos.Y * 0.5f), background.Width, background.Height), Color.White);
+            spriteBatch.Draw(m_background, backcamera.Pos/2, new Rectangle((int)(-backcamera.Pos.X * 0.8f), (int)(-backcamera.Pos.Y * 0.8f), m_background.Width, m_background.Height), Color.White);
+            */
+            
+            /*
+            spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, backcamera.GetTransformation2(0.1f));
+            //spriteBatch.Draw(background, new Vector2(0, 0), new Rectangle((int)backcamera.Pos.X / 2, (int)backcamera.Pos.Y / 2, background.Width, background.Height*3), Color.White);
+            spriteBatch.Draw(background, position, Color.White);
+            spriteBatch.End();
+            spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, backcamera.GetTransformation2(0.2f));
+            spriteBatch.Draw(m_background, position, Color.White);*/
+        }
+
+        public void EndBackgroundPass()
+        {
+            // Check the drawing state invariants.
+            Debug.Assert(state == DrawState.BackgroundPass, "Drawing state is invalid (expected SpritePass)");
+            state = DrawState.Inactive;
+            spriteBatch.End();
+        }
+
+        #endregion
+
     #endregion
 
 
@@ -851,6 +876,21 @@ namespace DracosD.Views
 
                 return _transform;
             }
+
+            public Matrix GetTransformation2(float paralax)
+            {
+                return
+                Matrix.CreateTranslation(new Vector3(-_pos.X * paralax, -_pos.Y * paralax, 0)) *
+                Matrix.CreateTranslation(new Vector3(-_viewportWidth * 0.5f,
+                    -_viewportHeight * 0.5f, 0)) *
+                Matrix.CreateRotationZ(Rotation) *
+                Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
+                Matrix.CreateTranslation(new Vector3(_viewportWidth * 0.5f,
+                    _viewportHeight * 0.5f, 0));
+            }
+
+
+
         }
     }
 }

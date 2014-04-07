@@ -462,8 +462,10 @@ namespace DracosD.Controllers
         /// <param name="view">Drawing context</param>
         public virtual void Draw(GameView view)
         {
-            // view.Scale = scale;
-            DrawState state = DrawState.Inactive;
+            DrawState state = DrawState.BackgroundPass;
+            BeginPass(view, state);
+            EndPass(view, state);
+            state = DrawState.Inactive;
             foreach (PhysicsObject obj in Objects)
             {
                 //draw only the current gate and all other objects that are not gates
@@ -478,8 +480,11 @@ namespace DracosD.Controllers
                     }
                     obj.Draw(view);
                 }
+
             }
             EndPass(view, state);
+
+
             state = DrawState.SpritePass;
             BeginTextPass(view, state);
             
@@ -506,6 +511,9 @@ namespace DracosD.Controllers
                     break;
                 case DrawState.SpritePass:
                     view.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
+                    break;
+                case DrawState.BackgroundPass:
+                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragon.Position); //begin drawing the background
                     break;
                 default:
                     break;
@@ -546,6 +554,9 @@ namespace DracosD.Controllers
                     break;
                 case DrawState.SpritePass:
                     view.EndSpritePass();
+                    break;
+                case DrawState.BackgroundPass:
+                    view.EndBackgroundPass(); //begin drawing the background
                     break;
                 default:
                     break;
