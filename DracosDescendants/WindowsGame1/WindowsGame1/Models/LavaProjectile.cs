@@ -15,6 +15,8 @@ namespace DracosD.Models
         #region Fields
         // Access through property, not constant
         //private const float BULLET_SPEED = 10.0f;
+        private const int lifetime = 220;
+        private int timeLiving;
         #endregion
 
         #region Properties (READ-ONLY)
@@ -37,6 +39,7 @@ namespace DracosD.Models
                 Density = 1.0f;
                 Friction = 0.0f;
                 Restitution = 0.0f;
+                timeLiving = 0;
                 //body.IsSensor = true;
             }
 
@@ -82,6 +85,13 @@ namespace DracosD.Models
         public override void Draw(GameView view)
         {
             view.DrawSprite(texture, Color.White, Position, scale * 2.0f, Rotation);
+        }
+
+        public override void Update(float dt)
+        {
+            timeLiving++;
+            if (timeLiving > lifetime) this.Remove = true;
+            base.Update(dt);
         }
 
     }

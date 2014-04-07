@@ -151,7 +151,7 @@ namespace DracosD.Models
 
             // Picks which frame of the dragon animation effect
             if (LinearVelocity.Y < -1)
-            {
+            { 
                 // Turn on the flames and go back and forth
                 if (animationFrame == 0)
                 {

@@ -292,6 +292,19 @@ namespace DracosD.Controllers
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
             //AddObject(obj);*/
+            Vector2[] points = { new Vector2(0f, 0.0f), new Vector2(Width, 0f), new Vector2(Width+1.0f, 0.1f), new Vector2(0f, 0.1f) };
+            PhysicsObject obj = new PolygonObject(regularPlanetTexture, points, Scale);
+            obj.BodyType = BodyType.Static;
+            obj.Density = BASIC_DENSITY;
+            obj.Restitution = BASIC_RESTITION;
+            AddObject(obj);
+
+            Vector2[] points2 = { new Vector2(0f, Height), new Vector2(0f, Height-0.1f), new Vector2(Width, Height-.1f), new Vector2(Width + 1.0f, Height),};
+            obj = new PolygonObject(regularPlanetTexture, points2, Scale);
+            obj.BodyType = BodyType.Static;
+            obj.Density = BASIC_DENSITY;
+            obj.Restitution = BASIC_RESTITION;
+            AddObject(obj);
 
             dragon = level.Racers[0];
             AddObject(dragon);
@@ -466,6 +479,11 @@ namespace DracosD.Controllers
             BeginPass(view, state);
             EndPass(view, state);
             state = DrawState.Inactive;
+            /*Debug.Print("VIEW: " + view.LevelWidth);
+            Debug.Print("WORLD: " + Width);*/
+            Debug.Print("" + Dragon.Position);
+            Debug.Print("Dragon: " + dragon.X + ", " + dragon.Y);
+            // view.Scale = scale;
             foreach (PhysicsObject obj in Objects)
             {
                 //draw only the current gate and all other objects that are not gates
@@ -479,6 +497,10 @@ namespace DracosD.Controllers
                         BeginPass(view, state);
                     }
                     obj.Draw(view);
+                    /*if (obj.Position.X - Width < 0.0f && obj.Position.X - Width > -2.0f)
+                    {
+
+                    }*/
                 }
 
             }
@@ -576,7 +598,6 @@ namespace DracosD.Controllers
         /// <param name="dt">Timing values from parent loop</param>
         public void Update(float dt)
         {
-            Debug.Print("" + scale);//dragon.LinearVelocity.Length());
             // Debug.Print("" + dragon.Thrust);
 
             // Read input and assign actions to rocket
@@ -624,6 +645,18 @@ namespace DracosD.Controllers
             }
 
             foreach (PhysicsObject obje in objects){
+                if (obje.Position.X > Width)
+                {
+                    Vector2 currentPosition = obje.Position;
+                    obje.X = currentPosition.X - Width;
+                    obje.Y = currentPosition.Y;
+                }
+                if (obje.Position.X < 0)
+                {
+                    Vector2 currentPosition = obje.Position;
+                    obje.X = currentPosition.X + Width;
+                    obje.Y = currentPosition.Y;
+                }
                 if (obje is LavaPlanet)
                 {
                     LavaPlanet lavaplan = (LavaPlanet)obje;
@@ -702,13 +735,13 @@ namespace DracosD.Controllers
         {
             const float BULLET_OFFSET = 0.5f;
 
-            float radius = planet.Radius / 6.0f;
+            float radius = planet.Radius / 4.0f;
             LavaProjectile bullet = new LavaProjectile(lavaProjTexture, planet.Position, radius);
             bullet.Density = .5f;
 
             // Compute position and velocity
             float offset = (lavaProjTexture.Width + BULLET_OFFSET);
-            float speed = rand.Next(100,300);
+            float speed = rand.Next(7,13);
             float randomDirection = (float)(rand.NextDouble() * Math.PI * 2.0);
             float randomDirection2 = (float)(rand.NextDouble() * Math.PI * 2.0);
             Vector2 randomDirection2Vec = new Vector2((float)Math.Cos(randomDirection2), (float)Math.Sin(randomDirection2));

@@ -117,6 +117,7 @@
     <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\PlayerInputController.cs" />
     <Compile Include="Controllers\RaceController.cs" />
+    <Compile Include="Controllers\RacerController.cs" />
     <Compile Include="Controllers\WorldController.cs" />
     <Compile Include="GameEngine.cs" />
     <Compile Include="Models\Asteroid.cs" />

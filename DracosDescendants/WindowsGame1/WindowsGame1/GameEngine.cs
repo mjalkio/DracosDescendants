@@ -74,8 +74,8 @@ namespace DracosD
         {
             gameView.LoadContent(content);
             gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
-            gameView.LevelWidth = gameLevelController.Width;
-            gameView.LevelHeight = gameLevelController.Height;
+            gameView.LevelWidth = (int) (gameLevelController.Width / WorldController.DEFAULT_SCALE);
+            gameView.LevelHeight = (int)(gameLevelController.Height / WorldController.DEFAULT_SCALE);
 
             victory = content.Load<Texture2D>("victory");
             currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);

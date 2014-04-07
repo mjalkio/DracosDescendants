@@ -296,6 +296,7 @@ namespace DracosD.Views
         public int LevelWidth
         {
             set { levelWidth = value; }
+            get { return levelWidth; }
         }
 
         public int LevelHeight
@@ -318,7 +319,7 @@ namespace DracosD.Views
         public GameView(Game game) {
             // Create a new graphics manager.
             
-            fullscreen = true;
+            fullscreen = false;
             graphics = new GraphicsDeviceManager(game);
             graphics.IsFullScreen = fullscreen;
 
@@ -500,6 +501,17 @@ namespace DracosD.Views
 
             // Draw it.
             spriteBatch.Draw(image, position, null, tint, angle, origin, scale, SpriteEffects.None, 0);
+
+            if (position.X < 50.0f)
+            {
+                Debug.Print("HERE IN THE FLESH");
+                spriteBatch.Draw(image, new Vector2(position.X+(float)levelWidth,position.Y), null, tint, angle, origin, scale, SpriteEffects.None, 0);
+            }
+
+            if (position.X > levelWidth-50.0f)
+            {
+                spriteBatch.Draw(image, new Vector2(position.X - (float)levelWidth, position.Y), null, tint, angle, origin, scale, SpriteEffects.None, 0);
+            }
         }
 
         /// <summary>
@@ -843,10 +855,10 @@ namespace DracosD.Views
                 get { return _pos; }
                 set
                 {
-                    float leftBarrier = (float)_viewportWidth *
-                            .5f / _zoom;
-                    float rightBarrier = _worldWidth -
-                            (float)_viewportWidth * .5f / _zoom;
+                    float leftBarrier = 0;/* (float)_viewportWidth *
+                             .5f / _zoom;*/
+                    float rightBarrier = _worldWidth; /* -
+                            (float)_viewportWidth * .5f / _zoom;*/
                     float topBarrier = _worldHeight -
                             (float)_viewportHeight * .5f / _zoom;
                     float bottomBarrier = (float)_viewportHeight *

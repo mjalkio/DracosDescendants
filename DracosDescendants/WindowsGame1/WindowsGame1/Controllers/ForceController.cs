@@ -60,11 +60,14 @@ namespace DracosD.Controllers
             foreach (PlanetaryObject p in planets)
             {
                 Vector2 gravity = p.Position - dragon.Position;
-                float force = (dragon.Body.Mass * p.Body.Mass * G) / gravity.Length();
-                gravity = gravity / gravity.Length();
-                gravity = gravity * force;
+                if (gravity.Length() < 80.0f)
+                {
+                    float force = (dragon.Body.Mass * p.Body.Mass * G) / gravity.Length();
+                    gravity = gravity / gravity.Length();
+                    gravity = gravity * force;
 
-                dragon.Body.ApplyForce(gravity);
+                    dragon.Body.ApplyForce(gravity);
+                }
 
                 //Debug.Print("GRAVITY: " + gravity);
             }
