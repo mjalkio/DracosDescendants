@@ -47,11 +47,20 @@ namespace DracosD.Controllers
         protected bool lessDampenPressed;
         protected bool moreDampenThresholdPressed;
         protected bool lessDampenThresholdPressed;
+
         protected bool keyPressed;
+
+        protected bool breathing;
+
 
         #endregion
 
         #region Properties (READ-ONLY)
+
+        public bool Breathing
+        {
+            get { return breathing; }
+        }
         /// <summary>
         /// The amount of sideways movement. -1 = left, 1 = right, 0 = still
         /// </summary>
@@ -220,6 +229,13 @@ namespace DracosD.Controllers
                 vertical += 1.0f;
                 keyPressed = true;
             }
+
+            breathing = false;
+            if (keyboard.IsKeyDown(Keys.Space))
+            {
+                breathing = true;
+            }
+
 
             /* Q/A control restitution
              * W/S control gravity

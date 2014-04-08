@@ -24,7 +24,7 @@ namespace DracosD.Controllers
         // Dimensions of the game world
         private const float WIDTH = 80.0f;
         private const float HEIGHT = 60.0f;
-        private const float GRAVITY = 8.0f;
+        private const float GRAVITY = 6.0f;
 
         // Physics constants for initialization
         private const float BASIC_DENSITY = 0.0f;
@@ -487,12 +487,26 @@ namespace DracosD.Controllers
             Debug.Print("WORLD: " + Width);
             Debug.Print("" + Dragon.Position);
             Debug.Print("Dragon: " + dragon.X + ", " + dragon.Y);*/
+
             // view.Scale = scale;
             foreach (PhysicsObject obj in Objects)
             {
                 //draw only the current gate and all other objects that are not gates
                 if (!(obj is Gate) || (obj is Gate && currentGates[dragon] < level.Gates.Count && level.Gates[currentGates[dragon]].Equals((Gate)obj)))
                 {
+                    Dragon drawDrag = null;
+                    drawDrag = obj as Dragon;
+                    if (drawDrag != null)
+                    {
+                        if (drawDrag.IsBreathing)
+                        {
+                            EndPass(view, state);
+                            state = DrawState.PolygonPass;
+                            BeginPass(view, state);
+                            drawDrag.Breath.Draw(view);
+                            //Debug.Print("here");
+                        }
+                    }
                     // Need to change the current drawing pass.
                     if (state != obj.DrawState)
                     {
@@ -611,6 +625,20 @@ namespace DracosD.Controllers
             }
 
             // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
+            //control dragon breath
+            if (playerInput.Breathing)
+            {
+                dragon.breathFire();
+                dragon.Breath.ActivatePhysics(world);
+            }
+            else
+            {
+                if (dragon.Breath != null)
+                {
+                    dragon.Breath.DeactivatePhysics(world);
+                }
+                dragon.stopBreathing();
+            }
             // Control and bound gravity
             if (playerInput.gravUp) forceController.Gravity = forceController.Gravity + .01f;
             if (playerInput.gravDown && forceController.Gravity >0.0f) forceController.Gravity = forceController.Gravity - .01f;
@@ -673,7 +701,38 @@ namespace DracosD.Controllers
                         lapNum--;
                     }
                 }
+
                 if (lapNum > playerLap) playerLap = lapNum;
+
+
+                if (obje is GaseousPlanet)
+                {
+                    GaseousPlanet gp = (GaseousPlanet)obje;
+                    if (gp.Burned)
+                    {
+                        gp.OnFire = true;
+                    }
+                    Vector2 p1 = gp.Position;
+                    Vector2 p2 = new Vector2(gp.Position.X, gp.Position.Y + gp.Radius);
+                    Vector2 p3 = new Vector2(gp.Position.X, gp.Position.Y - gp.Radius);
+                    Vector2 p4 = new Vector2(gp.Position.X - gp.Radius, gp.Position.Y);
+                    Vector2 p5 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
+                    Vector2 p6 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y + (float)(gp.Radius / Math.Sqrt(2)));
+                    //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
+                    if (dragon.IsBreathing)
+                    {
+                        foreach (Fixture fix in dragon.Breath.Fixtures)
+                        {
+                            if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6))
+                                && !gp.OnFire)
+                            {
+                                gp.Torch(false);
+                                break;
+                            }
+                        }
+                    }
+
+                }
 
                 if (obje is LavaPlanet)
                 {

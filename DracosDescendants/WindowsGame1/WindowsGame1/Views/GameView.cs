@@ -504,7 +504,7 @@ namespace DracosD.Views
 
             if (position.X < 50.0f)
             {
-                Debug.Print("HERE IN THE FLESH");
+                //Debug.Print("HERE IN THE FLESH");
                 spriteBatch.Draw(image, new Vector2(position.X+(float)levelWidth,position.Y), null, tint, angle, origin, scale, SpriteEffects.None, 0);
             }
 
@@ -724,8 +724,12 @@ namespace DracosD.Views
             // Check the drawing state invariants.
             Debug.Assert(state == DrawState.PolygonPass, "Drawing state is invalid (expected PolygonPass)");
 
+            camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 10.0f);
+
+            camera.BPos = position;
+
             // Create translation matrix
-            effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) *transform;
+            effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) * camera.GetBreathTransformation();
             effect.Texture = texture;
 
             // Prepare device for drawing.
@@ -875,12 +879,49 @@ namespace DracosD.Views
                 }
             }
 
+            public Vector2 BPos
+            {
+                get { return _pos; }
+                set
+                {
+                    float leftBarrier = 0;/* (float)_viewportWidth *
+                             .5f / _zoom;*/
+                    float rightBarrier = _worldWidth; /* -
+                            (float)_viewportWidth * .5f / _zoom;*/
+                    float topBarrier = _worldHeight -
+                            (float)_viewportHeight * .5f / _zoom;
+                    float bottomBarrier = (float)_viewportHeight *
+                            .5f / _zoom;
+                    _pos = value;
+                    /*if (_pos.X <= leftBarrier)
+                        _pos.X = leftBarrier + 5.0f;
+                    if (_pos.X >= rightBarrier)
+                        _pos.X = rightBarrier + 5.0f;*/
+                    if (_pos.Y >= topBarrier +1.7f)
+                        _pos.Y = topBarrier + 1.7f;
+                    if (_pos.Y <= bottomBarrier +1.7f)
+                        _pos.Y = bottomBarrier + 1.7f;
+                }
+            }
+
             #endregion
 
             public Matrix GetTransformation()
             {
                 _transform =
                 Matrix.CreateTranslation(new Vector3(-_pos.X, -_pos.Y, 0)) *
+                Matrix.CreateRotationZ(Rotation) *
+                Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
+                Matrix.CreateTranslation(new Vector3(_viewportWidth * 0.5f,
+                    _viewportHeight * 0.5f, 0));
+
+                return _transform;
+            }
+
+            public Matrix GetBreathTransformation()
+            {
+                _transform =
+                Matrix.CreateTranslation(new Vector3(-_pos.X + 4.8f, -_pos.Y + 1.7f, 0)) *
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
                 Matrix.CreateTranslation(new Vector3(_viewportWidth * 0.5f,

@@ -83,6 +83,11 @@ namespace DracosD.Objects {
             }
         }
 
+        public LinkedList<Fixture> Fixtures
+        {
+            get { return fixtures; }
+        }
+
         /// <summary>
         /// Width of the polygon bounding box
         /// </summary>

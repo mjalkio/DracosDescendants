@@ -14,6 +14,7 @@ using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using DracosD.Objects;
 using DracosD.Views;
+using WindowsGame1.Models;
 #endregion
 
 namespace DracosD.Models
@@ -38,6 +39,10 @@ namespace DracosD.Models
 
         // texture for dragon
         private Texture2D flapEffect;
+        private Texture2D flameTexture;
+
+        private FireBreath breath;
+        private bool isBreathing;
 
         // To animate the rocket flames
         private int animationFrame = 0;
@@ -61,6 +66,17 @@ namespace DracosD.Models
         {
             get { return force; }
             set { force = value; }
+        }
+
+        public FireBreath Breath
+        {
+            get { return breath; }
+            set { breath = value; }
+        }
+
+        public bool IsBreathing
+        {
+            get { return breath != null && isBreathing; }
         }
 
         /// <summary>
@@ -109,11 +125,14 @@ namespace DracosD.Models
         #endregion
 
         #region Initialization
-        public Dragon(Texture2D effect, Vector2 pos, Vector2 dimension) :
+        public Dragon(Texture2D effect, Vector2 pos, Vector2 dimension, Texture2D fireBreath) :
             base(effect, pos, new Vector2((dimension.X / (NUM_FRAMES * 2)), dimension.Y) ) 
         {
             BodyType = BodyType.Dynamic;
             flapEffect = effect;
+            flameTexture = fireBreath;
+            breath = null;
+            isBreathing = false;
             Density  = DEFAULT_DENSITY;
             Friction = DEFAULT_FRICTION;
             Restitution = DEFAULT_RESTITUTION;
@@ -121,6 +140,17 @@ namespace DracosD.Models
             currCooldown = 0;
         }
 
+        public void stopBreathing()
+        {
+            breath = null;
+            isBreathing = false;
+        }
+
+        public void breathFire()
+        {
+            isBreathing = true;
+            breath = new FireBreath(flameTexture,new Vector2(Position.X + 4.8f,Position.Y + 1.7f),new Vector2(10.0f,10.0f));
+        }
         /// <summary>
         /// Creates the physics Body for this object, adding it to the world.
         /// </summary>

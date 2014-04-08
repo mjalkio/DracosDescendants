@@ -29,6 +29,7 @@ namespace DracosD.Controllers
         private static Texture2D backgroundTexture;
         private static Texture2D gaseousTexture;
         private static Texture2D lavaTexture;
+        private static Texture2D fireBreath;
 
         #endregion
 
@@ -96,6 +97,7 @@ namespace DracosD.Controllers
             gateTexture = content.Load<Texture2D>("earthtile");
             gaseousTexture = content.Load<Texture2D>("gaseous planet");
             lavaTexture = content.Load<Texture2D>("lava planet");
+            fireBreath = content.Load<Texture2D>("flames");
             parseLevelFromXML(xmlFile);
         }
 
@@ -119,7 +121,7 @@ namespace DracosD.Controllers
             foreach (var dragon in dragons)
             {
                 Dragon playerDragon = new Dragon(dragonTexture, new Vector2((Convert.ToInt32(dragon.X) / worldscale), 
-                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width/worldscale,dragonTexture.Height/worldscale));
+                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width/worldscale,dragonTexture.Height/worldscale),fireBreath);
                 racerList.Add(playerDragon);
             }
 
