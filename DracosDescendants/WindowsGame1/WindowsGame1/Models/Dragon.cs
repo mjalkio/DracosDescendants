@@ -27,6 +27,7 @@ namespace DracosD.Models
         private const float DEFAULT_FRICTION = 0.1f;
         private const float DEFAULT_RESTITUTION = 0.4f;
         private const int COOLDOWN = 60; //in ticks
+        private const int DELAY = 30;
 
         // Thrust amount to convert player input into thrust
         private const int NUM_FRAMES = 9;
@@ -56,6 +57,7 @@ namespace DracosD.Models
         private float dampeningThreshold = 40.0f;
 
         private int currCooldown;
+        private int delayTime;
         #endregion
 
         #region Properties (READ-WRITE)
@@ -138,6 +140,7 @@ namespace DracosD.Models
             Restitution = DEFAULT_RESTITUTION;
             isOnFire = false;
             currCooldown = 0;
+            delayTime = 0;
         }
 
         public void stopBreathing()
@@ -174,10 +177,11 @@ namespace DracosD.Models
         /// </summary>
         /// <param name="dt">Timing values from parent loop</param>
         public override void Update(float dt) {
-            if (!CanMove)
+            /*if (!CanMove)
             {
                 Burn(true);
-            }
+            }*/
+            Burn(true);
 
             if (base.LinearVelocity.Length() > dampeningThreshold)
             {
@@ -187,7 +191,7 @@ namespace DracosD.Models
 
 
             // Picks which frame of the dragon animation effect
-            if (isFlapping)
+            if (isFlapping && CanMove)
             { 
                 // Turn on the flames and go back and forth
                 if (animationFrame == 0)
@@ -235,13 +239,22 @@ namespace DracosD.Models
         /// <param name="decr"></param>
         public void Burn(bool decr)
         {
-            if (decr && currCooldown > 0)
+            if (delayTime == 1)
+            {
+                currCooldown = COOLDOWN;
+            }
+            if (decr && delayTime > 0)
+            {
+                delayTime--;
+            }
+            else if (decr && currCooldown > 0)
             {
                 currCooldown--;
             }
             else if (!decr)
             {
-                currCooldown = COOLDOWN;
+                //currCooldown = COOLDOWN;
+                delayTime = DELAY;
             }
         }
 
