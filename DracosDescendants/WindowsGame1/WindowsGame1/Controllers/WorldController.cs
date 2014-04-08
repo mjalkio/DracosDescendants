@@ -629,7 +629,7 @@ namespace DracosD.Controllers
                 dragon.IsFlapping = false;
             }
 
-            /*
+            
             // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
             //control dragon breath
             if (playerInput.Breathing)
@@ -645,6 +645,7 @@ namespace DracosD.Controllers
                 }
                 dragon.stopBreathing();
             }
+            /*
             // Control and bound gravity
             if (playerInput.gravUp) forceController.Gravity = forceController.Gravity + .01f;
             if (playerInput.gravDown && forceController.Gravity >0.0f) forceController.Gravity = forceController.Gravity - .01f;
