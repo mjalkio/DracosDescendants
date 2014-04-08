@@ -34,6 +34,7 @@ namespace DracosD.Models
         #region Fields
         private Vector2 force;
         private bool isOnFire;
+        private bool isFlapping = false;
 
         // texture for dragon
         private Texture2D flapEffect;
@@ -91,6 +92,12 @@ namespace DracosD.Models
         {
             get { return dampeningThreshold; }
             set { dampeningThreshold = value; }
+        }
+
+        public bool IsFlapping
+        {
+            get { return isFlapping; }
+            set { isFlapping = value; }
         }
         #endregion
 
@@ -150,7 +157,7 @@ namespace DracosD.Models
 
 
             // Picks which frame of the dragon animation effect
-            if (LinearVelocity.Y < -1)
+            if (isFlapping)
             { 
                 // Turn on the flames and go back and forth
                 if (animationFrame == 0)

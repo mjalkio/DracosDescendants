@@ -497,10 +497,6 @@ namespace DracosD.Controllers
                         BeginPass(view, state);
                     }
                     obj.Draw(view);
-                    /*if (obj.Position.X - Width < 0.0f && obj.Position.X - Width > -2.0f)
-                    {
-
-                    }*/
                 }
 
             }
@@ -603,6 +599,12 @@ namespace DracosD.Controllers
             // Read input and assign actions to rocket
             playerInput.ReadInput();
 
+            //if arrow key is pressed, then flap the dragon
+            if (playerInput.keyDown) dragon.IsFlapping = true;
+            else
+            {
+                dragon.IsFlapping = false;
+            }
 
             // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
             // Control and bound gravity

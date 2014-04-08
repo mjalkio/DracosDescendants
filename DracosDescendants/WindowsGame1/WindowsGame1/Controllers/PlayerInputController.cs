@@ -47,6 +47,7 @@ namespace DracosD.Controllers
         protected bool lessDampenPressed;
         protected bool moreDampenThresholdPressed;
         protected bool lessDampenThresholdPressed;
+        protected bool keyPressed;
 
         #endregion
 
@@ -147,6 +148,11 @@ namespace DracosD.Controllers
             get { return lessDampenThresholdPressed; }
         }
 
+        public bool keyDown
+        {
+            get { return keyPressed; }
+        }
+
         #endregion
 
         #region Methods
@@ -190,27 +196,30 @@ namespace DracosD.Controllers
         private void ReadKeyboardInput()
         {
             KeyboardState keyboard = Keyboard.GetState();
-
+            keyPressed = false;
             horizontal = 0.0f;
             if (keyboard.IsKeyDown(Keys.Right))
             {
                 horizontal += 1.0f;
+                keyPressed = true;
             }
             if (keyboard.IsKeyDown(Keys.Left))
             {
                 horizontal -= 1.0f;
+                keyPressed = true;
             }
 
             vertical = 0.0f;
             if (keyboard.IsKeyDown(Keys.Up))
             {
                 vertical -= 1.0f;
+                keyPressed = true;
             }
             if (keyboard.IsKeyDown(Keys.Down))
             {
                 vertical += 1.0f;
+                keyPressed = true;
             }
-
 
             /* Q/A control restitution
              * W/S control gravity
