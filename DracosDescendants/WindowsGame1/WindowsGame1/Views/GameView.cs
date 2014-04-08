@@ -55,6 +55,7 @@ namespace DracosD.Views
         //the background of the game
         protected Texture2D background;
         protected Texture2D m_background;
+        protected Texture2D f_background;
 
         // Track the current drawing pass. 
         protected DrawState state;
@@ -373,6 +374,7 @@ namespace DracosD.Views
             //load background
             background = content.Load<Texture2D>("stars");
             m_background = content.Load<Texture2D>("stars-parallax middle");
+            f_background = content.Load<Texture2D>("stars-parallax front");
         }
 
 
@@ -774,19 +776,9 @@ namespace DracosD.Views
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null,backcamera.GetTransformation2(0.1f));
             spriteBatch.Draw(background, -position/4, Color.White);
-            spriteBatch.Draw(m_background, -position/2, Color.White);
-            /*
-            spriteBatch.Draw(background, backcamera.Pos/4, new Rectangle((int)(-backcamera.Pos.X * 0.5f), (int)(-backcamera.Pos.Y * 0.5f), background.Width, background.Height), Color.White);
-            spriteBatch.Draw(m_background, backcamera.Pos/2, new Rectangle((int)(-backcamera.Pos.X * 0.8f), (int)(-backcamera.Pos.Y * 0.8f), m_background.Width, m_background.Height), Color.White);
-            */
-            
-            /*
-            spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, backcamera.GetTransformation2(0.1f));
-            //spriteBatch.Draw(background, new Vector2(0, 0), new Rectangle((int)backcamera.Pos.X / 2, (int)backcamera.Pos.Y / 2, background.Width, background.Height*3), Color.White);
-            spriteBatch.Draw(background, position, Color.White);
-            spriteBatch.End();
-            spriteBatch.Begin(SpriteSortMode.Deferred, blend, null, null, null, null, backcamera.GetTransformation2(0.2f));
-            spriteBatch.Draw(m_background, position, Color.White);*/
+            spriteBatch.Draw(m_background, -position/3, Color.White);
+            spriteBatch.Draw(f_background, -position/2, Color.White);
+ 
         }
 
         public void EndBackgroundPass()
