@@ -69,6 +69,8 @@ namespace DracosD.Controllers
         #region Fields
         // All the objects in the world
         private LevelController level;
+        private int lapNum;
+        private int playerLap;
 
         private LinkedList<PhysicsObject> objects = new LinkedList<PhysicsObject>();
 
@@ -235,6 +237,8 @@ namespace DracosD.Controllers
             LoadContent(content);
             PopulateLevel();
 
+            lapNum = 1;
+
             succeeded = false;
 
             //level is populated so initialize and populate the current gates for each racer
@@ -292,7 +296,7 @@ namespace DracosD.Controllers
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
             //AddObject(obj);*/
-            Vector2[] points = { new Vector2(0f, 0.0f), new Vector2(Width, 0f), new Vector2(Width+1.0f, 0.1f), new Vector2(0f, 0.1f) };
+            Vector2[] points = { new Vector2(0f, 0.0f), new Vector2(Width, 0f), new Vector2(Width+1.0f, 0.01f), new Vector2(0f, 0.01f) };
             PhysicsObject obj = new PolygonObject(regularPlanetTexture, points, Scale);
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
@@ -480,9 +484,9 @@ namespace DracosD.Controllers
             EndPass(view, state);
             state = DrawState.Inactive;
             /*Debug.Print("VIEW: " + view.LevelWidth);
-            Debug.Print("WORLD: " + Width);*/
+            Debug.Print("WORLD: " + Width);
             Debug.Print("" + Dragon.Position);
-            Debug.Print("Dragon: " + dragon.X + ", " + dragon.Y);
+            Debug.Print("Dragon: " + dragon.X + ", " + dragon.Y);*/
             // view.Scale = scale;
             foreach (PhysicsObject obj in Objects)
             {
@@ -531,7 +535,7 @@ namespace DracosD.Controllers
                     view.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
                     break;
                 case DrawState.BackgroundPass:
-                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragon.Position); //begin drawing the background
+                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragon.Position + new Vector2((lapNum)*Width,0)); //begin drawing the background
                     break;
                 default:
                     break;
@@ -646,19 +650,31 @@ namespace DracosD.Controllers
                 }
             }
 
+
+            //Manage lap tracking and seamless wraparound
             foreach (PhysicsObject obje in objects){
                 if (obje.Position.X > Width)
                 {
                     Vector2 currentPosition = obje.Position;
                     obje.X = currentPosition.X - Width;
                     obje.Y = currentPosition.Y;
+                    if (obje == dragon)
+                    {
+                        lapNum++;
+                    }
                 }
                 if (obje.Position.X < 0)
                 {
                     Vector2 currentPosition = obje.Position;
                     obje.X = currentPosition.X + Width;
                     obje.Y = currentPosition.Y;
+                    if (obje == dragon)
+                    {
+                        lapNum--;
+                    }
                 }
+                if (lapNum > playerLap) playerLap = lapNum;
+
                 if (obje is LavaPlanet)
                 {
                     LavaPlanet lavaplan = (LavaPlanet)obje;
