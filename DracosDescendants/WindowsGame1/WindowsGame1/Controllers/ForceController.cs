@@ -16,6 +16,7 @@ namespace DracosD.Controllers
         private Dragon dragon;
         private List<PlanetaryObject> planets;
         private float G = 2.0f;
+        private float worldwidth;
     #endregion
 
     #region Properties (READ-WRITE)
@@ -48,10 +49,11 @@ namespace DracosD.Controllers
         /// Create a new controller for the given rocket
         /// </summary>
         /// <param name="rocket">The rocket</param>
-        public ForceController(Dragon dragon, List<PlanetaryObject> planets)
+        public ForceController(Dragon dragon, List<PlanetaryObject> planets, float width)
             : base(ControllerType.AbstractForceController) {
             this.dragon = dragon;
             this.planets = planets;
+            this.worldwidth = width;
         }
 
 
@@ -60,14 +62,25 @@ namespace DracosD.Controllers
             foreach (PlanetaryObject p in planets)
             {
                 Vector2 gravity = p.Position - dragon.Position;
-                if (gravity.Length() < 80.0f)
+                Vector2 grav2;
+                if (p.Position.X > dragon.Position.X)
                 {
-                    float force = (dragon.Body.Mass * p.Body.Mass * G) / gravity.Length();
-                    gravity = gravity / gravity.Length();
-                    gravity = gravity * force;
-
-                    dragon.Body.ApplyForce(gravity);
+                    grav2 = (p.Position - new Vector2(worldwidth, 0)) - dragon.Position;
                 }
+                else
+                {
+                    grav2 = (p.Position + new Vector2(worldwidth, 0)) - dragon.Position;
+                }
+                if (grav2.Length() < gravity.Length()) {
+                    gravity = grav2;
+                }
+
+                float force = (dragon.Body.Mass * p.Body.Mass * G) / gravity.Length();
+                gravity = gravity / gravity.Length();
+                gravity = gravity * force;
+
+                dragon.Body.ApplyForce(gravity);
+                
 
                 //Debug.Print("GRAVITY: " + gravity);
             }

@@ -245,7 +245,7 @@ namespace DracosD.Controllers
             initializeGates(currentGates, level.Racers);
 
             // Attach the force controller to the rocket.
-            forceController = new ForceController(dragon, planets);
+            forceController = new ForceController(dragon, planets,Width);
             world.AddController(forceController);
 
             world.ContactManager.BeginContact += ContactAdded;
@@ -391,10 +391,14 @@ namespace DracosD.Controllers
                         (body1.UserData == currGate && body2.UserData == dragon))
                     {
                         //If you pass the last gate, you win
-                        if (currentGates[drag] == level.Gates.Count - 1)
+                        if (currentGates[drag] == level.Gates.Count - 1 && playerLap == 3)
                         {
                             Succeeded = true;
                             currentGates[drag]++;
+                        }
+                        else if (currentGates[drag] == level.Gates.Count - 1)
+                        {
+                            currentGates[drag] = 0;
                         }
                         else
                         {
@@ -521,16 +525,17 @@ namespace DracosD.Controllers
             EndPass(view, state);
 
 
-            state = DrawState.SpritePass;
+            /*state = DrawState.SpritePass;
             BeginTextPass(view, state);
             
-            view.DrawText("Q/A Restitution: " + planets[0].Restitution, Color.White, new Vector2(0.0f, 2.0f));
-            view.DrawText("W/S Gravity Constant: " + forceController.Gravity, Color.White, new Vector2(0.0f, 6.5f));
-            view.DrawText("E/D Dragon Thrust: " + dragon.Thrust, Color.White, new Vector2(0.0f, 11.0f));
-            view.DrawText("R/F Dampening Factor: " + dragon.Dampen, Color.White, new Vector2(0.0f, 15.5f));
-            view.DrawText("T/G Top Speed: " + dragon.DampenThreshold, Color.White, new Vector2(0.0f, 20.0f));
-            view.DrawText("Current Speed: " + dragon.LinearVelocity.Length(), Color.White, new Vector2(0.0f, 24.5f));
-            EndPass(view, state);
+
+            view.DrawText("Q/A Restitution: " + planets[0].Restitution, Color.White, new Vector2(0.0f, 0.0f));
+            view.DrawText("W/S Gravity Constant: " + forceController.Gravity, Color.White, new Vector2(0.0f, 0.5f));
+            view.DrawText("E/D Dragon Thrust: " + dragon.Thrust, Color.White, new Vector2(0.0f, 1.0f));
+            view.DrawText("R/F Dampening Factor: " + dragon.Dampen, Color.White, new Vector2(0.0f, 1.5f));
+            view.DrawText("T/G Top Speed: " + dragon.DampenThreshold, Color.White, new Vector2(0.0f, 2.0f));
+            view.DrawText("Current Speed: " + dragon.LinearVelocity.Length(), Color.White, new Vector2(0.0f, 2.5f));
+            EndPass(view, state);*/
         }
 
         /// <summary>
@@ -613,7 +618,7 @@ namespace DracosD.Controllers
         public void Update(float dt)
         {
             // Debug.Print("" + dragon.Thrust);
-
+            
             // Read input and assign actions to rocket
             playerInput.ReadInput();
 
@@ -624,6 +629,7 @@ namespace DracosD.Controllers
                 dragon.IsFlapping = false;
             }
 
+            /*
             // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
             //control dragon breath
             if (playerInput.Breathing)
@@ -677,7 +683,7 @@ namespace DracosD.Controllers
                     if (planet.Restitution < 0.0f) planet.Restitution = 0.0f;
                 }
             }
-
+            */
 
             //Manage lap tracking and seamless wraparound
             foreach (PhysicsObject obje in objects){
