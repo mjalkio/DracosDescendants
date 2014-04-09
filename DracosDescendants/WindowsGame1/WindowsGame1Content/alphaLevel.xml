@@ -1,0 +1,173 @@
+<level>
+  <levelwidth>3200</levelwidth>
+  <levelheight>1000</levelheight>
+
+  <dragon>
+    <x>120</x>
+    <y>480</y>
+  </dragon>
+
+  <planet>
+    <type>regular</type>
+    <radius>40</radius>
+    <x>480</x>
+    <y>600</y>
+  </planet>
+  
+  <planet>
+    <type>regular</type>
+    <radius>40</radius>
+    <x>520</x>
+    <y>225</y>
+  </planet>
+  
+  <planet>
+    <type>lava</type>
+    <radius>65</radius>
+    <x>760</x>
+    <y>120</y>
+  </planet>
+  
+  <planet>
+    <type>regular</type>
+    <radius>65</radius>
+    <x>720</x>
+    <y>520</y>
+  </planet>
+  
+  <planet>
+    <type>lava</type>
+    <radius>30</radius>
+    <x>400</x>
+    <y>760</y>
+  </planet>
+  
+  <planet>
+    <type>regular</type>
+    <radius>30</radius>
+    <x>970</x>
+    <y>640</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>30</radius>
+    <x>1300</x>
+    <y>540</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>60</radius>
+    <x>1150</x>
+    <y>910</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>70</radius>
+    <x>1550</x>
+    <y>330</y>
+  </planet>
+
+  <planet>
+    <type>gaseous</type>
+    <radius>45</radius>
+    <x>1600</x>
+    <y>680</y>
+  </planet>
+
+  <planet>
+    <type>gaseous</type>
+    <radius>45</radius>
+    <x>1500</x>
+    <y>790</y>
+  </planet>
+
+  <planet>
+    <type>gaseous</type>
+    <radius>45</radius>
+    <x>1400</x>
+    <y>840</y>
+  </planet>
+
+  <planet>
+    <type>gaseous</type>
+    <radius>45</radius>
+    <x>1700</x>
+    <y>620</y>
+  </planet>
+
+  <planet>
+    <type>gaseous</type>
+    <radius>45</radius>
+    <x>2100</x>
+    <y>790</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>50</radius>
+    <x>2350</x>
+    <y>750</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>60</radius>
+    <x>2070</x>
+    <y>380</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>60</radius>
+    <x>2700</x>
+    <y>700</y>
+  </planet>
+
+  <planet>
+    <type>regular</type>
+    <radius>35</radius>
+    <x>2620</x>
+    <y>300</y>
+  </planet>
+
+  <planet>
+    <type>lava</type>
+    <radius>40</radius>
+    <x>2900</x>
+    <y>350</y>
+  </planet>
+
+  <planet>
+    <type>lava</type>
+    <radius>40</radius>
+    <x>3100</x>
+    <y>400</y>
+  </planet>
+
+  <gate>
+    <planet1>0</planet1>
+    <planet2>1</planet2>
+  </gate>
+
+  <gate>
+    <planet1>5</planet1>
+    <planet2>6</planet2>
+  </gate>
+
+  <gate>
+    <planet1>12</planet1>
+    <planet2>13</planet2>
+  </gate>
+
+  <gate>
+    <planet1>16</planet1>
+    <planet2>17</planet2>
+  </gate>
+
+
+
+
+</level>

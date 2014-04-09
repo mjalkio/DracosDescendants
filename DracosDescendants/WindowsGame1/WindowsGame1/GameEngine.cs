@@ -73,7 +73,8 @@ namespace DracosD
         protected override void LoadContent()
         {
             gameView.LoadContent(content);
-            gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
+            //gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
+            gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\alphaLevel.xml");
             gameView.LevelWidth = (int) (gameLevelController.Width / WorldController.DEFAULT_SCALE);
             gameView.LevelHeight = (int)(gameLevelController.Height / WorldController.DEFAULT_SCALE);
 

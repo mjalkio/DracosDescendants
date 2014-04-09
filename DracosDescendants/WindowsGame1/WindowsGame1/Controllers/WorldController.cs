@@ -524,7 +524,9 @@ namespace DracosD.Controllers
             }
             EndPass(view, state);
 
-
+            BeginTextPass(view, state);
+            view.DrawText("Lap: " + playerLap, Color.White, new Vector2(0.0f, 0.0f));
+            EndPass(view, state);
             /*state = DrawState.SpritePass;
             BeginTextPass(view, state);
             
@@ -709,7 +711,7 @@ namespace DracosD.Controllers
                     }
                 }
 
-                if (lapNum > playerLap) playerLap = lapNum;
+                if (lapNum > playerLap && playerLap < 3) playerLap = lapNum;
 
 
                 if (obje is GaseousPlanet)

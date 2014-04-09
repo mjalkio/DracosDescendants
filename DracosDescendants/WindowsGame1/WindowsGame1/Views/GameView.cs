@@ -776,8 +776,8 @@ namespace DracosD.Views
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null,backcamera.GetTransformation2(0.1f));
             spriteBatch.Draw(background, -position/4, Color.White);
-            spriteBatch.Draw(m_background, -position/3, Color.White);
-            spriteBatch.Draw(f_background, -position/2, Color.White);
+            spriteBatch.Draw(m_background, -position/2, Color.White);
+            spriteBatch.Draw(f_background, -position, Color.White);
  
         }
 

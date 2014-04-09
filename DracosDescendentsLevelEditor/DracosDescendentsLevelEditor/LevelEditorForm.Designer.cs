@@ -119,7 +119,7 @@
             // 
             this.levelWidthUpDown.Location = new System.Drawing.Point(86, 52);
             this.levelWidthUpDown.Maximum = new decimal(new int[] {
-            2000,
+            5000,
             0,
             0,
             0});
