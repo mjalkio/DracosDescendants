@@ -196,7 +196,8 @@ namespace DracosD.Controllers
 
             // Increase animation frame, but only if trying to move
             horizontal = gamePad.ThumbSticks.Left.X;
-            vertical = gamePad.ThumbSticks.Left.Y;
+            vertical = -gamePad.ThumbSticks.Left.Y;
+            breathing = (gamePad.Buttons.A == ButtonState.Pressed);
         }
 
         /// <summary>

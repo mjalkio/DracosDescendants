@@ -625,7 +625,7 @@ namespace DracosD.Controllers
             playerInput.ReadInput();
 
             //if arrow key is pressed, then flap the dragon
-            if (playerInput.keyDown) dragon.IsFlapping = true;
+            if (playerInput.Horizontal !=0 && playerInput.Vertical != 0) dragon.IsFlapping = true;
             else
             {
                 dragon.IsFlapping = false;
