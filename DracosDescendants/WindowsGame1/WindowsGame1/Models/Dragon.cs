@@ -29,6 +29,8 @@ namespace DracosD.Models
         private const int COOLDOWN = 60; //in ticks
         private const int DELAY = 30;
 
+        public static int ID = 0;
+
         // Thrust amount to convert player input into thrust
         private const int NUM_FRAMES = 9;
         #endregion
@@ -56,6 +58,8 @@ namespace DracosD.Models
         private float dampeningFactor = 0.97f;
         private float dampeningThreshold = 40.0f;
 
+        private int id;
+
         private int currCooldown;
         private int delayTime;
         #endregion
@@ -68,6 +72,12 @@ namespace DracosD.Models
         {
             get { return force; }
             set { force = value; }
+        }
+
+        public int Id
+        {
+            get { return id; }
+            set { ID = value; }
         }
 
         public FireBreath Breath
@@ -139,6 +149,8 @@ namespace DracosD.Models
             Friction = DEFAULT_FRICTION;
             Restitution = DEFAULT_RESTITUTION;
             isOnFire = false;
+            id = ID;
+            ID++;
             currCooldown = 0;
             delayTime = 0;
         }
@@ -177,10 +189,7 @@ namespace DracosD.Models
         /// </summary>
         /// <param name="dt">Timing values from parent loop</param>
         public override void Update(float dt) {
-            /*if (!CanMove)
-            {
-                Burn(true);
-            }*/
+            //Debug.Print("" + Position);
             Burn(true);
 
             if (base.LinearVelocity.Length() > dampeningThreshold)

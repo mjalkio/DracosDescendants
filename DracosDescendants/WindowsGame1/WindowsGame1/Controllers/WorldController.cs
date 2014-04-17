@@ -232,6 +232,7 @@ namespace DracosD.Controllers
             this(thisLevel.Dimensions / DEFAULT_SCALE, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE))
         {
             playerInput = new PlayerInputController();
+            
             currentGates = new Dictionary<Dragon, int>();
             level = thisLevel;
             LoadContent(content);
@@ -249,6 +250,8 @@ namespace DracosD.Controllers
             world.AddController(forceController);
 
             world.ContactManager.BeginContact += ContactAdded;
+
+            AIController ai = new AIController(dragon, level, currentGates);
         }
 
 
@@ -625,7 +628,7 @@ namespace DracosD.Controllers
             playerInput.ReadInput();
 
             //if arrow key is pressed, then flap the dragon
-            if (playerInput.Horizontal !=0 && playerInput.Vertical != 0) dragon.IsFlapping = true;
+            if (playerInput.Horizontal !=0 || playerInput.Vertical != 0) dragon.IsFlapping = true;
             else
             {
                 dragon.IsFlapping = false;
