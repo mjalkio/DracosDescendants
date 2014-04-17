@@ -218,6 +218,11 @@ namespace DracosD.Controllers
         {
             get { return scale.Y; }
         }
+
+        public bool isToReset
+        {
+            get { return toReset; }
+        }
         #endregion
 
         #region Initialization
