@@ -37,6 +37,7 @@ namespace DracosD.Controllers
         // Fields to manage ship movement
         private float horizontal;		// Horizontal movement
         private float vertical;         // Vertical movement
+        protected bool resetPressed; //the reset button
         protected bool moreGravPressed;
         protected bool lessGravPressed;
         protected bool moreRestPressed;
@@ -162,6 +163,12 @@ namespace DracosD.Controllers
             get { return keyPressed; }
         }
 
+        public bool reset
+        {
+
+            get { return resetPressed; }
+        }
+
         #endregion
 
         #region Methods
@@ -241,7 +248,7 @@ namespace DracosD.Controllers
             /* Q/A control restitution
              * W/S control gravity
              * E/D control speed
-             * R/F control strength of dampening factor
+             * Y/H control strength of dampening factor
              * T/G control the threshold when dampening takes effect */
             moreGravPressed = false;
             lessGravPressed = false;
@@ -278,11 +285,11 @@ namespace DracosD.Controllers
 
             moreDampenPressed = false;
             lessDampenPressed = false;
-            if (keyboard.IsKeyDown(Keys.R))
+            if (keyboard.IsKeyDown(Keys.Y))
             {
                 moreDampenPressed = true;
             }
-            if (keyboard.IsKeyDown(Keys.F))
+            if (keyboard.IsKeyDown(Keys.H))
             {
                 lessDampenPressed = true;
             }
@@ -296,6 +303,10 @@ namespace DracosD.Controllers
             if (keyboard.IsKeyDown(Keys.G))
             {
                 lessDampenThresholdPressed = true;
+            }
+            if (keyboard.IsKeyDown(Keys.R))
+            {
+                resetPressed = true;
             }
         }
         #endregion

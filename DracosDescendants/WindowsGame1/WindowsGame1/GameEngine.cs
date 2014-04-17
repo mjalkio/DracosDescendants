@@ -102,8 +102,16 @@ namespace DracosD
         protected override void Update(GameTime gameTime)
         {
             gameView.Scale = currentWorld.Scale;
-            currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            base.Update(gameTime);
+            if (currentWorld.isToReset)
+            {
+                gameLevelController = new LevelController();
+                base.Initialize();
+            }
+            else
+            {
+                currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                base.Update(gameTime);
+            }
         }
 
         /// <summary>

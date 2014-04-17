@@ -89,6 +89,9 @@ namespace DracosD.Controllers
         private bool succeeded;
         private bool failed;
 
+        //has the reset button been pressed?
+        private bool toReset;
+
         protected Dragon dragon;
         protected List<PlanetaryObject> planets = new List<PlanetaryObject>();
         private Random rand;
@@ -627,191 +630,161 @@ namespace DracosD.Controllers
             // Read input and assign actions to rocket
             playerInput.ReadInput();
 
-            //if arrow key is pressed, then flap the dragon
-            if (playerInput.Horizontal !=0 || playerInput.Vertical != 0) dragon.IsFlapping = true;
+            //reset the level when 'R' pressed
+            if (playerInput.reset)
+            {
+                toReset = true;
+            }
+
             else
             {
-                dragon.IsFlapping = false;
-            }
-
-            
-            // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
-            //control dragon breath
-            if (playerInput.Breathing)
-            {
-                dragon.breathFire();
-                dragon.Breath.ActivatePhysics(world);
-            }
-            else
-            {
-                if (dragon.Breath != null)
+                //if arrow key is pressed, then flap the dragon
+                if (playerInput.Horizontal != 0 || playerInput.Vertical != 0) dragon.IsFlapping = true;
+                else
                 {
-                    dragon.Breath.DeactivatePhysics(world);
-                }
-                dragon.stopBreathing();
-            }
-            /*
-            // Control and bound gravity
-            if (playerInput.gravUp) forceController.Gravity = forceController.Gravity + .01f;
-            if (playerInput.gravDown && forceController.Gravity >0.0f) forceController.Gravity = forceController.Gravity - .01f;
-            if (forceController.Gravity < 0.0f) forceController.Gravity = 0.0f;
-
-            // Control and bound thrust
-            if (playerInput.speedUp) dragon.Thrust = dragon.Thrust + 10.0f;
-            if (playerInput.speedDown && dragon.Thrust > 0.0f) dragon.Thrust = dragon.Thrust - 10.0f;
-            if (dragon.Thrust < 0.0f) dragon.Thrust = 0.0f;
-
-            // Control and bound dampening factor
-            if (playerInput.dampDown && dragon.Dampen > 0.5f) dragon.Dampen = dragon.Dampen - 0.001f;
-            if (playerInput.dampUp && dragon.Dampen < 1.0f) dragon.Dampen = dragon.Dampen + 0.001f;
-            if (dragon.Dampen < 0.5f) dragon.Dampen = .5f;
-            if (dragon.Dampen > 1.0f) dragon.Dampen = 1.0f;
-
-            // Contrl and bound top speed
-            if (playerInput.dampThreshUp) dragon.DampenThreshold = dragon.DampenThreshold + 0.2f;
-            if (playerInput.dampThreshDown && dragon.DampenThreshold > 1.0f) dragon.DampenThreshold = dragon.DampenThreshold - 0.2f;
-            if (dragon.DampenThreshold < 1.0f) dragon.DampenThreshold = 1.0f;
-
-            // Control and bound restitution
-            if (playerInput.restUp)
-            {
-                foreach (PlanetaryObject planet in planets)
-                {
-                    if(planet.Restitution<3.0f) planet.Restitution = planet.Restitution + 0.01f;
-                    if (planet.Restitution > 3.0f) planet.Restitution = 3.0f;
-                }
-            }
-            if (playerInput.restDown)
-            {
-                foreach (PlanetaryObject planet in planets)
-                {
-                    if (planet.Restitution > 0.0f) planet.Restitution = planet.Restitution - 0.01f;
-                    if (planet.Restitution < 0.0f) planet.Restitution = 0.0f;
-                }
-            }
-            */
-
-            //Manage lap tracking and seamless wraparound
-            foreach (PhysicsObject obje in objects){
-                if (obje.Position.X > Width)
-                {
-                    Vector2 currentPosition = obje.Position;
-                    obje.X = currentPosition.X - Width;
-                    obje.Y = currentPosition.Y;
-                    if (obje == dragon)
-                    {
-                        lapNum++;
-                    }
-                }
-                if (obje.Position.X < 0)
-                {
-                    Vector2 currentPosition = obje.Position;
-                    obje.X = currentPosition.X + Width;
-                    obje.Y = currentPosition.Y;
-                    if (obje == dragon)
-                    {
-                        lapNum--;
-                    }
+                    dragon.IsFlapping = false;
                 }
 
-                if (lapNum > playerLap && playerLap < 3) playerLap = lapNum;
 
-
-                if (obje is GaseousPlanet)
+                // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
+                //control dragon breath
+                if (playerInput.Breathing)
                 {
-                    GaseousPlanet gp = (GaseousPlanet)obje;
-                    if (gp.Burned)
-                    {
-                        gp.OnFire = true;
-                    }
-                    Vector2 p1 = gp.Position;
-                    Vector2 p2 = new Vector2(gp.Position.X, gp.Position.Y + gp.Radius);
-                    Vector2 p3 = new Vector2(gp.Position.X, gp.Position.Y - gp.Radius);
-                    Vector2 p4 = new Vector2(gp.Position.X - gp.Radius, gp.Position.Y);
-                    Vector2 p5 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
-                    Vector2 p6 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y + (float)(gp.Radius / Math.Sqrt(2)));
-                    //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
-                    if (dragon.IsBreathing)
-                    {
-                        foreach (Fixture fix in dragon.Breath.Fixtures)
-                        {
-                            if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6))
-                                && !gp.OnFire)
-                            {
-                                gp.Torch(false);
-                                break;
-                            }
-                        }
-                    }
-
-                }
-
-                if (obje is LavaPlanet)
-                {
-                    LavaPlanet lavaplan = (LavaPlanet)obje;
-                    if (((LavaPlanet)lavaplan).Fire)
-                    {
-                        createLavaProjectile((LavaPlanet)lavaplan);
-                        lavaplan.Fire = false;
-                    }
-                }
-            }
-
-
-            // Read from the input and add the force to the dragon model
-            float distance = (float) Math.Sqrt(playerInput.Horizontal * playerInput.Horizontal + playerInput.Vertical * playerInput.Vertical);
-            //To prevent division by zero
-            if (distance == 0)
-            {
-                distance = 1;
-            }
-            Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
-            dragon.Force = normalizedDirection *dragon.Thrust;
-            // Read from the input and add the force to the rocket model
-            // But DO NOT apply the force yet (look at RocketObject.cs).
-            float FY = playerInput.Vertical * dragon.Thrust;
-            float FX = playerInput.Horizontal * dragon.Thrust;
-            dragon.Force = new Vector2(FX, FY);
-
-            //TODO: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
-            if (!dragon.CanMove)
-            {
-                dragon.Force = new Vector2(0f, 0f);
-            }
-
-            //Debug.Print("" + dragon.Position);
-            // Add any objects created by actions
-            foreach (PhysicsObject o in addQueue)
-            {
-                AddObject(o);
-            }
-            addQueue.Clear();
-
-            // Turn the physics engine crank.
-            world.Step(dt);
-
-            // Garbage collect the deleted objects.
-            // Note how we use the linked list nodes to delete O(1) in place.
-            // This is O(n) without copying.  
-            LinkedListNode<PhysicsObject> node = objects.First;
-            LinkedListNode<PhysicsObject> next;
-            PhysicsObject obj;
-            while (node != null)
-            {
-                obj = node.Value;
-                next = node.Next;
-                // Delete O(1) in place
-                if (obj.Remove)
-                {
-                    obj.DeactivatePhysics(world);
-                    objects.Remove(node);
+                    dragon.breathFire();
+                    dragon.Breath.ActivatePhysics(world);
                 }
                 else
                 {
-                    // Note that update is called last!
-                    obj.Update(dt);
+                    if (dragon.Breath != null)
+                    {
+                        dragon.Breath.DeactivatePhysics(world);
+                    }
+                    dragon.stopBreathing();
                 }
-                node = next;
+
+                //Manage lap tracking and seamless wraparound
+                foreach (PhysicsObject obje in objects)
+                {
+                    if (obje.Position.X > Width)
+                    {
+                        Vector2 currentPosition = obje.Position;
+                        obje.X = currentPosition.X - Width;
+                        obje.Y = currentPosition.Y;
+                        if (obje == dragon)
+                        {
+                            lapNum++;
+                        }
+                    }
+                    if (obje.Position.X < 0)
+                    {
+                        Vector2 currentPosition = obje.Position;
+                        obje.X = currentPosition.X + Width;
+                        obje.Y = currentPosition.Y;
+                        if (obje == dragon)
+                        {
+                            lapNum--;
+                        }
+                    }
+
+                    if (lapNum > playerLap && playerLap < 3) playerLap = lapNum;
+
+
+                    if (obje is GaseousPlanet)
+                    {
+                        GaseousPlanet gp = (GaseousPlanet)obje;
+                        if (gp.Burned)
+                        {
+                            gp.OnFire = true;
+                        }
+                        Vector2 p1 = gp.Position;
+                        Vector2 p2 = new Vector2(gp.Position.X, gp.Position.Y + gp.Radius);
+                        Vector2 p3 = new Vector2(gp.Position.X, gp.Position.Y - gp.Radius);
+                        Vector2 p4 = new Vector2(gp.Position.X - gp.Radius, gp.Position.Y);
+                        Vector2 p5 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
+                        Vector2 p6 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y + (float)(gp.Radius / Math.Sqrt(2)));
+                        //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
+                        if (dragon.IsBreathing)
+                        {
+                            foreach (Fixture fix in dragon.Breath.Fixtures)
+                            {
+                                if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6))
+                                    && !gp.OnFire)
+                                {
+                                    gp.Torch(false);
+                                    break;
+                                }
+                            }
+                        }
+
+                    }
+
+                    if (obje is LavaPlanet)
+                    {
+                        LavaPlanet lavaplan = (LavaPlanet)obje;
+                        if (((LavaPlanet)lavaplan).Fire)
+                        {
+                            createLavaProjectile((LavaPlanet)lavaplan);
+                            lavaplan.Fire = false;
+                        }
+                    }
+                }
+
+
+                // Read from the input and add the force to the dragon model
+                float distance = (float)Math.Sqrt(playerInput.Horizontal * playerInput.Horizontal + playerInput.Vertical * playerInput.Vertical);
+                //To prevent division by zero
+                if (distance == 0)
+                {
+                    distance = 1;
+                }
+                Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
+                dragon.Force = normalizedDirection * dragon.Thrust;
+                // Read from the input and add the force to the rocket model
+                // But DO NOT apply the force yet (look at RocketObject.cs).
+                float FY = playerInput.Vertical * dragon.Thrust;
+                float FX = playerInput.Horizontal * dragon.Thrust;
+                dragon.Force = new Vector2(FX, FY);
+
+                //TODO: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
+                if (!dragon.CanMove)
+                {
+                    dragon.Force = new Vector2(0f, 0f);
+                }
+
+                //Debug.Print("" + dragon.Position);
+                // Add any objects created by actions
+                foreach (PhysicsObject o in addQueue)
+                {
+                    AddObject(o);
+                }
+                addQueue.Clear();
+
+                // Turn the physics engine crank.
+                world.Step(dt);
+
+                // Garbage collect the deleted objects.
+                // Note how we use the linked list nodes to delete O(1) in place.
+                // This is O(n) without copying.  
+                LinkedListNode<PhysicsObject> node = objects.First;
+                LinkedListNode<PhysicsObject> next;
+                PhysicsObject obj;
+                while (node != null)
+                {
+                    obj = node.Value;
+                    next = node.Next;
+                    // Delete O(1) in place
+                    if (obj.Remove)
+                    {
+                        obj.DeactivatePhysics(world);
+                        objects.Remove(node);
+                    }
+                    else
+                    {
+                        // Note that update is called last!
+                        obj.Update(dt);
+                    }
+                    node = next;
+                }
             }
         }
 
