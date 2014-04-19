@@ -22,15 +22,30 @@ namespace DracosD.Models
         private const float DEFAULT_DENSITY = 2.0f;
         private const float DEFAULT_FRICTION = 0.0f;
         private const float DEFAULT_RESTITUTION = 0.0f;
+        private const int IGNITE_FRAMES = 5;
+        private const int BURNING_FRAMES = 4;
         private const int COOLDOWN = 40; //in ticks
         private Texture2D flame_texture;
+        private Texture2D ignite_texture;
         private bool onFire;
         private int currCooldown;
+
+        // Animation fields
+        private int currFrame = 0;
+        private bool frameDirection;
+        private int delay = 4;
+        private int elapsed;
 
         public Texture2D Flame_Texture
         {
             get { return flame_texture; }
             set { flame_texture = value; }
+        }
+
+        public Texture2D Ignite_Texture
+        {
+            get { return ignite_texture; }
+            set { ignite_texture = value; }
         }
 
         public bool OnFire
@@ -44,10 +59,11 @@ namespace DracosD.Models
             get { return currCooldown == 1; }
         }
 
-        public GaseousPlanet(Texture2D texture, Vector2 pos, float radius, Texture2D fireTexture) :
+        public GaseousPlanet(Texture2D texture, Vector2 pos, float radius, Texture2D fireTexture, Texture2D igniteTexture) :
             base(texture, pos, radius, DEFAULT_DENSITY, DEFAULT_FRICTION, DEFAULT_RESTITUTION)
         {
             flame_texture = fireTexture;
+            ignite_texture = igniteTexture;
             onFire = false;
             currCooldown = 0;
         }
@@ -57,6 +73,34 @@ namespace DracosD.Models
         {
             Torch(true);
             //TODO: If we give gaseous planets animation, add it here
+            if (currFrame == 0)
+            {
+                frameDirection = true;
+            }
+            else if ((currFrame >= (IGNITE_FRAMES - 1) && currCooldown>1) || ((currFrame>=BURNING_FRAMES-1) && onFire))
+            {
+                frameDirection = false;
+            }
+
+            // Increment 
+            if (frameDirection)
+            {
+                elapsed++;
+                if (elapsed > delay)
+                {
+                    currFrame++;
+                    elapsed = 0;
+                }
+            }
+            else
+            {
+                elapsed++;
+                if (elapsed > delay)
+                {
+                    currFrame = 0;
+                    elapsed = 0;
+                }
+            }
             base.Update(dt);
         }
 
@@ -73,6 +117,7 @@ namespace DracosD.Models
             else if (!decr)
             {
                 currCooldown = COOLDOWN;
+                currFrame = 0;
             }
         }
 
@@ -88,13 +133,19 @@ namespace DracosD.Models
         {
             if (onFire)
             {
-                view.DrawSprite(flame_texture, Color.White, Position, scale * 2.0f, Rotation);
+                view.DrawSprite(flame_texture, Color.White, Position, new Vector2(scale.X * 2, scale.Y * 2), Rotation, currFrame, BURNING_FRAMES);
+            }
+            else if (currCooldown > 1)
+            {
+                view.DrawSprite(ignite_texture, Color.White, Position, new Vector2(scale.X * 2, scale.Y * 2), Rotation, currFrame, IGNITE_FRAMES);
             }
             else
             {
-                view.DrawSprite(base.Texture, Color.White, Position, scale * 2.0f, Rotation);
+                base.Draw(view);
             }
-        }
+       }
+
+        
         #endregion
     }
 }

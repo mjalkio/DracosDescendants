@@ -7,6 +7,21 @@
     <y>480</y>
   </dragon>
 
+  <dragon>
+    <x>120</x>
+    <y>580</y>
+  </dragon>
+
+  <dragon>
+    <x>120</x>
+    <y>680</y>
+  </dragon>
+
+  <dragon>
+    <x>120</x>
+    <y>780</y>
+  </dragon>
+
   <planet>
     <type>regular</type>
     <radius>40</radius>
@@ -174,7 +189,6 @@
     <planet2>18</planet2>
   </gate>
 
-
-
-
+  
+  
 </level>

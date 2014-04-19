@@ -92,14 +92,14 @@ namespace DracosD.Controllers
         //has the reset button been pressed?
         private bool toReset;
 
-        protected Dragon dragon;
+        protected Dragon[] dragons;
         protected List<PlanetaryObject> planets = new List<PlanetaryObject>();
         private Random rand;
 
 
-        public Dragon Dragon
+        public Dragon[] Dragon
         {
-            get { return dragon; }
+            get { return dragons; }
         }
 
         // Controller to move the dragon
@@ -107,7 +107,8 @@ namespace DracosD.Controllers
         // Game specific player input
 
         protected PlayerInputController playerInput;
-        protected AIController ai;
+
+        protected AIController[] AIControllers;
         #endregion
 
         #region Properties (Read-Write)
@@ -243,6 +244,8 @@ namespace DracosD.Controllers
             playerInput = new PlayerInputController();
             
             currentGates = new Dictionary<Dragon, int>();
+            dragons = new Dragon[4];
+            AIControllers = new AIController[3];
             level = thisLevel;
             LoadContent(content);
             PopulateLevel();
@@ -254,13 +257,19 @@ namespace DracosD.Controllers
             //level is populated so initialize and populate the current gates for each racer
             initializeGates(currentGates, level.Racers);
 
-            // Attach the force controller to the rocket.
-            forceController = new ForceController(dragon, planets,Width);
-            world.AddController(forceController);
+            // Attach the force controller to the dragons.
+            foreach (Dragon drag in dragons)
+            {
+                forceController = new ForceController(drag, planets, Width);
+                world.AddController(forceController);
+            }
 
             world.ContactManager.BeginContact += ContactAdded;
 
-            ai = new AIController(dragon, level, currentGates);
+            for (int i = 1; i < dragons.Length; i++)
+            {
+                AIControllers[i-1] = new AIController(dragons[i], level, currentGates);
+            }
         }
 
 
@@ -322,8 +331,17 @@ namespace DracosD.Controllers
             obj.Restitution = BASIC_RESTITION;
             AddObject(obj);
 
-            dragon = level.Racers[0];
-            AddObject(dragon);
+            Debug.Print("COUNT OF LEVEL: " + level.Racers.Count);
+            Debug.Print("COUNT OF DRAGONS: " + dragons.Length);
+            for (int i = 0; i < level.Racers.Count; i++)
+            {
+                Debug.Print("COUNT: " + i);
+                if (level.Racers[i] != null)
+                {
+                    dragons[i] = level.Racers[i];
+                    AddObject(dragons[i]);
+                }
+            }
 
             foreach (Gate gate in level.Gates)
             {
@@ -393,14 +411,14 @@ namespace DracosD.Controllers
             Body body2 = contact.FixtureB.Body;
 
             //handle the racer to gate collisions
-            foreach (Dragon drag in level.Racers)
+            foreach (Dragon drag in dragons)
             {
-                if (currentGates[dragon] < level.Gates.Count)
+                if (currentGates[drag] < level.Gates.Count)
                 {
                     Gate currGate = level.Gates[currentGates[drag]];
                     //if the racer passes through the current gate hes on...
-                    if ((body1.UserData == dragon && body2.UserData == currGate) ||
-                        (body1.UserData == currGate && body2.UserData == dragon))
+                    if ((body1.UserData == drag && body2.UserData == currGate) ||
+                        (body1.UserData == currGate && body2.UserData == drag))
                     {
                         //If you pass the last gate, you win
                         if (currentGates[drag] == level.Gates.Count - 1 && playerLap == 3)
@@ -508,7 +526,7 @@ namespace DracosD.Controllers
             foreach (PhysicsObject obj in Objects)
             {
                 //draw only the current gate and all other objects that are not gates
-                if (!(obj is Gate) || (obj is Gate && currentGates[dragon] < level.Gates.Count && level.Gates[currentGates[dragon]].Equals((Gate)obj)))
+                if (!(obj is Gate) || (obj is Gate && currentGates[dragons[0]] < level.Gates.Count && level.Gates[currentGates[dragons[0]]].Equals((Gate)obj)))
                 {
                     Dragon drawDrag = null;
                     drawDrag = obj as Dragon;
@@ -565,10 +583,10 @@ namespace DracosD.Controllers
                     view.BeginPolygonPass();
                     break;
                 case DrawState.SpritePass:
-                    view.BeginSpritePass(BlendState.AlphaBlend, dragon.Position);
+                    view.BeginSpritePass(BlendState.AlphaBlend, dragons[0].Position);
                     break;
                 case DrawState.BackgroundPass:
-                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragon.Position + new Vector2((lapNum)*Width,0)); //begin drawing the background
+                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragons[0].Position + new Vector2((lapNum)*Width,0)); //begin drawing the background
                     break;
                 default:
                     break;
@@ -588,7 +606,7 @@ namespace DracosD.Controllers
                     view.BeginPolygonPass();
                     break;
                 case DrawState.SpritePass:
-                    view.BeginTextSpritePass(BlendState.AlphaBlend, dragon.Position);
+                    view.BeginTextSpritePass(BlendState.AlphaBlend, dragons[0].Position);
                     break;
                 default:
                     break;
@@ -644,28 +662,28 @@ namespace DracosD.Controllers
 
             else
             {
+                //NEED TO EDIT THIS SO THAT EACH DRAGON FLAPS
                 //if arrow key is pressed, then flap the dragon
-                if (playerInput.Horizontal != 0 || playerInput.Vertical != 0) dragon.IsFlapping = true;
+                if (playerInput.Horizontal !=0 || playerInput.Vertical != 0) dragons[0].IsFlapping = true;
                 else
                 {
-                    dragon.IsFlapping = false;
+                    dragons[0].IsFlapping = false;
                 }
 
-
-                // CHANGE VARIABLES FOR TECHNICAL PROTOTYPE
+            
                 //control dragon breath
                 if (playerInput.Breathing)
                 {
-                    dragon.breathFire();
-                    dragon.Breath.ActivatePhysics(world);
+                    dragons[0].breathFire();
+                    dragons[0].Breath.ActivatePhysics(world);
                 }
                 else
                 {
-                    if (dragon.Breath != null)
+                    if (dragons[0].Breath != null)
                     {
-                        dragon.Breath.DeactivatePhysics(world);
+                        dragons[0].Breath.DeactivatePhysics(world);
                     }
-                    dragon.stopBreathing();
+                    dragons[0].stopBreathing();
                 }
 
                 //Manage lap tracking and seamless wraparound
@@ -676,7 +694,7 @@ namespace DracosD.Controllers
                         Vector2 currentPosition = obje.Position;
                         obje.X = currentPosition.X - Width;
                         obje.Y = currentPosition.Y;
-                        if (obje == dragon)
+                        if (obje == dragons[0])
                         {
                             lapNum++;
                         }
@@ -686,11 +704,12 @@ namespace DracosD.Controllers
                         Vector2 currentPosition = obje.Position;
                         obje.X = currentPosition.X + Width;
                         obje.Y = currentPosition.Y;
-                        if (obje == dragon)
+                        if (obje == dragons[0])
                         {
                             lapNum--;
                         }
                     }
+                
 
                     if (lapNum > playerLap && playerLap < 3) playerLap = lapNum;
 
@@ -709,9 +728,9 @@ namespace DracosD.Controllers
                         Vector2 p5 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
                         Vector2 p6 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y + (float)(gp.Radius / Math.Sqrt(2)));
                         //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
-                        if (dragon.IsBreathing)
+                        if (dragons[0].IsBreathing)
                         {
-                            foreach (Fixture fix in dragon.Breath.Fixtures)
+                            foreach (Fixture fix in dragons[0].Breath.Fixtures)
                             {
                                 if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6))
                                     && !gp.OnFire)
@@ -720,8 +739,9 @@ namespace DracosD.Controllers
                                     break;
                                 }
                             }
-                        }
 
+
+                        }
                     }
 
                     if (obje is LavaPlanet)
@@ -744,21 +764,32 @@ namespace DracosD.Controllers
             }
 
             Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
-            dragon.Force = normalizedDirection *dragon.Thrust;
+            dragons[0].Force = normalizedDirection *dragons[0].Thrust;
             //Vector2 dir = ai.GetAction(gametime, currentGates);
             //dragon.Force = dragon.Thrust * dir;
             // Read from the input and add the force to the rocket model
             // But DO NOT apply the force yet (look at RocketObject.cs).
-            float FY = playerInput.Vertical * dragon.Thrust;
-            float FX = playerInput.Horizontal * dragon.Thrust;
+            //float FY = playerInput.Vertical * dragons[0].Thrust;
+            //float FX = playerInput.Horizontal * dragons[0].Thrust;
             //float FY = dir.Y * dragon.Thrust;
             //float FX = dir.X * dragon.Thrust;
-            dragon.Force = new Vector2(FX, FY);
+            //ragons[0].Force = new Vector2(FX, FY);
 
-            //TODO: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
-            if (!dragon.CanMove)
+            for (int i = 1; i < dragons.Length; i++)
             {
-                dragon.Force = new Vector2(0f, 0f);
+                Vector2 dir = AIControllers[i - 1].GetAction(gametime, currentGates);
+                dragons[i].Force = dragons[i].Thrust * dir;
+                if (dir.X != 0 || dir.Y != 0) dragons[i].IsFlapping = true;
+                else dragons[i].IsFlapping = false;
+            }
+
+            //DONE: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
+            foreach (Dragon drag in dragons)
+            {
+                if (!drag.CanMove)
+                {
+                    drag.Force = new Vector2(0f, 0f);
+                }
             }
 
 

@@ -250,7 +250,11 @@ namespace DracosD.Models
         {
             if (delayTime == 1)
             {
-                currCooldown = COOLDOWN;
+                currCooldown = 0;
+            }
+            if (currCooldown == 0)
+            {
+                delayTime = DELAY;
             }
             if (decr && delayTime > 0)
             {
@@ -260,10 +264,10 @@ namespace DracosD.Models
             {
                 currCooldown--;
             }
-            else if (!decr)
+            else if (!decr && currCooldown == 0)
             {
-                //currCooldown = COOLDOWN;
-                delayTime = DELAY;
+                currCooldown = COOLDOWN;
+                delayTime = 0;
             }
         }
 
