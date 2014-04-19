@@ -23,7 +23,7 @@ namespace DracosDescendentsLevelEditor
         {
             get
             {
-                return "Gate between (" + planet1.x + ", " + planet1.y + ") and (" + planet2.x + ", " + planet2.y + ")";
+                return "Gate between planet " + LevelEditorForm.planetList.IndexOf(planet1) + " and planet " + LevelEditorForm.planetList.IndexOf(planet2);
             }
         }
     }

@@ -57,9 +57,9 @@
             // gateSelectBox
             // 
             this.gateSelectBox.FormattingEnabled = true;
-            this.gateSelectBox.Location = new System.Drawing.Point(58, 94);
+            this.gateSelectBox.Location = new System.Drawing.Point(12, 94);
             this.gateSelectBox.Name = "gateSelectBox";
-            this.gateSelectBox.Size = new System.Drawing.Size(177, 21);
+            this.gateSelectBox.Size = new System.Drawing.Size(260, 21);
             this.gateSelectBox.TabIndex = 8;
             // 
             // deleteGateButton

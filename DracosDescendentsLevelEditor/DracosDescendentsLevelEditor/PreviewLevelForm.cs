@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace DracosDescendentsLevelEditor
 {
@@ -34,6 +35,11 @@ namespace DracosDescendentsLevelEditor
             SolidBrush myBrush = new SolidBrush(Color.White);
             Graphics formGraphics = this.CreateGraphics();
 
+            //Setting up drawing of planet IDs
+            int i = 0;
+            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 16);
+            System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+
             foreach (Planet planet in planetList)
             {
                 int radius = (int) (planet.radius * SCALE_FACTOR);
@@ -54,8 +60,13 @@ namespace DracosDescendentsLevelEditor
                 }
 
                 formGraphics.FillEllipse(myBrush, new Rectangle(xCoord - radius, yCoord - radius, radius * 2, radius * 2));
+
+                myBrush.Color = Color.Black;
+                formGraphics.DrawString("" + i, drawFont, myBrush, xCoord, yCoord, drawFormat);
+                i++;
             }
 
+            drawFont.Dispose();
             myBrush.Dispose();
 
             Pen myPen = new Pen(Color.Black);

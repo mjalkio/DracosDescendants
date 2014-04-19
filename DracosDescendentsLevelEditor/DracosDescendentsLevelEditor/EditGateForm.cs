@@ -23,6 +23,7 @@ namespace DracosDescendentsLevelEditor
         {
             InitializeComponent();
             this.gate = gate;
+            this.gateList = gateList;
 
             foreach (Planet p in planetList)
             {

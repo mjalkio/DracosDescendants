@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
+using System.Xml.Linq;
 
 namespace DracosDescendentsLevelEditor
 {
@@ -14,8 +15,8 @@ namespace DracosDescendentsLevelEditor
     {
         private List<Dragon> dragonList;
         private List<Gate> gateList;
-        private List<Planet> planetList;
-
+        public static List<Planet> planetList;
+        PreviewLevelForm levelForm;
 
         public LevelEditorForm()
         {
@@ -58,9 +59,18 @@ namespace DracosDescendentsLevelEditor
 
         private void previewButton_Click(object sender, EventArgs e)
         {
-            PreviewLevelForm levelForm = new PreviewLevelForm(planetList, gateList);
+            if (levelForm != null)
+            {
+                levelForm.Dispose();
+            }
+
+            levelForm = new PreviewLevelForm(planetList, gateList);
+            levelForm.ControlBox = false;
+            levelForm.Text = String.Empty;
+
             levelForm.Width = (int) ((float)levelWidthUpDown.Value * levelForm.SCALE_FACTOR);
             levelForm.Height = (int) ((float)levelHeightUpDown.Value * levelForm.SCALE_FACTOR);
+
             levelForm.Show();
             levelForm.Draw();
         }
@@ -98,6 +108,7 @@ namespace DracosDescendentsLevelEditor
             {
                 xmlString += "  <planet>\r\n";
                 xmlString += "    <type>" + planet.type + "</type>\r\n";
+                xmlString += "    <radius>" + planet.radius + "</radius>\r\n";
                 xmlString += "    <x>" + planet.x + "</x>\r\n";
                 xmlString += "    <y>" + planet.y + "</y>\r\n";
                 xmlString += "  </planet>\r\n";
@@ -117,5 +128,74 @@ namespace DracosDescendentsLevelEditor
 
             File.WriteAllText(name, xmlString);
         }
+
+        private void openXML_FileOk(object sender, CancelEventArgs e)
+        {
+            dragonList = new List<Dragon>();
+            gateList = new List<Gate>();
+            planetList = new List<Planet>();
+
+            var xml = XDocument.Load(openXML.FileName);
+
+            var height = xml.Root.Element("levelheight").Value;
+            var width = xml.Root.Element("levelwidth").Value;
+            levelHeightUpDown.Value = Convert.ToInt32(height);
+            levelWidthUpDown.Value = Convert.ToInt32(width);
+
+            var dragons = from d in xml.Root.Descendants("dragon")
+                          select new
+                          {
+                              X = d.Element("x").Value,
+                              Y = d.Element("y").Value
+                          };
+
+            foreach (var dragon in dragons)
+            {
+                bool isPlayer = false;
+
+                if (dragonList.Count == 0)
+                {
+                    isPlayer = true;
+                }
+
+                Dragon d = new Dragon(Convert.ToInt32(dragon.Y), Convert.ToInt32(dragon.Y), isPlayer);
+                dragonList.Add(d);
+            }
+
+            var planets = from p in xml.Root.Descendants("planet")
+                          select new
+                          {
+                              Type = p.Element("type").Value,
+                              Radius = p.Element("radius").Value,
+                              X = p.Element("x").Value,
+                              Y = p.Element("y").Value
+                          };
+
+            foreach (var planet in planets)
+            {
+                Planet p = new Planet(planet.Type, Convert.ToSingle(planet.Radius), Convert.ToInt32(planet.X), Convert.ToInt32(planet.Y));
+                planetList.Add(p);
+            }
+
+            var gates = from g in xml.Root.Descendants("gate")
+                        select new
+                        {
+                            Planet1 = g.Element("planet1").Value,
+                            Planet2 = g.Element("planet2").Value
+                        };
+
+            foreach (var gate in gates)
+            {
+                Gate g = new Gate(planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
+                gateList.Add(g);
+            }
+        }
+
+        private void importButton_Click(object sender, EventArgs e)
+        {
+            openXML.Multiselect = false;
+            openXML.ShowDialog();
+        }
+
     }
 }

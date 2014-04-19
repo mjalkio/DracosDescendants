@@ -48,9 +48,9 @@
             // planetSelectComboBox
             // 
             this.planetSelectComboBox.FormattingEnabled = true;
-            this.planetSelectComboBox.Location = new System.Drawing.Point(70, 102);
+            this.planetSelectComboBox.Location = new System.Drawing.Point(30, 102);
             this.planetSelectComboBox.Name = "planetSelectComboBox";
-            this.planetSelectComboBox.Size = new System.Drawing.Size(121, 21);
+            this.planetSelectComboBox.Size = new System.Drawing.Size(215, 21);
             this.planetSelectComboBox.TabIndex = 3;
             // 
             // label2

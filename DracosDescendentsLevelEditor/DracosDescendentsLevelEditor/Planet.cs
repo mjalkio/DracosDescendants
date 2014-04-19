@@ -25,7 +25,8 @@ namespace DracosDescendentsLevelEditor
         /// </summary>
         public string Display
         {
-            get { return type + " planet (" + x + ", " + y + ")"; }
+            //get { return type + " planet (" + x + ", " + y + ")"; }
+            get { return "Planet " + LevelEditorForm.planetList.IndexOf(this) + " (" + type + ")"; }
         }
     }
 }

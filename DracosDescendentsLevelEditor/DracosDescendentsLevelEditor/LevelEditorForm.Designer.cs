@@ -41,6 +41,8 @@
             this.manageGatesButton = new System.Windows.Forms.Button();
             this.manageDragonsButton = new System.Windows.Forms.Button();
             this.saveXML = new System.Windows.Forms.SaveFileDialog();
+            this.openXML = new System.Windows.Forms.OpenFileDialog();
+            this.importButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.levelHeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelWidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -139,7 +141,7 @@
             // 
             // previewButton
             // 
-            this.previewButton.Location = new System.Drawing.Point(73, 231);
+            this.previewButton.Location = new System.Drawing.Point(136, 231);
             this.previewButton.Name = "previewButton";
             this.previewButton.Size = new System.Drawing.Size(115, 34);
             this.previewButton.TabIndex = 7;
@@ -149,7 +151,7 @@
             // 
             // exportButton
             // 
-            this.exportButton.Location = new System.Drawing.Point(234, 231);
+            this.exportButton.Location = new System.Drawing.Point(257, 231);
             this.exportButton.Name = "exportButton";
             this.exportButton.Size = new System.Drawing.Size(115, 34);
             this.exportButton.TabIndex = 8;
@@ -192,11 +194,27 @@
             this.saveXML.DefaultExt = "xml";
             this.saveXML.FileOk += new System.ComponentModel.CancelEventHandler(this.saveXML_FileOk);
             // 
+            // openXML
+            // 
+            this.openXML.FileName = "openXML";
+            this.openXML.FileOk += new System.ComponentModel.CancelEventHandler(this.openXML_FileOk);
+            // 
+            // importButton
+            // 
+            this.importButton.Location = new System.Drawing.Point(15, 231);
+            this.importButton.Name = "importButton";
+            this.importButton.Size = new System.Drawing.Size(115, 34);
+            this.importButton.TabIndex = 12;
+            this.importButton.Text = "Load Level";
+            this.importButton.UseVisualStyleBackColor = true;
+            this.importButton.Click += new System.EventHandler(this.importButton_Click);
+            // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(399, 303);
+            this.Controls.Add(this.importButton);
             this.Controls.Add(this.manageDragonsButton);
             this.Controls.Add(this.manageGatesButton);
             this.Controls.Add(this.managePlanetsButton);
@@ -233,6 +251,8 @@
         private System.Windows.Forms.Button manageGatesButton;
         private System.Windows.Forms.Button manageDragonsButton;
         private System.Windows.Forms.SaveFileDialog saveXML;
+        private System.Windows.Forms.OpenFileDialog openXML;
+        private System.Windows.Forms.Button importButton;
     }
 }
 
