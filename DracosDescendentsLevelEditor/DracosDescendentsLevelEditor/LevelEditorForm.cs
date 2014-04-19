@@ -64,12 +64,10 @@ namespace DracosDescendentsLevelEditor
                 levelForm.Dispose();
             }
 
-            levelForm = new PreviewLevelForm(planetList, gateList);
-            levelForm.ControlBox = false;
-            levelForm.Text = String.Empty;
+            levelForm = new PreviewLevelForm(planetList, gateList, (int)levelWidthUpDown.Value, (int)levelHeightUpDown.Value);
 
             levelForm.Width = (int) ((float)levelWidthUpDown.Value * levelForm.SCALE_FACTOR);
-            levelForm.Height = (int) ((float)levelHeightUpDown.Value * levelForm.SCALE_FACTOR);
+            levelForm.Height = (int) ((float)levelHeightUpDown.Value * levelForm.SCALE_FACTOR) + SystemInformation.CaptionHeight;
 
             levelForm.Show();
             levelForm.Draw();
@@ -80,7 +78,10 @@ namespace DracosDescendentsLevelEditor
         /// </summary>
         private void addDragons()
         {
-            dragonList.Add(new Dragon(120, 480, true));
+            dragonList.Add(new Dragon(125, 100, true));
+            dragonList.Add(new Dragon(125, 200, false));
+            dragonList.Add(new Dragon(125, 300, false));
+            dragonList.Add(new Dragon(125, 400, false));
         }
 
         private void exportButton_Click(object sender, EventArgs e)

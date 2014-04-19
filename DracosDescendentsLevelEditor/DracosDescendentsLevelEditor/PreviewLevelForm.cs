@@ -17,29 +17,47 @@ namespace DracosDescendentsLevelEditor
 
         List<Gate> gateList;
         List<Planet> planetList;
+        int levelWidth;
+        int levelHeight;
 
         public PreviewLevelForm()
         {
             InitializeComponent();
         }
 
-        public PreviewLevelForm(List<Planet> planetList, List<Gate> gateList)
+        public PreviewLevelForm(List<Planet> planetList, List<Gate> gateList, int width, int height)
         {
             InitializeComponent();
             this.planetList = planetList;
             this.gateList = gateList;
+            levelWidth = width;
+            levelHeight = height;
         }
 
         public void Draw()
         {
+            //Setup the stuff we draw on
             SolidBrush myBrush = new SolidBrush(Color.White);
             Graphics formGraphics = this.CreateGraphics();
+
+            //Setup the pen to draw gates and grid
+            Pen myPen = new Pen(Color.Black);
+            myPen.Width = SCALE_FACTOR;
+            for (int j = 0; j < levelWidth; j += 50)
+            {
+                formGraphics.DrawLine(myPen, j * SCALE_FACTOR, 0, j * SCALE_FACTOR, levelHeight * SCALE_FACTOR);
+            }
+            for (int k = 0; k < levelHeight; k += 50)
+            {
+                formGraphics.DrawLine(myPen, 0, k * SCALE_FACTOR, levelWidth * SCALE_FACTOR, k * SCALE_FACTOR);
+            }
 
             //Setting up drawing of planet IDs
             int i = 0;
             System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 16);
             System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
 
+            //Draw the planets
             foreach (Planet planet in planetList)
             {
                 int radius = (int) (planet.radius * SCALE_FACTOR);
@@ -69,9 +87,8 @@ namespace DracosDescendentsLevelEditor
             drawFont.Dispose();
             myBrush.Dispose();
 
-            Pen myPen = new Pen(Color.Black);
-            myPen.Width = SCALE_FACTOR;
-
+            //Draw the gates
+            myPen.Color = Color.Black;
             foreach (Gate gate in gateList)
             {
                 float x1 = gate.planet1.x * SCALE_FACTOR;
