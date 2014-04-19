@@ -24,15 +24,15 @@
   <planet>
     <type>lava</type>
     <radius>65</radius>
-    <x>760</x>
+    <x>930</x>
     <y>120</y>
   </planet>
   
   <planet>
     <type>regular</type>
-    <radius>65</radius>
+    <radius>80</radius>
     <x>720</x>
-    <y>520</y>
+    <y>550</y>
   </planet>
   
   <planet>
@@ -116,7 +116,14 @@
     <type>regular</type>
     <radius>60</radius>
     <x>2070</x>
-    <y>380</y>
+    <y>225</y>
+  </planet>
+
+  <planet>
+    <type>gaseous</type>
+    <radius>90</radius>
+    <x>2120</x>
+    <y>570</y>
   </planet>
 
   <planet>
@@ -163,8 +170,8 @@
   </gate>
 
   <gate>
-    <planet1>16</planet1>
-    <planet2>17</planet2>
+    <planet1>17</planet1>
+    <planet2>18</planet2>
   </gate>
 
 

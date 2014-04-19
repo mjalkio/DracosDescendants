@@ -107,6 +107,7 @@ namespace DracosD.Controllers
         // Game specific player input
 
         protected PlayerInputController playerInput;
+        protected AIController ai;
         #endregion
 
         #region Properties (Read-Write)
@@ -259,7 +260,7 @@ namespace DracosD.Controllers
 
             world.ContactManager.BeginContact += ContactAdded;
 
-            AIController ai = new AIController(dragon, level, currentGates);
+            ai = new AIController(dragon, level, currentGates);
         }
 
 
@@ -628,7 +629,7 @@ namespace DracosD.Controllers
         /// last, or close-to-last, in any overriding method
         /// </remarks>
         /// <param name="dt">Timing values from parent loop</param>
-        public void Update(float dt)
+        public void Update(float dt, GameTime gametime)
         {
             // Debug.Print("" + dragon.Thrust);
             
@@ -734,64 +735,69 @@ namespace DracosD.Controllers
                     }
                 }
 
+            // Read from the input and add the force to the dragon model
+            float distance = (float) Math.Sqrt(playerInput.Horizontal * playerInput.Horizontal + playerInput.Vertical * playerInput.Vertical);
+            //To prevent division by zero
+            if (distance == 0)
+            {
+                distance = 1;
+            }
 
-                // Read from the input and add the force to the dragon model
-                float distance = (float)Math.Sqrt(playerInput.Horizontal * playerInput.Horizontal + playerInput.Vertical * playerInput.Vertical);
-                //To prevent division by zero
-                if (distance == 0)
+            Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
+            dragon.Force = normalizedDirection *dragon.Thrust;
+            //Vector2 dir = ai.GetAction(gametime, currentGates);
+            //dragon.Force = dragon.Thrust * dir;
+            // Read from the input and add the force to the rocket model
+            // But DO NOT apply the force yet (look at RocketObject.cs).
+            float FY = playerInput.Vertical * dragon.Thrust;
+            float FX = playerInput.Horizontal * dragon.Thrust;
+            //float FY = dir.Y * dragon.Thrust;
+            //float FX = dir.X * dragon.Thrust;
+            dragon.Force = new Vector2(FX, FY);
+
+            //TODO: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
+            if (!dragon.CanMove)
+            {
+                dragon.Force = new Vector2(0f, 0f);
+            }
+
+
+            //Debug.Print("" + dragon.Position);
+            // Add any objects created by actions
+            foreach (PhysicsObject o in addQueue)
+            {
+                AddObject(o);
+            }
+            addQueue.Clear();
+
+            // Turn the physics engine crank.
+            world.Step(dt);
+
+            // Garbage collect the deleted objects.
+            // Note how we use the linked list nodes to delete O(1) in place.
+            // This is O(n) without copying.  
+            LinkedListNode<PhysicsObject> node = objects.First;
+            LinkedListNode<PhysicsObject> next;
+            PhysicsObject obj;
+            while (node != null)
+            {
+                obj = node.Value;
+                next = node.Next;
+                // Delete O(1) in place
+                if (obj.Remove)
                 {
-                    distance = 1;
+                    obj.DeactivatePhysics(world);
+                    objects.Remove(node);
                 }
-                Vector2 normalizedDirection = new Vector2(playerInput.Horizontal / distance, playerInput.Vertical / distance);
-                dragon.Force = normalizedDirection * dragon.Thrust;
-                // Read from the input and add the force to the rocket model
-                // But DO NOT apply the force yet (look at RocketObject.cs).
-                float FY = playerInput.Vertical * dragon.Thrust;
-                float FX = playerInput.Horizontal * dragon.Thrust;
-                dragon.Force = new Vector2(FX, FY);
-
-                //TODO: MAKE THIS HAPPEN FOR ALL DRAGONS, NOT JUST PLAYER
-                if (!dragon.CanMove)
+                else
                 {
-                    dragon.Force = new Vector2(0f, 0f);
+                    // Note that update is called last!
+                    obj.Update(dt);
                 }
-
-                //Debug.Print("" + dragon.Position);
-                // Add any objects created by actions
-                foreach (PhysicsObject o in addQueue)
-                {
-                    AddObject(o);
-                }
-                addQueue.Clear();
-
-                // Turn the physics engine crank.
-                world.Step(dt);
-
-                // Garbage collect the deleted objects.
-                // Note how we use the linked list nodes to delete O(1) in place.
-                // This is O(n) without copying.  
-                LinkedListNode<PhysicsObject> node = objects.First;
-                LinkedListNode<PhysicsObject> next;
-                PhysicsObject obj;
-                while (node != null)
-                {
-                    obj = node.Value;
-                    next = node.Next;
-                    // Delete O(1) in place
-                    if (obj.Remove)
-                    {
-                        obj.DeactivatePhysics(world);
-                        objects.Remove(node);
-                    }
-                    else
-                    {
-                        // Note that update is called last!
-                        obj.Update(dt);
-                    }
-                    node = next;
-                }
+                node = next;
             }
         }
+    }
 
 
         #endregion

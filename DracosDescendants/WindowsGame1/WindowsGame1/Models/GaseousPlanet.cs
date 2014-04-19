@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using DracosD.Views;
 using FarseerPhysics.Dynamics;
+using System.Diagnostics;
 #endregion
 
 namespace DracosD.Models

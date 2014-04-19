@@ -8,6 +8,7 @@
 // the AI should move next.
 //
 // Author: Justin Bard
+// Based on formulas from http://students.cs.byu.edu/~cs470ta/goodrich/fall2004/lectures/Pfields.pdf
 //-----------------------------------------------------------------------------
 #endregion
 
@@ -31,6 +32,7 @@ namespace DracosD.Controllers
         private float vertical;
         private Dictionary<Dragon, int> currentGates; //map to look up racer's current gate that he's on and access that by index in the level
         private Gate goalGate;
+        private Vector2 goalEdge;
         private Vector2 goal; //the position in the world the dragon is trying to get to next
         #endregion
 
@@ -98,7 +100,7 @@ namespace DracosD.Controllers
             level = currLevel;
             currentGates = currGates;
             nextDirection = Vector2.Zero;
-            goal = new Vector2(-1.0f, -1.0f);
+            goal = new Vector2(0.0f, 0.0f);
             
             //select the first goal
             SelectGoal();
@@ -131,8 +133,31 @@ namespace DracosD.Controllers
                 //ChangeStateIfApplicable();
 
                 //Potential fields and computation
+                SelectGoal();
                 //MarkGoalTiles();
                 //move = GetMoveAlongShortestShortestPathToAGoalTile();
+                List<Vector2> potentials = new List<Vector2>();
+                potentials.Add(gradientPotentialGoal(racer.Position, GoalPosition(), 1.0f)); //change radius of goal
+
+                //TODO come up with a way to not loop through all objects AND detect the lava projectiles
+                foreach (PlanetaryObject planet in level.Planets)
+                {
+                    GaseousPlanet gp = null;
+                    if (planet is GaseousPlanet)
+                    {
+                        gp = planet as GaseousPlanet;
+                    }
+
+                    if (gp == null || (gp.OnFire))
+                    {
+                        potentials.Add(gradientPotentialObstacle(racer.Position, planet.Position, planet.Radius));
+                    }
+                }
+
+                Vector2 totalPotential = totalGradientPotential(potentials);
+                goal = Vector2.Normalize(totalPotential);
+                return goal;
+                //return totalPotential;
             }
 
             //TODO: Consider adding period fire breath to AI
@@ -143,7 +168,7 @@ namespace DracosD.Controllers
                 action |= ControlCode.Fire;
             }*/
 
-            return Vector2.Zero;
+            return goal;
         }
         #endregion
 
@@ -190,7 +215,7 @@ namespace DracosD.Controllers
         /// <returns></returns>
         private Vector2 gradientPotentialGoal(Vector2 aiPos, Vector2 goalPos, float r)
         {
-            float alpha = 1.0f; //the scaling factor
+            float alpha = 5.0f; //the scaling factor
             float gradX;
             float gradY;
             //find he distance between the goal and the ai
@@ -244,10 +269,10 @@ namespace DracosD.Controllers
                 gradX = -Math.Sign(Math.Cos(theta))*float.MaxValue;
                 gradY = -Math.Sign(Math.Sin(theta)) * float.MaxValue;
             }
-            else if (r <= distToObstacle && distToObstacle <= r + 7 * r) //play with radius of goal
+            else if (r <= distToObstacle && distToObstacle <= r + 5 * r) //play with radius of goal
             {
-                gradX = -alpha * (r + (7 * r) - distToObstacle) * (float)Math.Cos(theta);
-                gradY = -alpha * (r + (7 * r) - distToObstacle) * (float)Math.Sin(theta);
+                gradX = -alpha * (r + (5 * r) - distToObstacle) * (float)Math.Cos(theta);
+                gradY = -alpha * (r + (5 * r) - distToObstacle) * (float)Math.Sin(theta);
             }
             else //outside of circle of extent, so gets max value
             {

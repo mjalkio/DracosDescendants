@@ -109,9 +109,10 @@ namespace DracosD
             }
             else
             {
-                currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
+                currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds,gameTime);
                 base.Update(gameTime);
             }
+
         }
 
         /// <summary>
