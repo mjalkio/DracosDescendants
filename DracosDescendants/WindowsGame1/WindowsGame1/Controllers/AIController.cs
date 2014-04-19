@@ -133,11 +133,17 @@ namespace DracosD.Controllers
                 //ChangeStateIfApplicable();
 
                 //Potential fields and computation
-                SelectGoal();
+                if(currentGates[racer] != level.Gates.Count){
+                    SelectGoal();
+                }
                 //MarkGoalTiles();
                 //move = GetMoveAlongShortestShortestPathToAGoalTile();
                 List<Vector2> potentials = new List<Vector2>();
                 potentials.Add(gradientPotentialGoal(racer.Position, GoalPosition(), 1.0f)); //change radius of goal
+                if (currentGates[racer] == 0)
+                {
+                    potentials.Add(gradientPotentialEdge(racer.Position, new Vector2(level.Width, level.Height / 2.0f), 1.0f));
+                } 
 
                 //TODO come up with a way to not loop through all objects AND detect the lava projectiles
                 foreach (PlanetaryObject planet in level.Planets)
@@ -156,6 +162,10 @@ namespace DracosD.Controllers
 
                 Vector2 totalPotential = totalGradientPotential(potentials);
                 goal = Vector2.Normalize(totalPotential);
+                if (currentGates[racer] == level.Gates.Count)
+                {
+                    goal = new Vector2(0.0f, 0.0f);
+                }
                 return goal;
                 //return totalPotential;
             }
@@ -202,6 +212,45 @@ namespace DracosD.Controllers
             posList.Add(new Vector2(goalGate.Position.X, goalGate.Position.Y + 1.0f));
             posList.Add(new Vector2(goalGate.Position.X, goalGate.Position.Y - 1.0f));
             return posList;
+        }
+
+        /// <summary>
+        /// Calculates the gradient of the potential generated from the edge of the map. 
+        /// The potential field associated with the Goal behavior is an example of an attractive potential because the field
+        /// causes the ai to be attracted to the goal (i.e., all vectors point to the goal)
+        /// </summary>
+        /// <param name="aiPos">The current position of this ai</param>
+        /// <param name="goalPos">The current position of the goal</param>
+        /// <param name="r">The radius of the goal</param>
+        /// <returns></returns>
+        private Vector2 gradientPotentialEdge(Vector2 aiPos, Vector2 goalPos, float r)
+        {
+            float alpha = 7.0f; //the scaling factor
+            float gradX;
+            float gradY;
+            //find he distance between the goal and the ai
+            float distToGoal = Vector2.Distance(aiPos, goalPos);
+
+            //find the angle between the ai and the goal
+            float theta = (float)Math.Atan2(goalPos.Y - aiPos.Y, goalPos.X - aiPos.X);
+
+            //set gradX and gradY accordingly
+            if (distToGoal < r) //ai reached the goal, so no forces from the goal act on it
+            {
+                gradX = 0.0f;
+                gradY = 0.0f;
+            }
+            else if (r <= distToGoal && distToGoal <= r + 2 * r) //play with radius of goal
+            {
+                gradX = alpha * (distToGoal - r) * (float)Math.Cos(theta);
+                gradY = alpha * (distToGoal - r) * (float)Math.Sin(theta);
+            }
+            else //outside of circle of extent, so gets max value
+            {
+                gradX = alpha * 2 * r * (float)Math.Cos(theta);
+                gradY = alpha * 2 * r * (float)Math.Sin(theta);
+            }
+            return new Vector2(gradX, gradY);
         }
 
         /// <summary>

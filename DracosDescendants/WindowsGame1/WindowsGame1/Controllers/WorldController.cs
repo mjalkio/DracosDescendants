@@ -775,6 +775,7 @@ namespace DracosD.Controllers
             //float FX = dir.X * dragon.Thrust;
             //ragons[0].Force = new Vector2(FX, FY);
 
+
             for (int i = 1; i < dragons.Length; i++)
             {
                 Vector2 dir = AIControllers[i - 1].GetAction(gametime, currentGates);
