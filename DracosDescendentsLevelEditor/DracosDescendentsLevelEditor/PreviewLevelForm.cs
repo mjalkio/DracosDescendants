@@ -37,25 +37,31 @@ namespace DracosDescendentsLevelEditor
         public void Draw()
         {
             //Setup the stuff we draw on
-            SolidBrush myBrush = new SolidBrush(Color.White);
+            SolidBrush myBrush = new SolidBrush(Color.Green);
             Graphics formGraphics = this.CreateGraphics();
 
             //Setup the pen to draw gates and grid
             Pen myPen = new Pen(Color.Black);
             myPen.Width = SCALE_FACTOR;
+
+            //Setting up drawing of planet IDs
+            int i = 0;
+            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 6);
+            System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+
+            //Draw the x,y grid
             for (int j = 0; j < levelWidth; j += 50)
             {
                 formGraphics.DrawLine(myPen, j * SCALE_FACTOR, 0, j * SCALE_FACTOR, levelHeight * SCALE_FACTOR);
+                formGraphics.DrawString("" + j, drawFont, myBrush, j * SCALE_FACTOR, 0, drawFormat);
             }
             for (int k = 0; k < levelHeight; k += 50)
             {
                 formGraphics.DrawLine(myPen, 0, k * SCALE_FACTOR, levelWidth * SCALE_FACTOR, k * SCALE_FACTOR);
+                formGraphics.DrawString("" + k, drawFont, myBrush, 0, k * SCALE_FACTOR, drawFormat);
             }
 
-            //Setting up drawing of planet IDs
-            int i = 0;
-            System.Drawing.Font drawFont = new System.Drawing.Font("Arial", 16);
-            System.Drawing.StringFormat drawFormat = new System.Drawing.StringFormat();
+            drawFont = new System.Drawing.Font("Arial", 16);
 
             //Draw the planets
             foreach (Planet planet in planetList)
