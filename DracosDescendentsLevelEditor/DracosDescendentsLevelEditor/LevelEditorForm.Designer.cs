@@ -98,7 +98,6 @@
             0,
             0,
             0});
-            this.levelHeightUpDown.ValueChanged += new System.EventHandler(this.levelHeightUpDown_ValueChanged);
             // 
             // label2
             // 
