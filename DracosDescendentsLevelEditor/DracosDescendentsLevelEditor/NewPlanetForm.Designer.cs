@@ -31,12 +31,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.planetComboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.radiusBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.xBox = new System.Windows.Forms.TextBox();
+            this.yBox = new System.Windows.Forms.TextBox();
             this.createButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -61,7 +61,6 @@
             this.planetComboBox.Name = "planetComboBox";
             this.planetComboBox.Size = new System.Drawing.Size(121, 21);
             this.planetComboBox.TabIndex = 1;
-            this.planetComboBox.SelectedIndexChanged += new System.EventHandler(this.planetComboBox_SelectedIndexChanged);
             // 
             // label2
             // 
@@ -72,12 +71,12 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "Type";
             // 
-            // textBox1
+            // radiusBox
             // 
-            this.textBox1.Location = new System.Drawing.Point(136, 112);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 3;
+            this.radiusBox.Location = new System.Drawing.Point(136, 112);
+            this.radiusBox.Name = "radiusBox";
+            this.radiusBox.Size = new System.Drawing.Size(100, 20);
+            this.radiusBox.TabIndex = 3;
             // 
             // label3
             // 
@@ -106,19 +105,19 @@
             this.label5.TabIndex = 6;
             this.label5.Text = "y";
             // 
-            // textBox2
+            // xBox
             // 
-            this.textBox2.Location = new System.Drawing.Point(136, 156);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 7;
+            this.xBox.Location = new System.Drawing.Point(136, 156);
+            this.xBox.Name = "xBox";
+            this.xBox.Size = new System.Drawing.Size(100, 20);
+            this.xBox.TabIndex = 7;
             // 
-            // textBox3
+            // yBox
             // 
-            this.textBox3.Location = new System.Drawing.Point(136, 184);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 8;
+            this.yBox.Location = new System.Drawing.Point(136, 184);
+            this.yBox.Name = "yBox";
+            this.yBox.Size = new System.Drawing.Size(100, 20);
+            this.yBox.TabIndex = 8;
             // 
             // createButton
             // 
@@ -136,12 +135,12 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(284, 262);
             this.Controls.Add(this.createButton);
-            this.Controls.Add(this.textBox3);
-            this.Controls.Add(this.textBox2);
+            this.Controls.Add(this.yBox);
+            this.Controls.Add(this.xBox);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.radiusBox);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.planetComboBox);
             this.Controls.Add(this.label1);
@@ -157,12 +156,12 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox planetComboBox;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox radiusBox;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox xBox;
+        private System.Windows.Forms.TextBox yBox;
         private System.Windows.Forms.Button createButton;
     }
 }

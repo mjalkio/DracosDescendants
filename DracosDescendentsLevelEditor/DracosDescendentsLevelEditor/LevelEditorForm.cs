@@ -14,7 +14,7 @@ namespace DracosDescendentsLevelEditor
     public partial class LevelEditorForm : Form
     {
         private List<Dragon> dragonList;
-        private List<Gate> gateList;
+        public static List<Gate> gateList;
         public static List<Planet> planetList;
         PreviewLevelForm levelForm;
 
@@ -197,6 +197,5 @@ namespace DracosDescendentsLevelEditor
             openXML.Multiselect = false;
             openXML.ShowDialog();
         }
-
     }
 }

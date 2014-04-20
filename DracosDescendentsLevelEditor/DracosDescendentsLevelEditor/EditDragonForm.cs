@@ -28,8 +28,15 @@ namespace DracosDescendentsLevelEditor
 
         private void saveButton_Click(object sender, EventArgs e)
         {
-            dragon.x = Convert.ToSingle(xBox.Text);
-            dragon.y = Convert.ToSingle(yBox.Text);
+            try
+            {
+                dragon.x = Convert.ToSingle(xBox.Text);
+                dragon.y = Convert.ToSingle(yBox.Text);
+            }
+            catch
+            {
+
+            }
             this.Dispose();
         }
     }

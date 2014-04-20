@@ -81,12 +81,12 @@
             // 
             this.levelHeightUpDown.Location = new System.Drawing.Point(285, 52);
             this.levelHeightUpDown.Maximum = new decimal(new int[] {
-            1000,
+            50000,
             0,
             0,
             0});
             this.levelHeightUpDown.Minimum = new decimal(new int[] {
-            20,
+            500,
             0,
             0,
             0});
@@ -94,10 +94,11 @@
             this.levelHeightUpDown.Size = new System.Drawing.Size(102, 20);
             this.levelHeightUpDown.TabIndex = 3;
             this.levelHeightUpDown.Value = new decimal(new int[] {
-            20,
+            500,
             0,
             0,
             0});
+            this.levelHeightUpDown.ValueChanged += new System.EventHandler(this.levelHeightUpDown_ValueChanged);
             // 
             // label2
             // 
@@ -121,12 +122,12 @@
             // 
             this.levelWidthUpDown.Location = new System.Drawing.Point(86, 52);
             this.levelWidthUpDown.Maximum = new decimal(new int[] {
-            5000,
+            100000,
             0,
             0,
             0});
             this.levelWidthUpDown.Minimum = new decimal(new int[] {
-            20,
+            500,
             0,
             0,
             0});
@@ -134,7 +135,7 @@
             this.levelWidthUpDown.Size = new System.Drawing.Size(102, 20);
             this.levelWidthUpDown.TabIndex = 6;
             this.levelWidthUpDown.Value = new decimal(new int[] {
-            20,
+            500,
             0,
             0,
             0});

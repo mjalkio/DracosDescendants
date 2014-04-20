@@ -33,7 +33,24 @@ namespace DracosDescendentsLevelEditor
 
         private void deletePlanetButton_Click(object sender, EventArgs e)
         {
-            planetList.Remove((Planet)planetSelectComboBox.SelectedItem);
+            Planet p = (Planet)planetSelectComboBox.SelectedItem;
+
+            //Delete the gates which use that planet
+            List<Gate> invalidGates = new List<Gate>();
+            foreach (Gate g in LevelEditorForm.gateList)
+            {
+                if (g.planet1 == p || g.planet2 == p)
+                {
+                    invalidGates.Add(g);
+                }
+            }
+            foreach (Gate g in invalidGates)
+            {
+                LevelEditorForm.gateList.Remove(g);
+            }
+
+            //Delete the actual planet
+            planetList.Remove(p);
             this.Dispose();
         }
 

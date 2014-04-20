@@ -31,9 +31,16 @@ namespace DracosDescendentsLevelEditor
         private void saveButton_Click(object sender, EventArgs e)
         {
             planet.type = planetComboBox.SelectedItem.ToString();
-            planet.x = Convert.ToSingle(xBox.Text);
-            planet.y = Convert.ToSingle(yBox.Text);
-            planet.radius = Convert.ToSingle(radiusBox.Text);
+            try
+            {
+                planet.radius = Convert.ToSingle(radiusBox.Text);
+                planet.x = Convert.ToSingle(xBox.Text);
+                planet.y = Convert.ToSingle(yBox.Text);
+            }
+            catch
+            {
+            }
+
             this.Dispose();
         }
     }
