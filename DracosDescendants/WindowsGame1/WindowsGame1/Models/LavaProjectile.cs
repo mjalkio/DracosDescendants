@@ -84,7 +84,10 @@ namespace DracosD.Models
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
-            view.DrawSprite(texture, Color.White, Position, scale * 2.0f, Rotation);
+            float rotation = (float)Math.Atan(linearVelocity.Y / linearVelocity.X);
+            if (linearVelocity.X < 0) rotation = rotation + (float)Math.PI;
+            //rotation = rotation - (.5f * (float)Math.PI);
+            view.DrawSprite(texture, Color.White, Position, scale * 2.0f, rotation);
         }
 
         public override void Update(float dt)

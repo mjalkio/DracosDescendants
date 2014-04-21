@@ -41,6 +41,7 @@ namespace DracosD
         protected GameView gameView;
 
         private Texture2D victory;
+        private Texture2D failure;
         #endregion
 
         #region Initialization
@@ -79,6 +80,7 @@ namespace DracosD
             gameView.LevelHeight = (int)(gameLevelController.Height / WorldController.DEFAULT_SCALE);
 
             victory = content.Load<Texture2D>("victory");
+            failure = content.Load<Texture2D>("failure");
             currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);
         }
 
@@ -130,6 +132,12 @@ namespace DracosD
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 gameView.DrawOverlay(victory, Color.White, false); 
+                gameView.EndSpritePass();
+            }
+            if (currentWorld.Failed)
+            {
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                gameView.DrawOverlay(failure, Color.White, false);
                 gameView.EndSpritePass();
             }
             base.Draw(gameTime);

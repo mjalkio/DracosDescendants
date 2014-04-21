@@ -26,8 +26,8 @@ namespace DracosD.Models
         private const float DEFAULT_DENSITY = 1.0f;
         private const float DEFAULT_FRICTION = 0.1f;
         private const float DEFAULT_RESTITUTION = 0.4f;
-        private const int COOLDOWN = 60; //in ticks
-        private const int DELAY = 30;
+        private const int COOLDOWN = 120; //in ticks
+        private const int DELAY = 60;
 
         public static int ID = 0;
 
@@ -248,26 +248,12 @@ namespace DracosD.Models
         /// <param name="decr"></param>
         public void Burn(bool decr)
         {
-            if (delayTime == 1)
-            {
-                currCooldown = 0;
-            }
-            if (currCooldown == 0)
-            {
-                delayTime = DELAY;
-            }
-            if (decr && delayTime > 0)
-            {
-                delayTime--;
-            }
-            else if (decr && currCooldown > 0)
-            {
-                currCooldown--;
-            }
-            else if (!decr && currCooldown == 0)
+            if (decr && currCooldown > 0) currCooldown--;
+            else if (decr && delayTime > 0) delayTime--;
+            else if (!decr && delayTime == 0)
             {
                 currCooldown = COOLDOWN;
-                delayTime = 0;
+                delayTime = DELAY;
             }
         }
 
@@ -277,8 +263,9 @@ namespace DracosD.Models
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
-            view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES);
+                view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES);
         }
+
         #endregion
     }
 }

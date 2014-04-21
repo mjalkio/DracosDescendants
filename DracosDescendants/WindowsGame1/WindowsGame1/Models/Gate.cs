@@ -24,12 +24,21 @@ namespace DracosD.Models
     class Gate : SensorObject
     {
         #region Fields
+
+        private const int NUM_FRAMES = 6;
         private Texture2D gateTexture;
         private PlanetaryObject planet1;
         private PlanetaryObject planet2;
+
+        private int animationFrame = 0;
         #endregion
 
         #region Properties (READ-WRITE)
+        public int Frame{
+            get { return animationFrame; }
+            set { animationFrame = value; }
+        }
+
         public PlanetaryObject Planet1
         {
             get { return planet1; }
@@ -78,6 +87,7 @@ namespace DracosD.Models
         #region Game Loop (Draw)
         public override void Draw(GameView canvas)
         {
+            //canvas.DrawSprite(gateTexture, Color.White, position, scale, Rotation, animationFrame, NUM_FRAMES);
             base.Draw(canvas);
         }
         #endregion

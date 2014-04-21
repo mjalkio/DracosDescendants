@@ -568,6 +568,16 @@ namespace DracosD.Views
 
             // Draw it.
             spriteBatch.Draw(image, position, src, tint, angle, origin, scale, SpriteEffects.None, 0);
+
+            if (position.X < 100.0f)
+            {
+                spriteBatch.Draw(image, new Vector2(position.X + (float)levelWidth, position.Y), src, tint, angle, origin, scale, SpriteEffects.None, 0);
+            }
+
+            if (position.X > levelWidth - 100.0f)
+            {
+                spriteBatch.Draw(image, new Vector2(position.X - (float)levelWidth, position.Y), src, tint, angle, origin, scale, SpriteEffects.None, 0);
+            }
         }
 
         /// <summary>

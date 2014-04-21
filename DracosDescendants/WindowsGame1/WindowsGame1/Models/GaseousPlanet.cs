@@ -19,7 +19,7 @@ namespace DracosD.Models
 {
     class GaseousPlanet : PlanetaryObject
     {
-        private const float DEFAULT_DENSITY = 2.0f;
+        private const float DEFAULT_DENSITY = 0.1f;
         private const float DEFAULT_FRICTION = 0.0f;
         private const float DEFAULT_RESTITUTION = 0.0f;
         private const int IGNITE_FRAMES = 5;
@@ -33,7 +33,7 @@ namespace DracosD.Models
         // Animation fields
         private int currFrame = 0;
         private bool frameDirection;
-        private int delay = 4;
+        private int delay = 6;
         private int elapsed;
 
         public Texture2D Flame_Texture

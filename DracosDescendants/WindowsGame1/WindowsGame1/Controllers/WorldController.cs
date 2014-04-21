@@ -69,8 +69,10 @@ namespace DracosD.Controllers
         #region Fields
         // All the objects in the world
         private LevelController level;
-        private int lapNum;
-        private int playerLap;
+
+        // lapNum used to count 
+        private Dictionary<Dragon, int> lapNum;
+        private Dictionary<Dragon,int> playerLap;
 
         private LinkedList<PhysicsObject> objects = new LinkedList<PhysicsObject>();
 
@@ -250,16 +252,19 @@ namespace DracosD.Controllers
             LoadContent(content);
             PopulateLevel();
 
-            lapNum = 1;
 
             succeeded = false;
 
             //level is populated so initialize and populate the current gates for each racer
             initializeGates(currentGates, level.Racers);
 
+            lapNum = new Dictionary<Dragon, int>();
+            playerLap = new Dictionary<Dragon, int>();
             // Attach the force controller to the dragons.
             foreach (Dragon drag in dragons)
             {
+                lapNum[drag] = 1;
+                playerLap[drag] = 1;
                 forceController = new ForceController(drag, planets, Width);
                 world.AddController(forceController);
             }
@@ -421,9 +426,13 @@ namespace DracosD.Controllers
                         (body1.UserData == currGate && body2.UserData == drag))
                     {
                         //If you pass the last gate, you win
-                        if (currentGates[drag] == level.Gates.Count - 1 && playerLap == 3)
+                        if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 3)
                         {
-                            Succeeded = true;
+                            if (drag == dragons[0] && !Failed)
+                            {
+                                Succeeded = true;
+                            }
+                            else if (!Succeeded) Failed = true;
                             currentGates[drag]++;
                         }
                         else if (currentGates[drag] == level.Gates.Count - 1)
@@ -517,17 +526,13 @@ namespace DracosD.Controllers
             BeginPass(view, state);
             EndPass(view, state);
             state = DrawState.Inactive;
-            /*Debug.Print("VIEW: " + view.LevelWidth);
-            Debug.Print("WORLD: " + Width);
-            Debug.Print("" + Dragon.Position);
-            Debug.Print("Dragon: " + dragon.X + ", " + dragon.Y);*/
 
             // view.Scale = scale;
             foreach (PhysicsObject obj in Objects)
             {
                 //draw only the current gate and all other objects that are not gates
-                if (!(obj is Gate) || (obj is Gate && currentGates[dragons[0]] < level.Gates.Count && level.Gates[currentGates[dragons[0]]].Equals((Gate)obj)))
-                {
+                if (!(obj is Gate) || (obj is Gate && currentGates[dragons[0]] < level.Gates.Count && level.Gates[currentGates[dragons[0]]].Equals((Gate)obj))
+                    || (/*(currentGates[dragons[0]]>0) &&*/ (obj is Gate && level.Gates[((currentGates[dragons[0]]-1+level.Gates.Count)%level.Gates.Count)].Equals((Gate)obj)))){
                     Dragon drawDrag = null;
                     drawDrag = obj as Dragon;
                     if (drawDrag != null)
@@ -557,17 +562,7 @@ namespace DracosD.Controllers
             BeginTextPass(view, state);
             view.DrawText("Lap: " + playerLap, Color.White, new Vector2(0.0f, 0.0f));
             EndPass(view, state);
-            /*state = DrawState.SpritePass;
-            BeginTextPass(view, state);
             
-
-            view.DrawText("Q/A Restitution: " + planets[0].Restitution, Color.White, new Vector2(0.0f, 0.0f));
-            view.DrawText("W/S Gravity Constant: " + forceController.Gravity, Color.White, new Vector2(0.0f, 0.5f));
-            view.DrawText("E/D Dragon Thrust: " + dragon.Thrust, Color.White, new Vector2(0.0f, 1.0f));
-            view.DrawText("R/F Dampening Factor: " + dragon.Dampen, Color.White, new Vector2(0.0f, 1.5f));
-            view.DrawText("T/G Top Speed: " + dragon.DampenThreshold, Color.White, new Vector2(0.0f, 2.0f));
-            view.DrawText("Current Speed: " + dragon.LinearVelocity.Length(), Color.White, new Vector2(0.0f, 2.5f));
-            EndPass(view, state);*/
         }
 
         /// <summary>
@@ -586,7 +581,7 @@ namespace DracosD.Controllers
                     view.BeginSpritePass(BlendState.AlphaBlend, dragons[0].Position);
                     break;
                 case DrawState.BackgroundPass:
-                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragons[0].Position + new Vector2((lapNum)*Width,0)); //begin drawing the background
+                    view.BeginBackgroundPass(BlendState.AlphaBlend, dragons[0].Position + new Vector2(lapNum[dragons[0]]*Width,0)); //begin drawing the background
                     break;
                 default:
                     break;
@@ -694,9 +689,9 @@ namespace DracosD.Controllers
                         Vector2 currentPosition = obje.Position;
                         obje.X = currentPosition.X - Width;
                         obje.Y = currentPosition.Y;
-                        if (obje == dragons[0])
+                        if (obje is Dragon)
                         {
-                            lapNum++;
+                            lapNum[(Dragon)obje]++;
                         }
                     }
                     if (obje.Position.X < 0)
@@ -704,14 +699,18 @@ namespace DracosD.Controllers
                         Vector2 currentPosition = obje.Position;
                         obje.X = currentPosition.X + Width;
                         obje.Y = currentPosition.Y;
-                        if (obje == dragons[0])
+                        if (obje is Dragon)
                         {
-                            lapNum--;
+                            lapNum[(Dragon)obje]--;
                         }
                     }
-                
 
-                    if (lapNum > playerLap && playerLap < 3) playerLap = lapNum;
+
+                    if (obje is Dragon)
+                    {
+                        Dragon drag = (Dragon)obje;
+                        if (lapNum[drag] > playerLap[drag] && playerLap[drag] < 3) playerLap[drag] = lapNum[drag];
+                    }
 
 
                     if (obje is GaseousPlanet)
@@ -720,6 +719,11 @@ namespace DracosD.Controllers
                         if (gp.Burned)
                         {
                             gp.OnFire = true;
+                            // ADD SHOCKWAVE
+                            for (int i = 0; i < 8; i++)
+                            {
+                                createLavaProjectile(gp);
+                            }
                         }
                         Vector2 p1 = gp.Position;
                         Vector2 p2 = new Vector2(gp.Position.X, gp.Position.Y + gp.Radius);
@@ -836,7 +840,7 @@ namespace DracosD.Controllers
 
         #region Methods
 
-        private void createLavaProjectile(LavaPlanet planet)
+        private void createLavaProjectile(PlanetaryObject planet)
         {
             const float BULLET_OFFSET = 0.5f;
 
@@ -859,6 +863,12 @@ namespace DracosD.Controllers
             bullet.LinearVelocity = (speed*bulletDirection) + randomDirection2Vec;
             AddQueuedObject(bullet);
         }
+
+        private void shockwave(GaseousPlanet planet)
+        {
+
+        }
+
         #endregion
     }
 }
