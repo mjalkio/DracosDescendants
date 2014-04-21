@@ -37,6 +37,7 @@ namespace DracosD.Controllers
         private Texture2D lavaPlanetTexture;
         private Texture2D lavaProjTexture;
 
+
         /// <summary>
         /// Load images for this class
         /// </summary>
@@ -90,6 +91,9 @@ namespace DracosD.Controllers
         // Have we won yet?
         private bool succeeded;
         private bool failed;
+
+        //dictionary to check if last gate is passed
+        private Dictionary<Dragon, bool> lastGate;
 
         //has the reset button been pressed?
         private bool toReset;
@@ -260,11 +264,13 @@ namespace DracosD.Controllers
 
             lapNum = new Dictionary<Dragon, int>();
             playerLap = new Dictionary<Dragon, int>();
+            lastGate = new Dictionary<Dragon, bool>();
             // Attach the force controller to the dragons.
             foreach (Dragon drag in dragons)
             {
                 lapNum[drag] = 1;
                 playerLap[drag] = 1;
+                lastGate[drag] = false;
                 forceController = new ForceController(drag, planets, Width);
                 world.AddController(forceController);
             }
@@ -336,11 +342,11 @@ namespace DracosD.Controllers
             obj.Restitution = BASIC_RESTITION;
             AddObject(obj);
 
-            Debug.Print("COUNT OF LEVEL: " + level.Racers.Count);
-            Debug.Print("COUNT OF DRAGONS: " + dragons.Length);
+            //Debug.Print("COUNT OF LEVEL: " + level.Racers.Count);
+            //Debug.Print("COUNT OF DRAGONS: " + dragons.Length);
             for (int i = 0; i < level.Racers.Count; i++)
             {
-                Debug.Print("COUNT: " + i);
+                //Debug.Print("COUNT: " + i);
                 if (level.Racers[i] != null)
                 {
                     dragons[i] = level.Racers[i];
@@ -437,6 +443,7 @@ namespace DracosD.Controllers
                         }
                         else if (currentGates[drag] == level.Gates.Count - 1)
                         {
+                            lastGate[drag] = true;
                             currentGates[drag] = 0;
                         }
                         else
@@ -560,7 +567,7 @@ namespace DracosD.Controllers
             EndPass(view, state);
 
             BeginTextPass(view, state);
-            view.DrawText("Lap: " + playerLap, Color.White, new Vector2(0.0f, 0.0f));
+            view.DrawText("Lap: " + playerLap[dragons[0]], Color.White, new Vector2(0.0f, 0.0f));
             EndPass(view, state);
             
         }
@@ -709,7 +716,11 @@ namespace DracosD.Controllers
                     if (obje is Dragon)
                     {
                         Dragon drag = (Dragon)obje;
-                        if (lapNum[drag] > playerLap[drag] && playerLap[drag] < 3) playerLap[drag] = lapNum[drag];
+                        if (lapNum[drag] > playerLap[drag] && playerLap[drag] < 3 && lastGate[drag])
+                        {
+                            playerLap[drag] = lapNum[drag];
+                            lastGate[drag] = false;
+                        }
                     }
 
 
@@ -731,15 +742,47 @@ namespace DracosD.Controllers
                         Vector2 p4 = new Vector2(gp.Position.X - gp.Radius, gp.Position.Y);
                         Vector2 p5 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
                         Vector2 p6 = new Vector2(gp.Position.X - (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y + (float)(gp.Radius / Math.Sqrt(2)));
+                        Vector2 p7 = new Vector2(gp.Position.X + (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y + (float)(gp.Radius / Math.Sqrt(2)));
+                        Vector2 p8 = new Vector2(gp.Position.X + (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
+                        Vector2 p9 = new Vector2(gp.Position.X + gp.Radius, gp.Position.Y);
                         //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
+                        //TODO: GENERALIZE THIS IF ALL DRAGONS ARE BREATHING
                         if (dragons[0].IsBreathing)
                         {
                             foreach (Fixture fix in dragons[0].Breath.Fixtures)
                             {
-                                if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6))
+                                if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6) || fix.TestPoint(ref p7) || fix.TestPoint(ref p8) || fix.TestPoint(ref p9))
                                     && !gp.OnFire)
                                 {
                                     gp.Torch(false);
+                                    break;
+                                }
+                            }
+
+
+                        }
+                    }
+                    
+                    //Light other dragons on fire
+                    //TODO: GENERALIZE THIS SO ALL DRAGONS CAN BREATH
+                    if (obje is Dragon)
+                    {
+                        Dragon gp = (Dragon)obje;
+                        Vector2 p1 = gp.Position;
+                        Vector2 p2 = new Vector2(gp.Position.X, gp.Position.Y + gp.Height/2);
+                        Vector2 p3 = new Vector2(gp.Position.X, gp.Position.Y - gp.Height / 2);
+                        Vector2 p4 = new Vector2(gp.Position.X - gp.Width/2, gp.Position.Y);
+                        Vector2 p5 = new Vector2(gp.Position.X + gp.Width / 2, gp.Position.Y);
+                        //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
+                        //TODO: GENERALIZE THIS IF ALL DRAGONS ARE BREATHING
+                        if (dragons[0].IsBreathing)
+                        {
+                            foreach (Fixture fix in dragons[0].Breath.Fixtures)
+                            {
+                                if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5))
+                                    && gp.CanMove)
+                                {
+                                    gp.Burn(false);
                                     break;
                                 }
                             }

@@ -154,7 +154,7 @@ namespace DracosD.Controllers
                         gp = planet as GaseousPlanet;
                     }
 
-                    if (gp == null || (gp.OnFire))
+                    if (gp == null)
                     {
                         potentials.Add(gradientPotentialObstacle(racer.Position, planet.Position, planet.Radius));
                     }
