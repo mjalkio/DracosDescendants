@@ -54,6 +54,7 @@ namespace DracosD.Controllers
         protected bool breathing;
 
         protected bool pressedStart;
+        protected bool startWasDown = false;
 
         #endregion
 
@@ -251,9 +252,19 @@ namespace DracosD.Controllers
             {
                 breathing = true;
             }
-            if (keyboard.IsKeyDown(Keys.Enter))
+            pressedStart = false;
+            if (startWasDown && keyboard.IsKeyUp(Keys.Enter))
             {
                 pressedStart = true;
+                keyPressed = true;
+            }
+            if (keyboard.IsKeyDown(Keys.Enter))
+            {
+                startWasDown = true;
+            }
+            else
+            {
+                startWasDown = false;
             }
 
 

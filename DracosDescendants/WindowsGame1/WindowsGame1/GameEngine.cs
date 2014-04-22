@@ -50,6 +50,7 @@ namespace DracosD
         private Texture2D victory;
         private Texture2D failure;
         private Texture2D menuBackground;
+        private Texture2D pause;
 
         private GameState gameState;
         #endregion
@@ -95,6 +96,7 @@ namespace DracosD
             victory = content.Load<Texture2D>("victory");
             failure = content.Load<Texture2D>("failure");
             menuBackground = content.Load<Texture2D>("c_spacescape_final");
+            pause = content.Load<Texture2D>("paused");
             currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);
         }
 
@@ -117,17 +119,21 @@ namespace DracosD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (gameState == GameState.Start)
+            if (gameState == GameState.Start || gameState == GameState.Pause)
             {
                 if (currentWorld.PressedStart())
                 {
                     gameState = GameState.Game;
                 }
             }
-            if (gameState == GameState.Game)
+            else if (gameState == GameState.Game)
             {
                 gameView.Scale = currentWorld.Scale;
-                if (currentWorld.isToReset)
+                if (currentWorld.PressedStart())
+                {
+                    gameState = GameState.Pause;
+                }
+                else if (currentWorld.isToReset)
                 {
                     gameLevelController = new LevelController();
                     gameState = GameState.Start;
@@ -155,11 +161,10 @@ namespace DracosD
                 gameView.DrawOverlay(menuBackground, Color.White, false);
                 gameView.EndSpritePass();
             }
-            if (gameState == GameState.Game)
+            else if (gameState == GameState.Game)
             {
                 // World specific drawing
                 currentWorld.Draw(gameView);
-                // gameMenuView.Draw();
 
                 // Final message
                 if (currentWorld.Succeeded)
@@ -175,6 +180,14 @@ namespace DracosD
                     gameView.EndSpritePass();
                 }
             }
+            else if (gameState == GameState.Pause)
+            {
+                currentWorld.Draw(gameView);
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                gameView.DrawOverlay(pause, Color.White, false);
+                gameView.EndSpritePass();
+            }
+
             base.Draw(gameTime);
         }
         #endregion
