@@ -54,8 +54,12 @@ namespace DracosD.Views
 
         //the background of the game
         protected Texture2D background;
-        protected Texture2D m_background;
         protected Texture2D f_background;
+
+        //the HUD of the game
+        protected Texture2D progressTexture;
+        protected Texture2D dragonheadTexture;
+        protected Texture2D arrowTexture;
 
         // Track the current drawing pass. 
         protected DrawState state;
@@ -65,6 +69,9 @@ namespace DracosD.Views
 
         // Private variable for property IsFullscreen.
         protected bool fullscreen;
+
+        //if a gate is missed, used for HUD display
+        protected bool gateMissed;
 
         // Attributes to rescale the image
         protected Matrix transform;
@@ -373,8 +380,10 @@ namespace DracosD.Views
             font = content.Load<SpriteFont>("PhysicsFont");
             //load background
             background = content.Load<Texture2D>("stars");
-            m_background = content.Load<Texture2D>("stars-parallax middle");
             f_background = content.Load<Texture2D>("stars-parallax front");
+            progressTexture = content.Load<Texture2D>("progressbar");
+            dragonheadTexture = content.Load<Texture2D>("dragonhead");
+            arrowTexture = content.Load<Texture2D>("arrow");
         }
 
 
@@ -785,9 +794,8 @@ namespace DracosD.Views
             backcamera.Pos = position;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null,backcamera.GetTransformation2(0.1f));
-            spriteBatch.Draw(background, -position/4, Color.White);
-            spriteBatch.Draw(m_background, -position/2, Color.White);
-            spriteBatch.Draw(f_background, -position, Color.White);
+            spriteBatch.Draw(background, -position * 2, new Rectangle(0, 0, background.Width * 10, background.Height), Color.White);
+            spriteBatch.Draw(f_background, -position * 3, new Rectangle(0, 0, background.Width * 10, background.Height * 2), Color.White);
  
         }
 
@@ -796,6 +804,47 @@ namespace DracosD.Views
             // Check the drawing state invariants.
             Debug.Assert(state == DrawState.BackgroundPass, "Drawing state is invalid (expected SpritePass)");
             state = DrawState.Inactive;
+            spriteBatch.End();
+        }
+
+        #endregion
+
+        #region HUD pass
+
+        //Draw the hud and dragon head on the progress bar
+        public void BeginHUDPass(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum)
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
+            spriteBatch.Draw(progressTexture, new Vector2(150, 50), Color.White);
+            spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10), Color.White);
+            //if the dragon missed a gate, then the progress bar shouldn't move anymore
+            if (relativeDragonPosition.X > positionGate.X)
+            {
+                gateMissed = true;
+            }
+            else
+            {
+                gateMissed = false;
+            }
+
+
+            if (gateMissed)
+            {
+                spriteBatch.Draw(dragonheadTexture, new Vector2(positionGate.X + 140, 50), Color.White);
+            }
+            else
+            {
+                //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
+                spriteBatch.Draw(dragonheadTexture, new Vector2(positionDragon.X - 180, 50), Color.White);
+            }
+            Debug.Print(positionDragon.X.ToString());
+            Debug.Print(positionGate.X.ToString());
+            Debug.Print(relativeDragonPosition.X.ToString());
+
+        }
+
+        public void EndHUDPass()
+        {
             spriteBatch.End();
         }
 

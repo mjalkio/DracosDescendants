@@ -115,6 +115,10 @@ namespace DracosD.Controllers
         protected PlayerInputController playerInput;
 
         protected AIController[] AIControllers;
+
+        //the HUD controller
+        protected HUDController hud;
+
         #endregion
 
         #region Properties (Read-Write)
@@ -281,6 +285,9 @@ namespace DracosD.Controllers
             {
                 AIControllers[i-1] = new AIController(dragons[i], level, currentGates);
             }
+
+            //create a new HUD controller
+            hud = new HUDController(level, dragons[0], currentGates);
         }
 
 
@@ -320,14 +327,7 @@ namespace DracosD.Controllers
         private void PopulateLevel()
         {
             //Create a bounding box around the level (for now, will add wraparound later)
-            /*PhysicsObject obj;
 
-            Vector2[] points = { new Vector2(0, 0), new Vector2(50, 0), new Vector2(50, .01f), new Vector2(0, .01f) };
-            obj = new PolygonObject(regularPlanetTexture, points, Scale);
-            obj.BodyType = BodyType.Static;
-            obj.Density = BASIC_DENSITY;
-            obj.Restitution = BASIC_RESTITION;
-            //AddObject(obj);*/
             Vector2[] points = { new Vector2(0f, 0.0f), new Vector2(Width, 0f), new Vector2(Width+1.0f, 0.01f), new Vector2(0f, 0.01f) };
             PhysicsObject obj = new PolygonObject(regularPlanetTexture, points, Scale);
             obj.BodyType = BodyType.Static;
@@ -573,7 +573,13 @@ namespace DracosD.Controllers
             BeginTextPass(view, state);
             view.DrawText("Lap: " + playerLap[dragons[0]], Color.White, new Vector2(0.0f, 0.0f));
             EndPass(view, state);
-            
+
+            //draw the hud if the game is not finished
+            if (currentGates[dragons[0]] < level.Gates.Count)
+            {
+                Gate goal = level.Gates[currentGates[dragons[0]]];
+                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], goal);
+            }
         }
 
         /// <summary>

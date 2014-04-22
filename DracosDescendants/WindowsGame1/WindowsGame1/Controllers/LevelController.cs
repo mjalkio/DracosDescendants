@@ -91,10 +91,8 @@ namespace DracosD.Controllers
         public void LoadContent(ContentManager content, string xmlFile)
         {
             dragonTexture = content.Load<Texture2D>("rocket");
-            backgroundTexture = content.Load<Texture2D>("PrimaryBackground");
             regularPlanetTexture = content.Load<Texture2D>("planet");
             lavaPlanetTexture = content.Load<Texture2D>("lava planet");
-            otherPlanetTexture = content.Load<Texture2D>("venus-no-background");
             gateTexture = content.Load<Texture2D>("Gate Band Filmstrip");
             
             // Textures for gas planet
