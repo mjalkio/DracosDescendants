@@ -431,6 +431,10 @@ namespace DracosD.Controllers
                     if ((body1.UserData == drag && body2.UserData == currGate) ||
                         (body1.UserData == currGate && body2.UserData == drag))
                     {
+                        if (drag == dragons[0])
+                        {
+                            level.Gates[(currentGates[drag] - 1 + level.Gates.Count) % level.Gates.Count].Frame = 0;
+                        }
                         //If you pass the last gate, you win
                         if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 3)
                         {
@@ -840,6 +844,7 @@ namespace DracosD.Controllers
                 }
             }
 
+            level.Gates[(currentGates[dragons[0]] - 1 + level.Gates.Count) % level.Gates.Count].incrementFrame();
 
             //Debug.Print("" + dragon.Position);
             // Add any objects created by actions

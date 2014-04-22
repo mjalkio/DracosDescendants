@@ -95,7 +95,7 @@ namespace DracosD.Controllers
             regularPlanetTexture = content.Load<Texture2D>("planet");
             lavaPlanetTexture = content.Load<Texture2D>("lava planet");
             otherPlanetTexture = content.Load<Texture2D>("venus-no-background");
-            gateTexture = content.Load<Texture2D>("earthtile");
+            gateTexture = content.Load<Texture2D>("Gate Band Filmstrip");
             
             // Textures for gas planet
             gaseousTexture = content.Load<Texture2D>("gaseous planet");

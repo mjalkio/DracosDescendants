@@ -30,6 +30,8 @@ namespace DracosD.Models
         private PlanetaryObject planet1;
         private PlanetaryObject planet2;
 
+        private const int FRAME_DELAY = 4;
+        private int delayCount;
         private int animationFrame = 0;
         #endregion
 
@@ -54,7 +56,7 @@ namespace DracosD.Models
 
         #region Initialization
         public Gate(Texture2D texture, PlanetaryObject p1, PlanetaryObject p2) :
-            this(texture, ((p1.Position - p2.Position) / 2.0f) + p2.Position, new Vector2(0.5f, (p1.Position - p2.Position).Length()), p1, p2, (p1.Position - p2.Position)) { }
+            this(texture, ((p1.Position - p2.Position) / 2.0f) + p2.Position, new Vector2(1.0f, (p1.Position - p2.Position).Length()), p1, p2, (p2.Position - p1.Position)) { }
 
         /// <summary>
         /// Creates the Gate object between two planets
@@ -87,10 +89,24 @@ namespace DracosD.Models
         #region Game Loop (Draw)
         public override void Draw(GameView canvas)
         {
-            //canvas.DrawSprite(gateTexture, Color.White, position, scale, Rotation, animationFrame, NUM_FRAMES);
-            base.Draw(canvas);
+            Vector2 drawScale = scale;
+            drawScale.X = drawScale.X * 100;
+            if (animationFrame <= NUM_FRAMES)
+            {
+                canvas.DrawSprite(texture, Color.White, Position, drawScale, Rotation, animationFrame, NUM_FRAMES);
+            }
+            //base.Draw(canvas);
         }
         #endregion
+
+        public void incrementFrame()
+        {
+            if (delayCount == FRAME_DELAY){
+                animationFrame++;
+                delayCount =0;
+            }
+            delayCount++;
+        }
 
     }
 }
