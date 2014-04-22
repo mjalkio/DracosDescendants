@@ -24,7 +24,7 @@ namespace DracosD.Controllers
         // Dimensions of the game world
         private const float WIDTH = 80.0f;
         private const float HEIGHT = 60.0f;
-        private const float GRAVITY = 6.0f;
+        private const float GRAVITY = 5.0f;
 
         // Physics constants for initialization
         private const float BASIC_DENSITY = 0.0f;

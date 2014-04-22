@@ -149,12 +149,20 @@ namespace DracosD.Controllers
                 foreach (PlanetaryObject planet in level.Planets)
                 {
                     GaseousPlanet gp = null;
+                    LavaPlanet lp = null;
                     if (planet is GaseousPlanet)
                     {
                         gp = planet as GaseousPlanet;
                     }
-
-                    if (gp == null)
+                    if (planet is LavaPlanet)
+                    {
+                        lp = planet as LavaPlanet;
+                    }
+                    if (lp != null)
+                    {
+                        potentials.Add(gradientPotentialLava(racer.Position, planet.Position, planet.Radius));
+                    }
+                    else if (gp == null)
                     {
                         potentials.Add(gradientPotentialObstacle(racer.Position, planet.Position, planet.Radius));
                     }
@@ -264,7 +272,7 @@ namespace DracosD.Controllers
         /// <returns></returns>
         private Vector2 gradientPotentialGoal(Vector2 aiPos, Vector2 goalPos, float r)
         {
-            float alpha = 5.0f; //the scaling factor
+            float alpha = 5.5f; //the scaling factor
             float gradX;
             float gradY;
             //find he distance between the goal and the ai
@@ -290,6 +298,45 @@ namespace DracosD.Controllers
                 gradY = alpha * 2 * r * (float)Math.Sin(theta);
             }
             return new Vector2(gradX,gradY);
+        }
+
+        /// <summary>
+        /// Calculates the gradient of the potential generated from a lava planet obstacle.
+        /// The potential field associated with the ObstableAvoidance behavior is an example of rejection potential
+        /// because the field causes the ai to be repelled away from the obstacle (i.e., all vector point away from the obstacle)
+        /// </summary>
+        /// <param name="aiPos">The current position of this ai</param>
+        /// <param name="obstaclePos">The current postition of this obstacle</param>
+        /// <param name="r">The radius of the obstacle</param>
+        /// <returns></returns>
+        private Vector2 gradientPotentialLava(Vector2 aiPos, Vector2 obstaclePos, float r)
+        {
+            float alpha = 2.0f; //the scaling factor
+            float gradX;
+            float gradY;
+            //find he distance between the goal and the ai
+            float distToObstacle = Vector2.Distance(aiPos, obstaclePos);
+
+            //find the angle between the ai and the goal
+            float theta = (float)Math.Atan2(obstaclePos.Y - aiPos.Y, obstaclePos.X - aiPos.X);
+
+            //set gradX and gradY accordingly
+            if (distToObstacle < r) //ai reached the goal, so no forces from the goal act on it
+            {
+                gradX = -Math.Sign(Math.Cos(theta)) * float.MaxValue;
+                gradY = -Math.Sign(Math.Sin(theta)) * float.MaxValue;
+            }
+            else if (r <= distToObstacle && distToObstacle <= r + 4 * r) //play with radius of goal
+            {
+                gradX = -alpha * (r + (4 * r) - distToObstacle) * (float)Math.Cos(theta);
+                gradY = -alpha * (r + (4 * r) - distToObstacle) * (float)Math.Sin(theta);
+            }
+            else //outside of circle of extent, so gets max value
+            {
+                gradX = 0.0f;
+                gradY = 0.0f;
+            }
+            return new Vector2(gradX, gradY);
         }
 
         /// <summary>
