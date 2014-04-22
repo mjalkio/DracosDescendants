@@ -642,6 +642,13 @@ namespace DracosD.Controllers
             }
         }
 
+        public bool PressedStart()
+        {
+            // Read input and assign actions to rocket
+            playerInput.ReadInput();
+
+            return playerInput.start;
+        }
 
         /// <summary>
         /// The core update loop of any physics world.

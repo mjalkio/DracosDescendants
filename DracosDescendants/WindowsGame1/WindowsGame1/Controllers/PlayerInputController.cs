@@ -53,6 +53,7 @@ namespace DracosD.Controllers
 
         protected bool breathing;
 
+        protected bool pressedStart;
 
         #endregion
 
@@ -169,6 +170,12 @@ namespace DracosD.Controllers
             get { return resetPressed; }
         }
 
+        public bool start
+        {
+
+            get { return pressedStart; }
+        }
+
         #endregion
 
         #region Methods
@@ -205,6 +212,7 @@ namespace DracosD.Controllers
             horizontal = gamePad.ThumbSticks.Left.X;
             vertical = -gamePad.ThumbSticks.Left.Y;
             breathing = (gamePad.Buttons.A == ButtonState.Pressed);
+            pressedStart = (gamePad.Buttons.Start == ButtonState.Pressed);
         }
 
         /// <summary>
@@ -242,6 +250,10 @@ namespace DracosD.Controllers
             if (keyboard.IsKeyDown(Keys.Space))
             {
                 breathing = true;
+            }
+            if (keyboard.IsKeyDown(Keys.Enter))
+            {
+                pressedStart = true;
             }
 
 

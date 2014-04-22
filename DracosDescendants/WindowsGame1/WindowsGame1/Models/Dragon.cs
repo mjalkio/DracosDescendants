@@ -62,6 +62,8 @@ namespace DracosD.Models
 
         private int currCooldown;
         private int delayTime;
+
+        SpriteEffects flip;
         #endregion
 
         #region Properties (READ-WRITE)
@@ -263,7 +265,11 @@ namespace DracosD.Models
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view)
         {
-                view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES);
+            if (force.X != 0)
+            {
+                flip = force.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            }
+            view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES, flip);
         }
 
         #endregion

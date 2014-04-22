@@ -22,6 +22,13 @@ using System.Diagnostics;
 
 namespace DracosD
 {
+    public enum GameState
+    {
+        Start,
+        Game,
+        Pause
+    }
+
     class GameEngine : Microsoft.Xna.Framework.Game
     {
         #region Fields
@@ -42,6 +49,9 @@ namespace DracosD
 
         private Texture2D victory;
         private Texture2D failure;
+        private Texture2D menuBackground;
+
+        private GameState gameState;
         #endregion
 
         #region Initialization
@@ -56,6 +66,9 @@ namespace DracosD
             gameMenuView = new MenuView();
             gameView = new GameView(this);
             gameLevelController = new LevelController();
+
+            gameState = new GameState();
+            gameState = GameState.Start;
         }
 
         /// <summary>
@@ -81,6 +94,7 @@ namespace DracosD
 
             victory = content.Load<Texture2D>("victory");
             failure = content.Load<Texture2D>("failure");
+            menuBackground = content.Load<Texture2D>("c_spacescape_final");
             currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);
         }
 
@@ -103,16 +117,27 @@ namespace DracosD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            gameView.Scale = currentWorld.Scale;
-            if (currentWorld.isToReset)
+            if (gameState == GameState.Start)
             {
-                gameLevelController = new LevelController();
-                base.Initialize();
+                if (currentWorld.PressedStart())
+                {
+                    gameState = GameState.Game;
+                }
             }
-            else
+            if (gameState == GameState.Game)
             {
-                currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds,gameTime);
-                base.Update(gameTime);
+                gameView.Scale = currentWorld.Scale;
+                if (currentWorld.isToReset)
+                {
+                    gameLevelController = new LevelController();
+                    gameState = GameState.Start;
+                    base.Initialize();
+                }
+                else
+                {
+                    currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
+                    base.Update(gameTime);
+                }
             }
 
         }
@@ -123,22 +148,32 @@ namespace DracosD
         protected override void Draw(GameTime gameTime)
         {
             gameView.Reset();
-            // World specific drawing
-            currentWorld.Draw(gameView);
-            // gameMenuView.Draw();
 
-            // Final message
-            if (currentWorld.Succeeded)
+            if (gameState == GameState.Start)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(victory, Color.White, false); 
+                gameView.DrawOverlay(menuBackground, Color.White, false);
                 gameView.EndSpritePass();
             }
-            if (currentWorld.Failed)
+            if (gameState == GameState.Game)
             {
-                gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(failure, Color.White, false);
-                gameView.EndSpritePass();
+                // World specific drawing
+                currentWorld.Draw(gameView);
+                // gameMenuView.Draw();
+
+                // Final message
+                if (currentWorld.Succeeded)
+                {
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(victory, Color.White, false);
+                    gameView.EndSpritePass();
+                }
+                if (currentWorld.Failed)
+                {
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(failure, Color.White, false);
+                    gameView.EndSpritePass();
+                }
             }
             base.Draw(gameTime);
         }

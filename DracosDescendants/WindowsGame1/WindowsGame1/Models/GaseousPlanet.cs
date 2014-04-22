@@ -133,11 +133,11 @@ namespace DracosD.Models
         {
             if (onFire)
             {
-                view.DrawSprite(flame_texture, Color.White, Position, new Vector2(scale.X * 2, scale.Y * 2), Rotation, currFrame, BURNING_FRAMES);
+                view.DrawSprite(flame_texture, Color.White, Position, new Vector2(scale.X * 2, scale.Y * 2), Rotation, currFrame, BURNING_FRAMES, SpriteEffects.None);
             }
             else if (currCooldown > 1)
             {
-                view.DrawSprite(ignite_texture, Color.White, Position, new Vector2(scale.X * 2, scale.Y * 2), Rotation, currFrame, IGNITE_FRAMES);
+                view.DrawSprite(ignite_texture, Color.White, Position, new Vector2(scale.X * 2, scale.Y * 2), Rotation, currFrame, IGNITE_FRAMES, SpriteEffects.None);
             }
             else
             {

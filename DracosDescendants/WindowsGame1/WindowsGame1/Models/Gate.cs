@@ -93,7 +93,7 @@ namespace DracosD.Models
             drawScale.X = drawScale.X * 100;
             if (animationFrame <= NUM_FRAMES)
             {
-                canvas.DrawSprite(texture, Color.White, Position, drawScale, Rotation, animationFrame, NUM_FRAMES);
+                canvas.DrawSprite(texture, Color.White, Position, drawScale, Rotation, animationFrame, NUM_FRAMES, SpriteEffects.None);
             }
             //base.Draw(canvas);
         }

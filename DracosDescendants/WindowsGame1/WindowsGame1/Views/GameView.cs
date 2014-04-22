@@ -554,7 +554,7 @@ namespace DracosD.Views
         /// <param name="angle">Amount to rotate image in radians</param>
         /// <param name="frame">Current animation frame</param>
         /// <param name="framesize">Number of frames in filmstrip</param>
-        public void DrawSprite(Texture2D image, Color tint, Vector2 position, Vector2 scale, float angle, int frame, int framesize) {
+        public void DrawSprite(Texture2D image, Color tint, Vector2 position, Vector2 scale, float angle, int frame, int framesize, SpriteEffects effect) {
             // Enforce invariants.
             Debug.Assert(state == DrawState.SpritePass, "Drawing state is invalid (expected SpritePass)");
 
@@ -567,16 +567,16 @@ namespace DracosD.Views
             Vector2 origin = new Vector2(width / 2, height / 2);
 
             // Draw it.
-            spriteBatch.Draw(image, position, src, tint, angle, origin, scale, SpriteEffects.None, 0);
+            spriteBatch.Draw(image, position, src, tint, angle, origin, scale, effect, 0);
 
             if (position.X < 100.0f)
             {
-                spriteBatch.Draw(image, new Vector2(position.X + (float)levelWidth, position.Y), src, tint, angle, origin, scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(image, new Vector2(position.X + (float)levelWidth, position.Y), src, tint, angle, origin, scale, effect, 0);
             }
 
             if (position.X > levelWidth - 100.0f)
             {
-                spriteBatch.Draw(image, new Vector2(position.X - (float)levelWidth, position.Y), src, tint, angle, origin, scale, SpriteEffects.None, 0);
+                spriteBatch.Draw(image, new Vector2(position.X - (float)levelWidth, position.Y), src, tint, angle, origin, scale, effect, 0);
             }
         }
 
