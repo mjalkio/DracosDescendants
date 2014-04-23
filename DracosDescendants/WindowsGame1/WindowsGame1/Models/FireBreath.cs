@@ -23,12 +23,14 @@ namespace WindowsGame1.Models
     class FireBreath : PolygonObject
     {
         protected Vector2 rPos;
-        public FireBreath(Texture2D flameTexture, Vector2 center, Vector2 scale) :
+        protected bool flipText;
+        public FireBreath(Texture2D flameTexture, Vector2 center, Vector2 scale, bool flip) :
             base(flameTexture, new Vector2[]
             {
                 center, new Vector2(center.X+5.0f,center.Y-2.0f), new Vector2(center.X+5.0f,center.Y+2.0f)}, scale)
         {
             rPos = center;
+            flipText = flip;
             Density = 0.0f;
             Friction = 0.0f;
             Restitution = 0.0f;
@@ -51,8 +53,16 @@ namespace WindowsGame1.Models
 
         public override void Draw(GameView view)
         {
-            //view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend);
-            base.Draw(view);
+            if (flipText)
+            {
+                Rotation = (float)Math.PI;
+            }
+            else
+            {
+                Rotation = 0.0f;
+            }
+            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend);
+            //base.Draw(view);
         }
         #endregion
     }

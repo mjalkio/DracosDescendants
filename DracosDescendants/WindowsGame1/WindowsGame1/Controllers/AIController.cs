@@ -326,10 +326,10 @@ namespace DracosD.Controllers
                 gradX = -Math.Sign(Math.Cos(theta)) * float.MaxValue;
                 gradY = -Math.Sign(Math.Sin(theta)) * float.MaxValue;
             }
-            else if (r <= distToObstacle && distToObstacle <= r + 4 * r) //play with radius of goal
+            else if (r <= distToObstacle && distToObstacle <= r + 5 * r) //play with radius of goal
             {
-                gradX = -alpha * (r + (4 * r) - distToObstacle) * (float)Math.Cos(theta);
-                gradY = -alpha * (r + (4 * r) - distToObstacle) * (float)Math.Sin(theta);
+                gradX = -alpha * (r + (5 * r) - distToObstacle) * (float)Math.Cos(theta);
+                gradY = -alpha * (r + (5 * r) - distToObstacle) * (float)Math.Sin(theta);
             }
             else //outside of circle of extent, so gets max value
             {

@@ -796,7 +796,7 @@ namespace DracosD.Controllers
                         Vector2 p5 = new Vector2(gp.Position.X + gp.Width / 2, gp.Position.Y);
                         //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
                         //TODO: GENERALIZE THIS IF ALL DRAGONS ARE BREATHING
-                        if (dragons[0].IsBreathing)
+                        if (dragons[0].IsBreathing && gp != dragons[0])
                         {
                             foreach (Fixture fix in dragons[0].Breath.Fixtures)
                             {

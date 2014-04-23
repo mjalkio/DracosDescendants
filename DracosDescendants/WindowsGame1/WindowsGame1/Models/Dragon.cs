@@ -175,7 +175,18 @@ namespace DracosD.Models
         public void breathFire()
         {
             isBreathing = true;
-            breath = new FireBreath(flameTexture,new Vector2(Position.X + 4.8f,Position.Y + 1.7f),new Vector2(10.0f,10.0f));
+            bool fliped = false;
+            if (flip == SpriteEffects.FlipHorizontally)
+            {
+                fliped = true;
+                breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+            }
+            else
+            {
+                fliped = false;
+                breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+            }
+           
         }
         /// <summary>
         /// Creates the physics Body for this object, adding it to the world.

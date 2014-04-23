@@ -750,12 +750,25 @@ namespace DracosD.Views
             // Check the drawing state invariants.
             Debug.Assert(state == DrawState.PolygonPass, "Drawing state is invalid (expected PolygonPass)");
 
-            camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 10.0f);
+            if (angle == (float)Math.PI)
+            {
+                camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 10.0f);
 
-            camera.BPos = position;
+                camera.BPos = position;
 
-            // Create translation matrix
-            effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) * camera.GetBreathTransformation();
+                // Create translation matrix
+                effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) * camera.GetFlippedBreathTransformation();
+            }
+            else
+            {
+                camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 10.0f);
+
+                camera.BPos = position;
+
+                // Create translation matrix
+                effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) * camera.GetBreathTransformation();
+            }
+
             effect.Texture = texture;
 
             // Prepare device for drawing.
@@ -858,7 +871,7 @@ namespace DracosD.Views
                 //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
                 spriteBatch.Draw(drawingTexture, new Vector2(positionDragon.X - 180, 50), Color.White);
             }
-            
+
 
         }
 
@@ -973,10 +986,10 @@ namespace DracosD.Views
                         _pos.X = leftBarrier + 5.0f;
                     if (_pos.X >= rightBarrier)
                         _pos.X = rightBarrier + 5.0f;*/
-                    if (_pos.Y >= topBarrier +1.7f)
-                        _pos.Y = topBarrier + 1.7f;
-                    if (_pos.Y <= bottomBarrier +1.7f)
-                        _pos.Y = bottomBarrier + 1.7f;
+                    if (_pos.Y >= topBarrier +2.1f)
+                        _pos.Y = topBarrier + 2.1f;
+                    if (_pos.Y <= bottomBarrier +2.1f)
+                        _pos.Y = bottomBarrier + 2.1f;
                 }
             }
 
@@ -994,10 +1007,22 @@ namespace DracosD.Views
                 return _transform;
             }
 
+            public Matrix GetFlippedBreathTransformation()
+            {
+                _transform =
+                Matrix.CreateTranslation(new Vector3(-_pos.X - 6.5f, -_pos.Y + 2.1f, 0)) *
+                Matrix.CreateRotationZ(Rotation) *
+                Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
+                Matrix.CreateTranslation(new Vector3(_viewportWidth * 0.5f,
+                    _viewportHeight * 0.5f, 0));
+
+                return _transform;
+            }
+
             public Matrix GetBreathTransformation()
             {
                 _transform =
-                Matrix.CreateTranslation(new Vector3(-_pos.X + 4.8f, -_pos.Y + 1.7f, 0)) *
+                Matrix.CreateTranslation(new Vector3(-_pos.X + 6.5f, -_pos.Y + 2.1f, 0)) *
                 Matrix.CreateRotationZ(Rotation) *
                 Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
                 Matrix.CreateTranslation(new Vector3(_viewportWidth * 0.5f,
