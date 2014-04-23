@@ -74,7 +74,8 @@ namespace DracosD.Views
         protected bool fullscreen;
 
         //if a gate is missed, used for HUD display
-        protected bool gateMissed;
+        public bool[] gateMissed = new bool[4];
+        public float[] prevGates = new float[4];
 
         // Attributes to rescale the image
         protected Matrix transform;
@@ -830,7 +831,7 @@ namespace DracosD.Views
         #region HUD pass
 
         //Draw the hud and dragon head on the progress bar
-        public void BeginHUDPass(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int d_id)
+        public void BeginHUDPass(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, int d_id, float width)
         {
             Texture2D drawingTexture = dragonheadTexture;
             if (d_id == 0)
@@ -854,24 +855,62 @@ namespace DracosD.Views
             //if the dragon missed a gate, then the progress bar shouldn't move anymore
             if (relativeDragonPosition.X > positionGate.X)
             {
-                gateMissed = true;
+                if (positionGate.X == prevGates[d_id])
+                {
+                    if (positionGate.X == 50 && lapNum != 1)
+                    {
+                        gateMissed[d_id] = false;
+                    }
+                    else
+                    {
+                        gateMissed[d_id] = true;
+                    }
+                }
+                else
+                {
+                    gateMissed[d_id] = false;
+                }
             }
             else
             {
-                gateMissed = false;
+                if (gateMissed[d_id] == true)
+                {
+                    if (positionGate.X == prevGates[d_id])
+                    {
+                        gateMissed[d_id] = true;
+                    }
+                    else
+                    {
+                        gateMissed[d_id] = false;
+                    }
+                }
+                else
+                {
+                    gateMissed[d_id] = false;
+                }
             }
 
-
-            if (gateMissed)
+            //assume AIs never missed the gates
+            if (d_id != 0)
             {
-                spriteBatch.Draw(drawingTexture, new Vector2(positionGate.X + 140, 50), Color.White);
+                gateMissed[d_id] = false;
+            }
+
+            if (gateMissed[d_id])
+            {
+                spriteBatch.Draw(drawingTexture, new Vector2(positionGate.X + (playerLap - 1) * width + 140, 50), Color.White);
             }
             else
             {
                 //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
-                spriteBatch.Draw(drawingTexture, new Vector2(positionDragon.X - 180, 50), Color.White);
+                spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
             }
 
+            prevGates[d_id] = positionGate.X;
+
+            Debug.Print(positionDragon.X.ToString());
+            Debug.Print(positionGate.X.ToString());
+            Debug.Print(relativeDragonPosition.X.ToString());
 
         }
 

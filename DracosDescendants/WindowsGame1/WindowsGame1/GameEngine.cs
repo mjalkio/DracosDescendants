@@ -137,6 +137,8 @@ namespace DracosD
                 {
                     gameLevelController = new LevelController();
                     gameState = GameState.Start;
+                    gameView.gateMissed = new bool[4];
+                    gameView.prevGates = new float[4];
                     base.Initialize();
                 }
                 else
