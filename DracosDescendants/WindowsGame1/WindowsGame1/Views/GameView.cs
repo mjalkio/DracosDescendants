@@ -59,6 +59,9 @@ namespace DracosD.Views
         //the HUD of the game
         protected Texture2D progressTexture;
         protected Texture2D dragonheadTexture;
+        protected Texture2D dragonheadTexture2;
+        protected Texture2D dragonheadTexture3;
+        protected Texture2D dragonheadTexture4;
         protected Texture2D arrowTexture;
 
         // Track the current drawing pass. 
@@ -383,6 +386,9 @@ namespace DracosD.Views
             f_background = content.Load<Texture2D>("stars-parallax front");
             progressTexture = content.Load<Texture2D>("progressbar");
             dragonheadTexture = content.Load<Texture2D>("dragonhead");
+            dragonheadTexture2 = content.Load<Texture2D>("dragonhead2");
+            dragonheadTexture3 = content.Load<Texture2D>("dragonhead3");
+            dragonheadTexture4 = content.Load<Texture2D>("dragonhead4");
             arrowTexture = content.Load<Texture2D>("arrow");
         }
 
@@ -515,7 +521,6 @@ namespace DracosD.Views
 
             if (position.X < 100.0f)
             {
-                //Debug.Print("HERE IN THE FLESH");
                 spriteBatch.Draw(image, new Vector2(position.X+(float)levelWidth,position.Y), null, tint, angle, origin, scale, SpriteEffects.None, 0);
             }
 
@@ -812,10 +817,26 @@ namespace DracosD.Views
         #region HUD pass
 
         //Draw the hud and dragon head on the progress bar
-        public void BeginHUDPass(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum)
+        public void BeginHUDPass(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int d_id)
         {
+            Texture2D drawingTexture = dragonheadTexture;
+            if (d_id == 0)
+            {
+                drawingTexture = dragonheadTexture;
+            }
+            else if (d_id == 1)
+            {
+                drawingTexture = dragonheadTexture2;
+            }
+            else if (d_id == 2)
+            {
+                drawingTexture = dragonheadTexture3;
+            }
+            else
+            {
+                drawingTexture = dragonheadTexture4;
+            }
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
-            spriteBatch.Draw(progressTexture, new Vector2(150, 50), Color.White);
             spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10), Color.White);
             //if the dragon missed a gate, then the progress bar shouldn't move anymore
             if (relativeDragonPosition.X > positionGate.X)
@@ -830,17 +851,23 @@ namespace DracosD.Views
 
             if (gateMissed)
             {
-                spriteBatch.Draw(dragonheadTexture, new Vector2(positionGate.X + 140, 50), Color.White);
+                spriteBatch.Draw(drawingTexture, new Vector2(positionGate.X + 140, 50), Color.White);
             }
             else
             {
                 //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
-                spriteBatch.Draw(dragonheadTexture, new Vector2(positionDragon.X - 180, 50), Color.White);
+                spriteBatch.Draw(drawingTexture, new Vector2(positionDragon.X - 180, 50), Color.White);
             }
             Debug.Print(positionDragon.X.ToString());
             Debug.Print(positionGate.X.ToString());
             Debug.Print(relativeDragonPosition.X.ToString());
 
+        }
+
+        public void BeginHUDPass2()
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
+            spriteBatch.Draw(progressTexture, new Vector2(150, 50), Color.White);
         }
 
         public void EndHUDPass()

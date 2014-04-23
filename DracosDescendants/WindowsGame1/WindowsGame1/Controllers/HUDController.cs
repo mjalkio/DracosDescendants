@@ -30,9 +30,17 @@ namespace DracosD.Controllers
         #endregion
 
         #region Methods
-        public void Draw(GameView view, Vector2 relPosition, Vector2 Position, int lapNum, Gate goal)
+        //drawing method for the dragon heads
+        public void Draw(GameView view, Vector2 relPosition, Vector2 Position, int lapNum, Gate goal, int d_id)
         {
-            view.BeginHUDPass(relPosition, Position, goal.Position, lapNum);
+            view.BeginHUDPass(relPosition, Position, goal.Position, lapNum, d_id);
+            view.EndHUDPass();
+        }
+
+        //drawing method for the progress bar
+        public void Draw2(GameView view)
+        {
+            view.BeginHUDPass2();
             view.EndHUDPass();
         }
 

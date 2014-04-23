@@ -32,7 +32,7 @@ namespace DracosD.Models
         public static int ID = 0;
 
         // Thrust amount to convert player input into thrust
-        private const int NUM_FRAMES = 9;
+        private const int NUM_FRAMES =11;
         #endregion
 
         #region Fields

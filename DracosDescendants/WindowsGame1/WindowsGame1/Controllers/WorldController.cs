@@ -578,7 +578,11 @@ namespace DracosD.Controllers
             if (currentGates[dragons[0]] < level.Gates.Count)
             {
                 Gate goal = level.Gates[currentGates[dragons[0]]];
-                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], goal);
+                hud.Draw2(view);
+                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], goal,0);
+                hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], goal,1);
+                hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], goal,2);
+                hud.Draw(view, dragons[3].Position, dragons[3].Position + new Vector2((lapNum[dragons[3]]) * Width, 0), lapNum[dragons[3]], goal,3);
             }
         }
 

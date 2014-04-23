@@ -22,6 +22,9 @@ namespace DracosD.Controllers
         private int levelWidth;
 
         private static Texture2D dragonTexture;
+        private static Texture2D enemyTexture1;
+        private static Texture2D enemyTexture2;
+        private static Texture2D enemyTexture3;
         private static Texture2D regularPlanetTexture;
         private static Texture2D lavaPlanetTexture;
         private static Texture2D otherPlanetTexture;
@@ -91,6 +94,9 @@ namespace DracosD.Controllers
         public void LoadContent(ContentManager content, string xmlFile)
         {
             dragonTexture = content.Load<Texture2D>("rocket");
+            enemyTexture1 = content.Load<Texture2D>("enemy1");
+            enemyTexture2 = content.Load<Texture2D>("enemy2");
+            enemyTexture3 = content.Load<Texture2D>("enemy3");
             regularPlanetTexture = content.Load<Texture2D>("planet");
             lavaPlanetTexture = content.Load<Texture2D>("lava planet");
             gateTexture = content.Load<Texture2D>("Gate Band Filmstrip");
@@ -122,11 +128,39 @@ namespace DracosD.Controllers
                               Y = d.Element("y").Value
                           };
 
+            int temp = 0;
             foreach (var dragon in dragons)
             {
-                Dragon playerDragon = new Dragon(dragonTexture, new Vector2((Convert.ToInt32(dragon.X) / worldscale), 
-                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width/worldscale,dragonTexture.Height/worldscale),fireBreath);
-                racerList.Add(playerDragon);
+                if (temp == 0)
+                {
+                    Dragon playerDragon = new Dragon(dragonTexture, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
+                            Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
+                    racerList.Add(playerDragon);
+                    temp++;
+                }
+                else if (temp == 1)
+                {
+                    Dragon playerDragon = new Dragon(enemyTexture1, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
+                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
+                    racerList.Add(playerDragon);
+                    temp++;
+
+                }
+                else if (temp == 2)
+                {
+                    Dragon playerDragon = new Dragon(enemyTexture2, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
+                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
+                    racerList.Add(playerDragon);
+                    temp++;
+
+                }
+                else
+                {
+                    Dragon playerDragon = new Dragon(enemyTexture3, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
+                        Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
+                    racerList.Add(playerDragon);
+                    temp++;
+                }
             }
 
             var planets = from p in xml.Root.Descendants("planet")
