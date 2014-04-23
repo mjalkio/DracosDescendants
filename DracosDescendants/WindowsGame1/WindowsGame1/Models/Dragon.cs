@@ -32,7 +32,8 @@ namespace DracosD.Models
         public static int ID = 0;
 
         // Thrust amount to convert player input into thrust
-        private const int NUM_FRAMES =11;
+        private const int NUM_FRAMES = 11;
+
         #endregion
 
         #region Fields
@@ -43,6 +44,7 @@ namespace DracosD.Models
         // texture for dragon
         private Texture2D flapEffect;
         private Texture2D flameTexture;
+        private Texture2D onFireTexture;
 
         private FireBreath breath;
         private bool isBreathing;
@@ -55,7 +57,7 @@ namespace DracosD.Models
         private int delay = 1;
         private int elapsed;
         private float thrust = 2000.0f;
-        private float dampeningFactor = 0.97f;
+        private float dampeningFactor = 0.975f;
         private float dampeningThreshold = 40.0f;
 
         private int id;
@@ -67,6 +69,13 @@ namespace DracosD.Models
         #endregion
 
         #region Properties (READ-WRITE)
+
+        public Texture2D OnFireTexture
+        {
+            get { return onFireTexture; }
+            set { onFireTexture = value; }
+        }
+
         /// <summary>
         /// The dragon force, as determined by the input controller
         /// </summary>
@@ -270,6 +279,11 @@ namespace DracosD.Models
                 flip = force.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
             view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES, flip);
+            if (!CanMove)
+            {
+                view.DrawSprite(onFireTexture, Color.White, Position, new Vector2((scale.X * NUM_FRAMES)/2.0f, scale.Y/4.0f), 0.0f);
+            }
+
         }
 
         #endregion

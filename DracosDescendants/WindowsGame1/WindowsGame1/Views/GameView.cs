@@ -858,9 +858,7 @@ namespace DracosD.Views
                 //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
                 spriteBatch.Draw(drawingTexture, new Vector2(positionDragon.X - 180, 50), Color.White);
             }
-            Debug.Print(positionDragon.X.ToString());
-            Debug.Print(positionGate.X.ToString());
-            Debug.Print(relativeDragonPosition.X.ToString());
+            
 
         }
 
