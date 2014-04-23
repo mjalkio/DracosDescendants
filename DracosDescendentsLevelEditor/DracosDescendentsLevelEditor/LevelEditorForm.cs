@@ -197,5 +197,29 @@ namespace DracosDescendentsLevelEditor
             openXML.Multiselect = false;
             openXML.ShowDialog();
         }
+
+        private void changeScaleButton_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                float scale = Convert.ToSingle(scaleBox.Text);
+
+                levelWidthUpDown.Value = (decimal) ((float)levelWidthUpDown.Value * scale);
+                levelHeightUpDown.Value = (decimal)((float)levelHeightUpDown.Value * scale);
+
+                foreach (Dragon d in dragonList)
+                {
+                    d.x = d.x * scale;
+                    d.y = d.y * scale;
+                }
+                foreach (Planet p in planetList)
+                {
+                    p.radius = p.radius * scale;
+                    p.x = p.x * scale;
+                    p.y = p.y * scale;
+                }
+            }
+            catch { }
+        }
     }
 }

@@ -95,7 +95,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(64, 138);
+            this.label4.Location = new System.Drawing.Point(32, 137);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(190, 13);
             this.label4.TabIndex = 11;
@@ -104,9 +104,9 @@
             // gateBox
             // 
             this.gateBox.FormattingEnabled = true;
-            this.gateBox.Location = new System.Drawing.Point(67, 162);
+            this.gateBox.Location = new System.Drawing.Point(35, 162);
             this.gateBox.Name = "gateBox";
-            this.gateBox.Size = new System.Drawing.Size(187, 21);
+            this.gateBox.Size = new System.Drawing.Size(237, 21);
             this.gateBox.TabIndex = 12;
             // 
             // NewGateForm

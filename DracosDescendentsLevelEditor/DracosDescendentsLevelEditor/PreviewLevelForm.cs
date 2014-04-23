@@ -13,7 +13,7 @@ namespace DracosDescendentsLevelEditor
     public partial class PreviewLevelForm : Form
     {
         //Everything is drawn in pixels so we want to be able to scale it up...
-        public readonly float SCALE_FACTOR = 0.5f;
+        public float SCALE_FACTOR;
 
         List<Gate> gateList;
         List<Planet> planetList;
@@ -32,6 +32,8 @@ namespace DracosDescendentsLevelEditor
             this.gateList = gateList;
             levelWidth = width;
             levelHeight = height;
+
+            SCALE_FACTOR = 1750.0f / levelWidth;
         }
 
         public void Draw()

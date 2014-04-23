@@ -89,7 +89,7 @@ namespace DracosD
         {
             gameView.LoadContent(content);
             //gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
-            gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\alphaLevel.xml");
+            gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml");
             gameView.LevelWidth = (int) (gameLevelController.Width / WorldController.DEFAULT_SCALE);
             gameView.LevelHeight = (int)(gameLevelController.Height / WorldController.DEFAULT_SCALE);
 

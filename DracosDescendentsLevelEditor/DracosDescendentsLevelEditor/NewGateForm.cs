@@ -34,6 +34,8 @@ namespace DracosDescendentsLevelEditor
                 gateBox.Items.Add(g);
             }
 
+            gateBox.SelectedIndex = gateList.Count - 1;
+
             //Telling the boxes what to use as the text
             planet1Box.DisplayMember = "Display";
             planet2Box.DisplayMember = "Display";

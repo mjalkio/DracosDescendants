@@ -43,6 +43,9 @@
             this.saveXML = new System.Windows.Forms.SaveFileDialog();
             this.openXML = new System.Windows.Forms.OpenFileDialog();
             this.importButton = new System.Windows.Forms.Button();
+            this.changeScaleButton = new System.Windows.Forms.Button();
+            this.scaleBox = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.levelHeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelWidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -69,7 +72,7 @@
             // 
             // addGateButton
             // 
-            this.addGateButton.Location = new System.Drawing.Point(113, 137);
+            this.addGateButton.Location = new System.Drawing.Point(113, 126);
             this.addGateButton.Name = "addGateButton";
             this.addGateButton.Size = new System.Drawing.Size(75, 23);
             this.addGateButton.TabIndex = 2;
@@ -209,11 +212,40 @@
             this.importButton.UseVisualStyleBackColor = true;
             this.importButton.Click += new System.EventHandler(this.importButton_Click);
             // 
+            // changeScaleButton
+            // 
+            this.changeScaleButton.Location = new System.Drawing.Point(113, 166);
+            this.changeScaleButton.Name = "changeScaleButton";
+            this.changeScaleButton.Size = new System.Drawing.Size(75, 49);
+            this.changeScaleButton.TabIndex = 13;
+            this.changeScaleButton.Text = "Change Scale";
+            this.changeScaleButton.UseVisualStyleBackColor = true;
+            this.changeScaleButton.Click += new System.EventHandler(this.changeScaleButton_Click);
+            // 
+            // scaleBox
+            // 
+            this.scaleBox.Location = new System.Drawing.Point(7, 195);
+            this.scaleBox.Name = "scaleBox";
+            this.scaleBox.Size = new System.Drawing.Size(100, 20);
+            this.scaleBox.TabIndex = 14;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 179);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(90, 13);
+            this.label4.TabIndex = 15;
+            this.label4.Text = "Multiply Scale By:";
+            // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(399, 303);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.scaleBox);
+            this.Controls.Add(this.changeScaleButton);
             this.Controls.Add(this.importButton);
             this.Controls.Add(this.manageDragonsButton);
             this.Controls.Add(this.manageGatesButton);
@@ -253,6 +285,9 @@
         private System.Windows.Forms.SaveFileDialog saveXML;
         private System.Windows.Forms.OpenFileDialog openXML;
         private System.Windows.Forms.Button importButton;
+        private System.Windows.Forms.Button changeScaleButton;
+        private System.Windows.Forms.TextBox scaleBox;
+        private System.Windows.Forms.Label label4;
     }
 }
 
