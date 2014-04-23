@@ -18,7 +18,7 @@ using DracosD.Objects;
 using DracosD.Views;
 using System;
 #endregion
-namespace WindowsGame1.Models
+namespace DracosD.Models
 {
     class FireBreath : PolygonObject
     {

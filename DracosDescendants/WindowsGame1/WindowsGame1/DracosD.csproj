@@ -114,17 +114,16 @@
   <ItemGroup>
     <Compile Include="Controllers\AIController.cs" />
     <Compile Include="Controllers\ForceController.cs" />
+    <Compile Include="Controllers\HUDController.cs" />
     <Compile Include="Controllers\LevelController.cs" />
     <Compile Include="Controllers\PlayerInputController.cs" />
-    <Compile Include="Controllers\RaceController.cs" />
-    <Compile Include="Controllers\RacerController.cs" />
     <Compile Include="Controllers\WorldController.cs" />
     <Compile Include="GameEngine.cs" />
     <Compile Include="Models\Asteroid.cs" />
     <Compile Include="Models\Dragon.cs" />
+    <Compile Include="Models\FireBreath.cs" />
     <Compile Include="Models\GaseousPlanet.cs" />
     <Compile Include="Models\Gate.cs" />
-    <Compile Include="Models\HUD.cs" />
     <Compile Include="Models\IceAsteroid.cs" />
     <Compile Include="Models\LavaPlanet.cs" />
     <Compile Include="Models\LavaProjectile.cs" />
@@ -140,7 +139,6 @@
     <Compile Include="Models\RegularPlanet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Game1.cs" />
     <Compile Include="Views\GameView.cs" />
     <Compile Include="Views\MenuView.cs" />
   </ItemGroup>

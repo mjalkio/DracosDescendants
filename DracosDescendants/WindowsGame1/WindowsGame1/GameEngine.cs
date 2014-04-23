@@ -95,7 +95,7 @@ namespace DracosD
 
             victory = content.Load<Texture2D>("victory");
             failure = content.Load<Texture2D>("failure");
-            menuBackground = content.Load<Texture2D>("c_spacescape_final");
+            menuBackground = content.Load<Texture2D>("badStartScreen");
             pause = content.Load<Texture2D>("paused");
             currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);
         }

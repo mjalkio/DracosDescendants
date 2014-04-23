@@ -14,7 +14,6 @@ using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using DracosD.Objects;
 using DracosD.Views;
-using WindowsGame1.Models;
 #endregion
 
 namespace DracosD.Models
