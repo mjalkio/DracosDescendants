@@ -27,6 +27,7 @@ namespace DracosD.Models
         private const float DEFAULT_RESTITUTION = 0.4f;
         private const int COOLDOWN = 120; //in ticks
         private const int DELAY = 60;
+        private const int FULL_FIRE_LEVEL = 100;
 
         public static int ID = 0;
 
@@ -47,6 +48,7 @@ namespace DracosD.Models
 
         private FireBreath breath;
         private bool isBreathing;
+        private int currentFireLevel;
 
         // To animate the rocket flames
         private int animationFrame = 0;
@@ -163,6 +165,7 @@ namespace DracosD.Models
             ID++;
             currCooldown = 0;
             delayTime = 0;
+            currentFireLevel = FULL_FIRE_LEVEL;
         }
 
         public void stopBreathing()
@@ -185,7 +188,6 @@ namespace DracosD.Models
                 fliped = false;
                 breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
             }
-           
         }
         /// <summary>
         /// Creates the physics Body for this object, adding it to the world.

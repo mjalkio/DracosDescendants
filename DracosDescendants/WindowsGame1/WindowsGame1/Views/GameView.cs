@@ -58,6 +58,7 @@ namespace DracosD.Views
 
         //the HUD of the game
         protected Texture2D progressTexture;
+        protected Texture2D firebarTexture;
         protected Texture2D dragonheadTexture;
         protected Texture2D dragonheadTexture2;
         protected Texture2D dragonheadTexture3;
@@ -386,6 +387,7 @@ namespace DracosD.Views
             background = content.Load<Texture2D>("stars");
             f_background = content.Load<Texture2D>("stars-parallax front");
             progressTexture = content.Load<Texture2D>("progressbar");
+            firebarTexture = content.Load<Texture2D>("FireBar");
             dragonheadTexture = content.Load<Texture2D>("dragonhead");
             dragonheadTexture2 = content.Load<Texture2D>("dragonhead2");
             dragonheadTexture3 = content.Load<Texture2D>("dragonhead3");
@@ -923,6 +925,13 @@ namespace DracosD.Views
         public void EndHUDPass()
         {
             spriteBatch.End();
+        }
+
+        // Draw dragon fire gauge
+        public void BeginHUDPass3()
+        {
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
+            spriteBatch.Draw(firebarTexture, new Vector2(50, 200), Color.White);
         }
 
         #endregion

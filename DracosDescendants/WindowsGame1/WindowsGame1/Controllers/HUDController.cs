@@ -42,6 +42,8 @@ namespace DracosD.Controllers
         {
             view.BeginHUDPass2();
             view.EndHUDPass();
+            view.BeginHUDPass3();
+            view.EndHUDPass();
         }
 
 

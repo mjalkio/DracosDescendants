@@ -739,7 +739,7 @@ namespace DracosD.Controllers
                         Dragon drag = (Dragon)obje;
                         if (lapNum[drag] > playerLap[drag] && playerLap[drag] < 3 && lastGate[drag])
                         {
-                            playerLap[drag] = lapNum[drag];
+                            playerLap[drag]++;
                             lastGate[drag] = false;
                         }
                     }
