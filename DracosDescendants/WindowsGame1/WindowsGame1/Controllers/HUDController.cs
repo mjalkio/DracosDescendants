@@ -33,7 +33,14 @@ namespace DracosD.Controllers
         //drawing method for the dragon heads
         public void Draw(GameView view, Vector2 relPosition, Vector2 Position, int lapNum, int playerLap, Gate goal, int d_id, float gameOffset)
         {
-            view.BeginHUDPass(relPosition, Position, goal.Position, lapNum, playerLap, d_id, gameOffset);
+            if (d_id == 0)
+            {
+                view.BeginHUDPassPlayer(relPosition, Position, goal.Position, lapNum, playerLap, gameOffset);
+            }
+            else
+            {
+                view.BeginHUDPassAI(relPosition, Position, goal.Position, lapNum, playerLap, d_id, gameOffset);
+            }
             view.EndHUDPass();
         }
 

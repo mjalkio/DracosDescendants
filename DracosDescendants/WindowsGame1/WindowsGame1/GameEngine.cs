@@ -139,6 +139,7 @@ namespace DracosD
                     gameState = GameState.Start;
                     gameView.gateMissed = new bool[4];
                     gameView.prevGates = new float[4];
+                    gameView.stoppedPosition = 0.0f;
                     base.Initialize();
                 }
                 else

@@ -77,6 +77,7 @@ namespace DracosD.Views
         //if a gate is missed, used for HUD display
         public bool[] gateMissed = new bool[4];
         public float[] prevGates = new float[4];
+        public float stoppedPosition = 0.0f;
 
         // Attributes to rescale the image
         protected Matrix transform;
@@ -833,14 +834,72 @@ namespace DracosD.Views
         #region HUD pass
 
         //Draw the hud and dragon head on the progress bar
-        public void BeginHUDPass(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, int d_id, float width)
+        public void BeginHUDPassPlayer(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, float width)
         {
             Texture2D drawingTexture = dragonheadTexture;
-            if (d_id == 0)
+            //draw the arrow
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
+            spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10), Color.White);
+
+            //if the dragon missed a gate, then the progress bar shouldn't move anymore
+            //if relative position is greater than the gate position
+            if (relativeDragonPosition.X > positionGate.X)
             {
-                drawingTexture = dragonheadTexture;
+                gateMissed[0] = true;
+                if (Math.Round(positionGate.X) == 73)
+                {
+                    gateMissed[0] = false;
+                }
             }
-            else if (d_id == 1)
+            //if relative position is smaller than the gate position
+            else
+            {
+                //if we have previously missed a gate
+                if (gateMissed[0] == true)
+                {
+                    //it is the same gate we have been keep making
+                    if (positionGate.X == prevGates[0])
+                    {
+                        gateMissed[0] = true;
+                    }
+                    //it is not the same gate, so we need to update
+                    else
+                    {
+                        gateMissed[0] = false;
+                    }
+                }
+                //if we have not previously missed a gate
+                else
+                {
+                    gateMissed[0] = false;
+                }
+            }
+
+            if (gateMissed[0])
+            {
+                spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition, 50), Color.White);
+            }
+            else
+            {
+                //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
+                spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
+                stoppedPosition = relativeDragonPosition.X + (playerLap - 1) * width + 140;
+            }
+
+            prevGates[0] = positionGate.X;
+
+
+            //debug print for the player dragon
+            Debug.Print("the arbitrary dragon position " + positionDragon.X.ToString());
+            Debug.Print("the next gate position " + positionGate.X.ToString());
+            Debug.Print("the relative dragon position " + relativeDragonPosition.X.ToString());
+        }
+
+        //Draw the hud and dragon head on the progress bar
+        public void BeginHUDPassAI(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, int d_id, float width)
+        {
+            Texture2D drawingTexture = dragonheadTexture;
+            if (d_id == 1)
             {
                 drawingTexture = dragonheadTexture2;
             }
@@ -852,68 +911,12 @@ namespace DracosD.Views
             {
                 drawingTexture = dragonheadTexture4;
             }
+            
+            //assume AIs never miss gates
+            gateMissed[d_id] = false;
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
-            spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10), Color.White);
-            //if the dragon missed a gate, then the progress bar shouldn't move anymore
-            if (relativeDragonPosition.X > positionGate.X)
-            {
-                if (positionGate.X == prevGates[d_id])
-                {
-                    if (positionGate.X == 50 && lapNum != 1)
-                    {
-                        gateMissed[d_id] = false;
-                    }
-                    else
-                    {
-                        gateMissed[d_id] = true;
-                    }
-                }
-                else
-                {
-                    gateMissed[d_id] = false;
-                }
-            }
-            else
-            {
-                if (gateMissed[d_id] == true)
-                {
-                    if (positionGate.X == prevGates[d_id])
-                    {
-                        gateMissed[d_id] = true;
-                    }
-                    else
-                    {
-                        gateMissed[d_id] = false;
-                    }
-                }
-                else
-                {
-                    gateMissed[d_id] = false;
-                }
-            }
-
-            //assume AIs never missed the gates
-            if (d_id != 0)
-            {
-                gateMissed[d_id] = false;
-            }
-
-            if (gateMissed[d_id])
-            {
-                spriteBatch.Draw(drawingTexture, new Vector2(positionGate.X + (playerLap - 1) * width + 140, 50), Color.White);
-            }
-            else
-            {
-                //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
-                spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
-            }
-
+            spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
             prevGates[d_id] = positionGate.X;
-
-            Debug.Print(positionDragon.X.ToString());
-            Debug.Print(positionGate.X.ToString());
-            Debug.Print(relativeDragonPosition.X.ToString());
-
         }
 
         public void BeginHUDPass2()
