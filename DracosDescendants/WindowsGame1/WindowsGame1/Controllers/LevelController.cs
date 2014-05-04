@@ -18,6 +18,7 @@ namespace DracosD.Controllers
         private List<Dragon> racerList;
         private List<Gate> gateList;
         private List<PlanetaryObject> planetList;
+        private List<List<Vector2>> aiList;
         private int levelHeight;
         private int levelWidth;
 
@@ -73,6 +74,11 @@ namespace DracosD.Controllers
         {
             get { return backgroundTexture; }
         }
+
+        public List<List<Vector2>> AIs
+        {
+            get { return aiList; }
+        }
         #endregion
 
         #region Initialization
@@ -81,6 +87,7 @@ namespace DracosD.Controllers
             racerList = new List<Dragon>();
             gateList = new List<Gate>();
             planetList = new List<PlanetaryObject>();
+            aiList = new List<List<Vector2>>();
             levelHeight = 0;
             levelWidth = 0;
         }
@@ -215,6 +222,27 @@ namespace DracosD.Controllers
             {
                 Gate newGate = new Gate(gateTexture, planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
                 gateList.Add(newGate);
+            }
+
+            IEnumerable<XElement> ais = xml.Root.Descendants("ai");
+
+            foreach (XElement ai in ais)
+            {
+                List<Vector2> newAI = new List<Vector2>();
+
+                var waypoints = from wp in ai.Descendants("waypoint")
+                                select new
+                                {
+                                    x = wp.Element("x").Value,
+                                    y = wp.Element("y").Value
+                                };
+
+                foreach (var waypoint in waypoints)
+                {
+                    newAI.Add(new Vector2(Convert.ToInt32(waypoint.x), Convert.ToInt32(waypoint.y)));
+                }
+
+                aiList.Add(newAI);
             }
         }
         #endregion

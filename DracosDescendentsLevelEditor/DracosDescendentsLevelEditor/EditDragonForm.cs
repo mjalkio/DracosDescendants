@@ -30,8 +30,8 @@ namespace DracosDescendentsLevelEditor
         {
             try
             {
-                dragon.x = Convert.ToSingle(xBox.Text);
-                dragon.y = Convert.ToSingle(yBox.Text);
+                dragon.x = Convert.ToInt32(xBox.Text);
+                dragon.y = Convert.ToInt32(yBox.Text);
             }
             catch
             {

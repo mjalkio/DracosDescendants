@@ -17,6 +17,7 @@ namespace DracosDescendentsLevelEditor
 
         List<Gate> gateList;
         List<Planet> planetList;
+        List<AI> aiList;
         int levelWidth;
         int levelHeight;
 
@@ -25,11 +26,12 @@ namespace DracosDescendentsLevelEditor
             InitializeComponent();
         }
 
-        public PreviewLevelForm(List<Planet> planetList, List<Gate> gateList, int width, int height)
+        public PreviewLevelForm(List<Planet> planetList, List<Gate> gateList, List<AI> aiList, int width, int height)
         {
             InitializeComponent();
             this.planetList = planetList;
             this.gateList = gateList;
+            this.aiList = aiList;
             levelWidth = width;
             levelHeight = height;
 
@@ -55,12 +57,18 @@ namespace DracosDescendentsLevelEditor
             for (int j = 0; j < levelWidth; j += 50)
             {
                 formGraphics.DrawLine(myPen, j * SCALE_FACTOR, 0, j * SCALE_FACTOR, levelHeight * SCALE_FACTOR);
-                formGraphics.DrawString("" + j, drawFont, myBrush, j * SCALE_FACTOR, 0, drawFormat);
+                if (j % 100 == 0)
+                {
+                    formGraphics.DrawString("" + j, drawFont, myBrush, j * SCALE_FACTOR, 0, drawFormat);
+                }
             }
             for (int k = 0; k < levelHeight; k += 50)
             {
                 formGraphics.DrawLine(myPen, 0, k * SCALE_FACTOR, levelWidth * SCALE_FACTOR, k * SCALE_FACTOR);
-                formGraphics.DrawString("" + k, drawFont, myBrush, 0, k * SCALE_FACTOR, drawFormat);
+                if (k % 100 == 0)
+                {
+                    formGraphics.DrawString("" + k, drawFont, myBrush, 0, k * SCALE_FACTOR, drawFormat);
+                }
             }
 
             drawFont = new System.Drawing.Font("Arial", 16);
@@ -90,6 +98,24 @@ namespace DracosDescendentsLevelEditor
                 myBrush.Color = Color.Black;
                 formGraphics.DrawString("" + i, drawFont, myBrush, xCoord, yCoord, drawFormat);
                 i++;
+            }
+
+            //Draw the AI paths
+            int colorint = 0;
+            Color[] aiColors = {Color.Goldenrod, Color.DodgerBlue, Color.Purple};
+            foreach (AI ai in aiList)
+            {
+                myBrush.Color = aiColors[colorint];
+                foreach (Tuple<int, int> waypoint in ai.getWaypoints())
+                {
+                    int x = (int) (waypoint.Item1 * SCALE_FACTOR);
+                    int y = (int) (waypoint.Item2 * SCALE_FACTOR);
+                    int waypoint_size = (int) (30 * SCALE_FACTOR);
+
+                    formGraphics.FillRectangle(myBrush, new Rectangle(x, y, waypoint_size, waypoint_size));
+                }
+
+                colorint++;
             }
 
             drawFont.Dispose();

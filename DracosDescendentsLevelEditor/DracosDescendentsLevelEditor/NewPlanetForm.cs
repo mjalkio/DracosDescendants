@@ -29,9 +29,9 @@ namespace DracosDescendentsLevelEditor
         {
             try
             {
-                float radius = Convert.ToSingle(radiusBox.Text);
-                float x = Convert.ToSingle(xBox.Text);
-                float y = Convert.ToSingle(yBox.Text);
+                float radius = Convert.ToInt32(radiusBox.Text);
+                float x = Convert.ToInt32(xBox.Text);
+                float y = Convert.ToInt32(yBox.Text);
                 Planet newPlanet = new Planet(planetComboBox.SelectedItem.ToString(), radius, x, y);
                 planetList.Add(newPlanet);
             }

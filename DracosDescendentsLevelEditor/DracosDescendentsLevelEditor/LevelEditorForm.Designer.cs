@@ -46,6 +46,7 @@
             this.changeScaleButton = new System.Windows.Forms.Button();
             this.scaleBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
+            this.manageAIbutton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.levelHeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelWidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -174,7 +175,7 @@
             // 
             // manageGatesButton
             // 
-            this.manageGatesButton.Location = new System.Drawing.Point(218, 137);
+            this.manageGatesButton.Location = new System.Drawing.Point(218, 129);
             this.manageGatesButton.Name = "manageGatesButton";
             this.manageGatesButton.Size = new System.Drawing.Size(131, 23);
             this.manageGatesButton.TabIndex = 10;
@@ -184,7 +185,7 @@
             // 
             // manageDragonsButton
             // 
-            this.manageDragonsButton.Location = new System.Drawing.Point(218, 176);
+            this.manageDragonsButton.Location = new System.Drawing.Point(218, 160);
             this.manageDragonsButton.Name = "manageDragonsButton";
             this.manageDragonsButton.Size = new System.Drawing.Size(131, 23);
             this.manageDragonsButton.TabIndex = 11;
@@ -200,6 +201,7 @@
             // openXML
             // 
             this.openXML.FileName = "openXML";
+            this.openXML.InitialDirectory = "..\\";
             this.openXML.FileOk += new System.ComponentModel.CancelEventHandler(this.openXML_FileOk);
             // 
             // importButton
@@ -238,11 +240,22 @@
             this.label4.TabIndex = 15;
             this.label4.Text = "Multiply Scale By:";
             // 
+            // manageAIbutton
+            // 
+            this.manageAIbutton.Location = new System.Drawing.Point(218, 193);
+            this.manageAIbutton.Name = "manageAIbutton";
+            this.manageAIbutton.Size = new System.Drawing.Size(131, 23);
+            this.manageAIbutton.TabIndex = 16;
+            this.manageAIbutton.Text = "Manage AI";
+            this.manageAIbutton.UseVisualStyleBackColor = true;
+            this.manageAIbutton.Click += new System.EventHandler(this.manageAIbutton_Click);
+            // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(399, 303);
+            this.Controls.Add(this.manageAIbutton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.scaleBox);
             this.Controls.Add(this.changeScaleButton);
@@ -288,6 +301,7 @@
         private System.Windows.Forms.Button changeScaleButton;
         private System.Windows.Forms.TextBox scaleBox;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Button manageAIbutton;
     }
 }
 

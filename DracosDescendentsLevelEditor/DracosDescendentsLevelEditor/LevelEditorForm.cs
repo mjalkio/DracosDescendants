@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Xml.Linq;
+using System.Reflection;
 
 namespace DracosDescendentsLevelEditor
 {
@@ -16,6 +17,7 @@ namespace DracosDescendentsLevelEditor
         private List<Dragon> dragonList;
         public static List<Gate> gateList;
         public static List<Planet> planetList;
+        public static List<AI> aiList;
         PreviewLevelForm levelForm;
 
         public LevelEditorForm()
@@ -24,7 +26,9 @@ namespace DracosDescendentsLevelEditor
             dragonList = new List<Dragon>();
             gateList = new List<Gate>();
             planetList = new List<Planet>();
+            aiList = new List<AI>();
             addDragons();
+            addAI();
         }
 
         private void addPlanetButton_Click(object sender, EventArgs e)
@@ -57,6 +61,12 @@ namespace DracosDescendentsLevelEditor
             dragonsForm.Show();
         }
 
+        private void manageAIbutton_Click(object sender, EventArgs e)
+        {
+            ManageAiForm aiForm = new ManageAiForm(aiList);
+            aiForm.Show();
+        }
+
         private void previewButton_Click(object sender, EventArgs e)
         {
             if (levelForm != null)
@@ -64,7 +74,7 @@ namespace DracosDescendentsLevelEditor
                 levelForm.Dispose();
             }
 
-            levelForm = new PreviewLevelForm(planetList, gateList, (int)levelWidthUpDown.Value, (int)levelHeightUpDown.Value);
+            levelForm = new PreviewLevelForm(planetList, gateList, aiList, (int)levelWidthUpDown.Value, (int)levelHeightUpDown.Value);
 
             levelForm.Width = (int) ((float)levelWidthUpDown.Value * levelForm.SCALE_FACTOR);
             levelForm.Height = (int) ((float)levelHeightUpDown.Value * levelForm.SCALE_FACTOR) + SystemInformation.CaptionHeight;
@@ -82,6 +92,16 @@ namespace DracosDescendentsLevelEditor
             dragonList.Add(new Dragon(125, 200, false));
             dragonList.Add(new Dragon(125, 300, false));
             dragonList.Add(new Dragon(125, 400, false));
+        }
+
+        /// <summary>
+        /// Method to add default AI to the game.
+        /// </summary>
+        private void addAI()
+        {
+            aiList.Add(new AI());
+            aiList.Add(new AI());
+            aiList.Add(new AI());
         }
 
         private void exportButton_Click(object sender, EventArgs e)
@@ -125,6 +145,21 @@ namespace DracosDescendentsLevelEditor
             }
             xmlString += "\r\n";
 
+            foreach (AI ai in aiList)
+            {
+                xmlString += "  <ai>\r\n";
+                foreach (Tuple<int, int> waypoint in ai.getWaypoints())
+                {
+                    xmlString += "  <waypoint>\r\n";
+                    xmlString += "      <x>" + waypoint.Item1 + "</x>\r\n";
+                    xmlString += "      <y>" + waypoint.Item2 + "</y>\r\n";
+                    xmlString += "  </waypoint>\r\n";
+                }
+                xmlString += "  </ai>\r\n";
+            }
+
+            xmlString += "\r\n";
+
             xmlString += "</level>";
 
             File.WriteAllText(name, xmlString);
@@ -135,6 +170,7 @@ namespace DracosDescendentsLevelEditor
             dragonList = new List<Dragon>();
             gateList = new List<Gate>();
             planetList = new List<Planet>();
+            aiList = new List<AI>();
 
             var xml = XDocument.Load(openXML.FileName);
 
@@ -174,7 +210,7 @@ namespace DracosDescendentsLevelEditor
 
             foreach (var planet in planets)
             {
-                Planet p = new Planet(planet.Type, Convert.ToSingle(planet.Radius), Convert.ToInt32(planet.X), Convert.ToInt32(planet.Y));
+                Planet p = new Planet(planet.Type, Convert.ToInt32(planet.Radius), Convert.ToInt32(planet.X), Convert.ToInt32(planet.Y));
                 planetList.Add(p);
             }
 
@@ -190,6 +226,38 @@ namespace DracosDescendentsLevelEditor
                 Gate g = new Gate(planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
                 gateList.Add(g);
             }
+
+            IEnumerable<XElement> ais = xml.Root.Descendants("ai");
+
+            foreach (XElement ai in ais)
+            {
+                AI newAI = new AI();
+
+                var waypoints = from wp in ai.Descendants("waypoint")
+                                select new
+                                {
+                                    x = wp.Element("x").Value,
+                                    y = wp.Element("y").Value
+                                };
+
+                foreach (var waypoint in waypoints)
+                {
+                    newAI.addWaypoint(Convert.ToInt32(waypoint.x), Convert.ToInt32(waypoint.y));
+                }
+
+                aiList.Add(newAI);
+            }
+
+            foreach (var gate in gates)
+            {
+                Gate g = new Gate(planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
+                gateList.Add(g);
+            }
+
+            if (aiList.Count == 0)
+            {
+                addAI();
+            }
         }
 
         private void importButton_Click(object sender, EventArgs e)
@@ -202,7 +270,7 @@ namespace DracosDescendentsLevelEditor
         {
             try
             {
-                float scale = Convert.ToSingle(scaleBox.Text);
+                float scale = Convert.ToInt32(scaleBox.Text);
 
                 levelWidthUpDown.Value = (decimal) ((float)levelWidthUpDown.Value * scale);
                 levelHeightUpDown.Value = (decimal)((float)levelHeightUpDown.Value * scale);
