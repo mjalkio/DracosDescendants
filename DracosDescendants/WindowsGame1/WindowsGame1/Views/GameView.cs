@@ -815,8 +815,8 @@ namespace DracosD.Views
             backcamera.Pos = position;
 
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null,backcamera.GetTransformation2(0.1f));
-            spriteBatch.Draw(background, -position * 2, new Rectangle(0, 0, background.Width * 100, background.Height), Color.White);
-            spriteBatch.Draw(f_background, -position * 3, new Rectangle(0, 0, background.Width * 100, background.Height * 2), Color.White);
+            spriteBatch.Draw(background, -position * 2, new Rectangle(0, 0, background.Width * 100, background.Height * 10), Color.White);
+            spriteBatch.Draw(f_background, -position * 3, new Rectangle(0, 0, background.Width * 100, background.Height * 10), Color.White);
  
         }
 
