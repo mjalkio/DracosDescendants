@@ -832,14 +832,29 @@ namespace DracosD.Views
         #endregion
 
         #region HUD pass
+        public void BeginArrowPass(Vector2 positionGate,float playerXCorr, float playerYCorr, int player_ID, float width)
+        {
+            //draw the arrow
+            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
+            if (player_ID == 0)
+            {
+                if ((positionGate.X - playerXCorr) > (width/10))
+                {
+                    spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+                }
+                if ((playerXCorr - positionGate.X) > (width/10))
+                {
+                    spriteBatch.Draw(arrowTexture, new Vector2(45, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width/2, arrowTexture.Height/2), 1, SpriteEffects.FlipHorizontally, 0);
+                    //spriteBatch.Draw(arrowTexture, new Vector2(10, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+                }
+            }
+        }
+
 
         //Draw the hud and dragon head on the progress bar
         public void BeginHUDPassPlayer(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, float width)
         {
             Texture2D drawingTexture = dragonheadTexture;
-            //draw the arrow
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
-            spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10), Color.White);
 
             //if the dragon missed a gate, then the progress bar shouldn't move anymore
             //if relative position is greater than the gate position
@@ -890,9 +905,11 @@ namespace DracosD.Views
 
 
             //debug print for the player dragon
+            /*
             Debug.Print("the arbitrary dragon position " + positionDragon.X.ToString());
             Debug.Print("the next gate position " + positionGate.X.ToString());
             Debug.Print("the relative dragon position " + relativeDragonPosition.X.ToString());
+            */
         }
 
         //Draw the hud and dragon head on the progress bar
@@ -914,7 +931,6 @@ namespace DracosD.Views
             
             //assume AIs never miss gates
             gateMissed[d_id] = false;
-            spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
             spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
             prevGates[d_id] = positionGate.X;
         }
