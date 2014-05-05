@@ -120,6 +120,11 @@ namespace DracosD
                 gameLevelControllers[i].LoadContent(content, levelLoadLocations[i]);
             }
 
+            //gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\alphaLevel.xml");
+            //gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml");
+            //gameView.LevelWidth = (int) (gameLevelController.Width / WorldController.DEFAULT_SCALE);
+            //gameView.LevelHeight = (int)(gameLevelController.Height / WorldController.DEFAULT_SCALE);
+
             victory = content.Load<Texture2D>("victory");
             failure = content.Load<Texture2D>("failure");
             menuBackground = content.Load<Texture2D>("badStartScreen");
@@ -200,12 +205,12 @@ namespace DracosD
                 }
                 else if (playerInput.Down)
                 {
-                    Debug.Print("DOWN WAS PRESSED");
+                    //Debug.Print("DOWN WAS PRESSED");
                     if (optionSelected < NUM_LEVELS-1) optionSelected++;
                 }
                 else if (playerInput.Up)
                 {
-                    Debug.Print("UP WAS PRESSED");
+                    //Debug.Print("UP WAS PRESSED");
                     if (optionSelected > 0) optionSelected--;
                 }
                 //currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);

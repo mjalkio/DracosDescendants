@@ -15,7 +15,7 @@ namespace DracosD.Controllers
         // Reference to the rocket
         private Dragon dragon;
         private List<PlanetaryObject> planets;
-        private float G = 1.65f;
+        private float G = 1.4f;
         private float worldwidth;
     #endregion
 

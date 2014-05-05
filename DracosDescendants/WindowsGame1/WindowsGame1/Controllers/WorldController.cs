@@ -14,6 +14,7 @@ using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
 using FarseerPhysics.Factories;
 using WindowsGame1.Models;
+//using WindowsGame1.Models;
 
 namespace DracosD.Controllers
 {
@@ -295,9 +296,55 @@ namespace DracosD.Controllers
 
             world.ContactManager.BeginContact += ContactAdded;
 
+            //ai 0,1
             for (int i = 1; i < dragons.Length; i++)
             {
-                AIControllers[i-1] = new AIController(dragons[i], level, currentGates);
+                /*List<Vector2> waypoints = new List<Vector2>();
+                waypoints.Add(new Vector2(20,40));
+                waypoints.Add(new Vector2(30,40));
+                waypoints.Add(new Vector2(40,40));
+                waypoints.Add(new Vector2(50,36));
+                waypoints.Add(new Vector2(60,33));
+                waypoints.Add(new Vector2(70,33));
+                waypoints.Add(new Vector2(80, 37));
+                waypoints.Add(new Vector2(90, 42));
+                waypoints.Add(new Vector2(100, 47));
+                waypoints.Add(new Vector2(110, 55));
+                waypoints.Add(new Vector2(120, 63));
+                waypoints.Add(new Vector2(130, 65));
+                waypoints.Add(new Vector2(140, 67));
+                waypoints.Add(new Vector2(150, 67));
+                waypoints.Add(new Vector2(160, 67));
+                waypoints.Add(new Vector2(170, 67));
+                waypoints.Add(new Vector2(180, 67));
+                waypoints.Add(new Vector2(190, 67));
+                waypoints.Add(new Vector2(200, 63));
+                waypoints.Add(new Vector2(210, 60));
+                waypoints.Add(new Vector2(220, 61));
+                waypoints.Add(new Vector2(230, 62));
+                waypoints.Add(new Vector2(240, 62));
+                waypoints.Add(new Vector2(250, 62));
+                waypoints.Add(new Vector2(260, 62));
+                waypoints.Add(new Vector2(270, 62));
+                waypoints.Add(new Vector2(280, 62));
+                waypoints.Add(new Vector2(290, 62));
+                waypoints.Add(new Vector2(300, 58));
+                waypoints.Add(new Vector2(310, 55));
+                waypoints.Add(new Vector2(320, 52));*/
+                List<List<Vector2>> aiLists = new List<List<Vector2>>();
+                foreach (List<Vector2> ais in level.AIs)
+                {
+                    List<Vector2> newAI = new List<Vector2>();
+                    if (ais.Count != 0)
+                    {
+                        foreach (Vector2 v in ais)
+                        {
+                            newAI.Add(v / 10);
+                        }
+                    }
+                    aiLists.Add(newAI);
+                }
+                AIControllers[i-1] = new AIController(dragons[i], level, currentGates, aiLists[i-1]);
             }
 
             //create a new HUD controller
@@ -569,7 +616,7 @@ namespace DracosD.Controllers
                         if (drawDrag.IsBreathing)
                         {
                             EndPass(view, state);
-                            state = DrawState.PolygonPass;
+                            state = DrawState.SpritePass;
                             BeginPass(view, state);
                             drawDrag.Breath.Draw(view);
                             //Debug.Print("here");
@@ -759,7 +806,9 @@ namespace DracosD.Controllers
                     dragons[0].breathFire();
                     if (dragons[0].Breath != null)
                     {
-                        dragons[0].Breath.ActivatePhysics(world);
+
+                            dragons[0].Breath.ActivatePhysics(world);
+                        
                     }
                 }
                 else
@@ -838,20 +887,30 @@ namespace DracosD.Controllers
                         Vector2 p8 = new Vector2(gp.Position.X + (float)(gp.Radius / Math.Sqrt(2)), gp.Position.Y - (float)(gp.Radius / Math.Sqrt(2)));
                         Vector2 p9 = new Vector2(gp.Position.X + gp.Radius, gp.Position.Y);
                         //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
-                        //TODO: GENERALIZE THIS IF ALL DRAGONS ARE BREATHING
-                        if (dragons[0].IsBreathing)
+                        foreach (Dragon dragon in dragons)
                         {
-                            foreach (Fixture fix in dragons[0].Breath.Fixtures)
+                            if (dragon.IsBreathing)
                             {
+                                Fixture fix = dragon.Breath.Fix;
                                 if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6) || fix.TestPoint(ref p7) || fix.TestPoint(ref p8) || fix.TestPoint(ref p9))
                                     && !gp.OnFire)
                                 {
                                     gp.Torch(false);
                                     break;
                                 }
+                               
+                                /*foreach (Fixture fix in dragon.Breath.Fixtures)
+                                {
+                                    if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6) || fix.TestPoint(ref p7) || fix.TestPoint(ref p8) || fix.TestPoint(ref p9))
+                                        && !gp.OnFire)
+                                    {
+                                        gp.Torch(false);
+                                        break;
+                                    }
+                                }*/
+
+
                             }
-
-
                         }
                     }
                     
@@ -867,19 +926,30 @@ namespace DracosD.Controllers
                         Vector2 p5 = new Vector2(gp.Position.X + gp.Width / 2, gp.Position.Y);
                         //if dragon is breathing, detect overlap with gas planet and breath..generalize this to all dragons breathing
                         //TODO: GENERALIZE THIS IF ALL DRAGONS ARE BREATHING
-                        if (dragons[0].IsBreathing && gp != dragons[0])
+                        foreach (Dragon dragon in dragons)
                         {
-                            foreach (Fixture fix in dragons[0].Breath.Fixtures)
+                            if (dragon.IsBreathing && dragon.Id != gp.Id)
                             {
+                                Fixture fix = dragon.Breath.Fix;
                                 if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5))
                                     && gp.CanMove)
                                 {
                                     gp.Burn(false);
                                     break;
                                 }
+                             
+                                /*foreach (Fixture fix in dragon.Breath.Fixtures)
+                                {
+                                    if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5))
+                                        && gp.CanMove)
+                                    {
+                                        gp.Burn(false);
+                                        break;
+                                    }
+                                }*/
+
+
                             }
-
-
                         }
                     }
 
@@ -917,7 +987,33 @@ namespace DracosD.Controllers
 
             for (int i = 1; i < dragons.Length; i++)
             {
-                Vector2 dir = AIControllers[i - 1].GetAction(gametime, currentGates);
+                Vector2 dir;
+                if (i == 1 || i==2)
+                {
+                    dir = AIControllers[i - 1].GetAction(gametime, currentGates, true);
+
+                    //control dragon breath
+                    /*if (AIControllers[i - 1].shouldBreathFire(dragons))
+                    {
+                        dragons[i].breathFire();
+                        if (dragons[i].Breath != null)
+                        {
+                            dragons[i].Breath.ActivatePhysics(world);
+                        }
+                    }
+                    else
+                    {
+                        if (dragons[i].Breath != null)
+                        {
+                            dragons[i].Breath.DeactivatePhysics(world);
+                        }
+                        dragons[i].stopBreathing();
+                    }*/
+                }
+                else
+                {
+                    dir = AIControllers[i - 1].GetAction(gametime, currentGates, false);
+                }
                 dragons[i].Force = dragons[i].Thrust * dir;
                 if (dir.X != 0 || dir.Y != 0) dragons[i].IsFlapping = true;
                 else dragons[i].IsFlapping = false;

@@ -551,7 +551,7 @@ namespace DracosD.Views
         /// <param name="scale">Amount to scale image (in addition to global scale)</param>
         /// <param name="angle">Amount to rotate image in radians</param>
         /// <param name="effects">Sprite effect to flip image</param>
-        public void DrawSprite(Texture2D image, Color tint, Vector2 position, Vector2 scale, float angle, SpriteEffects effects) {
+        /*public void DrawSprite(Texture2D image, Color tint, Vector2 position, Vector2 scale, float angle, SpriteEffects effects) {
             // Enforce invariants.
             Debug.Assert(state == DrawState.SpritePass, "Drawing state is invalid (expected SpritePass)");
 
@@ -560,6 +560,28 @@ namespace DracosD.Views
 
             // Draw it.
             spriteBatch.Draw(image, position, null, tint, angle, origin, scale, effects, 0);
+        }*/
+
+        public void DrawSprite(Texture2D image, Color tint, Vector2 position, Vector2 scale, float angle, SpriteEffects effect)
+        {
+            // Enforce invariants.
+            Debug.Assert(state == DrawState.SpritePass, "Drawing state is invalid (expected SpritePass)");
+
+            // Get the texture center.
+            Vector2 origin = new Vector2(image.Width / 2, image.Height / 2);
+
+            // Draw it.
+            spriteBatch.Draw(image, position, null, tint, angle, origin, scale, effect, 0);
+
+            if (position.X < 100.0f)
+            {
+                spriteBatch.Draw(image, new Vector2(position.X + (float)levelWidth, position.Y), null, tint, angle, origin, scale, effect, 0);
+            }
+
+            if (position.X > levelWidth - 100.0f)
+            {
+                spriteBatch.Draw(image, new Vector2(position.X - (float)levelWidth, position.Y), null, tint, angle, origin, scale, effect, 0);
+            }
         }
 
         /// <summary>
@@ -734,7 +756,7 @@ namespace DracosD.Views
         /// <param name="vertices">Vertices with texture mapping</param>
         /// <param name="texture">Texture to apply to polygon</param>
         public void DrawPolygons(VertexPositionTexture[] vertices, Texture2D texture) {
-            DrawPolygons(vertices, texture, Vector2.Zero, 0.0f, 1.0f,BlendState.AlphaBlend);
+            DrawPolygons(vertices, texture, Vector2.Zero, 0.0f, 1.0f,BlendState.AlphaBlend,false,Vector2.Zero);
         }
 
         /// <summary>
@@ -750,7 +772,7 @@ namespace DracosD.Views
         /// <param name="scale">Amount to scale polygon</param>
         public void DrawPolygons(VertexPositionTexture[] vertices, Texture2D texture,
                                  Vector2 position, float angle, float scale) {
-            DrawPolygons(vertices, texture, position, angle, scale, BlendState.AlphaBlend);
+            DrawPolygons(vertices, texture, position, angle, scale, BlendState.AlphaBlend,false,Vector2.Zero);
         }
 
         /// <summary>
@@ -767,7 +789,7 @@ namespace DracosD.Views
         /// <param name="blendMode">Blend mode to combine textures</param>
         public void DrawPolygons(VertexPositionTexture[] vertices, Texture2D texture,
                                  Vector2 position, float angle, float scale,
-                                 BlendState blendMode) {
+                                 BlendState blendMode, bool ai, Vector2 dragPos) {
             // Check the drawing state invariants.
             Debug.Assert(state == DrawState.PolygonPass, "Drawing state is invalid (expected PolygonPass)");
 
@@ -780,7 +802,7 @@ namespace DracosD.Views
                 // Create translation matrix
                 effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) * camera.GetFlippedBreathTransformation();
             }
-            else
+            else if(!ai)
             {
                 camera = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 10.0f);
 
@@ -788,6 +810,19 @@ namespace DracosD.Views
 
                 // Create translation matrix
                 effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(scale) * Matrix.CreateTranslation(new Vector3(position, 0)) * camera.GetBreathTransformation();
+            }
+            else if (ai)
+            {
+                Camera cam = new Camera(graphics.GraphicsDevice.Viewport, levelWidth, levelHeight, 10.0f);
+
+                //cam.AIBPos = position;
+                cam.AIBPos = dragPos;
+                //Debug.Print("" + position);
+                effect.World = Matrix.CreateTranslation(new Vector3(position,0));
+                //effect.World = Matrix.CreateRotationZ(angle) * cam.GetAIBreathTransformation() * Matrix.CreateTranslation(new Vector3(dragPos, 0));
+                //effect.World = Matrix.CreateRotationZ(angle) * Matrix.CreateScale(10.0f) * Matrix.CreateTranslation(new Vector3(dragPos, 0)); //* cam.GetBreathTransformation();
+                //effect.World = Matrix.CreateScale(10.0f) * Matrix.CreateTranslation(new Vector3(levelWidth, levelHeight, 0)) * Matrix.CreateTranslation(new Vector3(position, 0));
+                //Debug.Print("" + Matrix.CreateScale(10.0f) * Matrix.CreateTranslation(new Vector3(levelWidth, levelHeight, 0)) * Matrix.CreateTranslation(new Vector3(position, 0)));
             }
 
             effect.Texture = texture;
@@ -874,7 +909,9 @@ namespace DracosD.Views
             Texture2D drawingTexture = dragonheadTexture;
 
             //if the dragon missed a gate, then the progress bar shouldn't move anymore
+
             //if relative position is greater than the gate position
+
             if (relativeDragonPosition.X > positionGate.X)
             {
                 gateMissed[0] = true;
@@ -907,9 +944,13 @@ namespace DracosD.Views
                 }
             }
 
+
             if (gateMissed[0])
             {
                 spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition, 50), Color.White);
+                //assume AIs never missed the gates
+            
+                //gateMissed[d_id] = false;
             }
             else
             {
@@ -917,6 +958,7 @@ namespace DracosD.Views
                 spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
                 stoppedPosition = relativeDragonPosition.X + (playerLap - 1) * width + 140;
             }
+
 
             prevGates[0] = positionGate.X;
 
@@ -1053,6 +1095,12 @@ namespace DracosD.Views
                 }
             }
 
+            public Vector2 AIBPos
+            {
+                get { return _pos; }
+                set { _pos = value; }
+            }
+
             public Vector2 BPos
             {
                 get { return _pos; }
@@ -1112,6 +1160,16 @@ namespace DracosD.Views
                 Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
                 Matrix.CreateTranslation(new Vector3(_viewportWidth * 0.5f,
                     _viewportHeight * 0.5f, 0));
+
+                return _transform;
+            }
+
+            public Matrix GetAIBreathTransformation()
+            {
+                _transform =
+                Matrix.CreateTranslation(new Vector3(-_pos.X + 6.5f, -_pos.Y + 2.1f, 0)) *
+                Matrix.CreateRotationZ(Rotation) *
+                Matrix.CreateScale(new Vector3(Zoom, Zoom, 1));
 
                 return _transform;
             }
