@@ -884,20 +884,36 @@ namespace DracosD.Views
         #endregion
 
         #region HUD pass
-        public void BeginArrowPass(Vector2 positionGate,float playerXCorr, float playerYCorr, int player_ID, float width)
+        public void BeginArrowPass(Vector2 positionGate, float playerXCorr, float playerYCorr, int player_ID, float width)
         {
             //draw the arrow
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
             if (player_ID == 0)
             {
-                if ((positionGate.X - playerXCorr) > (width/10))
+                float distance = positionGate.X - playerXCorr;
+                float distance2;
+                //if gate is in front of player
+                if (positionGate.X > playerXCorr)
+                {
+
+                    distance2 = (positionGate.X - width - playerXCorr);
+                }
+                else
+                {
+                    distance2 = (positionGate.X + width - playerXCorr);
+                }
+                if (Math.Abs(distance2) < Math.Abs(distance))
+                {
+                    distance = distance2;
+                }
+                if (distance > (width / 10))
                 {
                     spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10 - playerYCorr * 2), Color.White);
                 }
-                if ((playerXCorr - positionGate.X) > (width/10))
+                if (-distance > (width / 10))
                 {
-                    spriteBatch.Draw(arrowTexture, new Vector2(45, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width/2, arrowTexture.Height/2), 1, SpriteEffects.FlipHorizontally, 0);
-                    //spriteBatch.Draw(arrowTexture, new Vector2(10, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+                    spriteBatch.Draw(arrowTexture, new Vector2(45, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2), 1, SpriteEffects.FlipHorizontally, 0);
+
                 }
             }
         }
