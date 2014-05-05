@@ -25,18 +25,25 @@ namespace DracosD
     public enum GameState
     {
         Start,
+        ChooseLevel,
+        RaceBegin,
         Game,
         Pause
     }
 
     class GameEngine : Microsoft.Xna.Framework.Game
     {
+        protected const int NUM_LEVELS = 5;
+        protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\alphaLevel.xml",
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\alphaLevel.xml",
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml"};
+
         #region Fields
         // Used to load the sounds and graphics (CONTROLLER CLASS)
         protected ContentManager content;
 
         // Parses XML files to create Level object (CONTROLLER CLASSES)
-        protected LevelController gameLevelController;
+        protected LevelController[] gameLevelControllers;
 
         // Gets inputs from the AI and PlayerInput controllers and applies them (CONTROLLER CLASS)
         protected WorldController currentWorld;
@@ -50,9 +57,23 @@ namespace DracosD
         private Texture2D victory;
         private Texture2D failure;
         private Texture2D menuBackground;
+        private Texture2D levelSelect;
         private Texture2D pause;
+        private Texture2D countdown3;
+        private Texture2D countdown2;
+        private Texture2D countdown1;
+
+        private int countdown;
+        private float countdownTimer;
 
         private GameState gameState;
+
+        // Fields necessary for the level select menu
+        private int optionSelected;
+        private int pauseOptionSelected;
+        private PlayerInputController playerInput;
+
+
         #endregion
 
         #region Initialization
@@ -66,7 +87,12 @@ namespace DracosD
             content.RootDirectory = "Content";
             gameMenuView = new MenuView();
             gameView = new GameView(this);
-            gameLevelController = new LevelController();
+            playerInput = new PlayerInputController();
+            gameLevelControllers = new LevelController[NUM_LEVELS];
+            for (int i=0;i<NUM_LEVELS;i++){
+                gameLevelControllers[i] = new LevelController();
+            }
+            //currentWorld = new WorldController(new Vector2(0, 0), gameLevelController, content);
 
             gameState = new GameState();
             gameState = GameState.Start;
@@ -88,16 +114,21 @@ namespace DracosD
         protected override void LoadContent()
         {
             gameView.LoadContent(content);
-            //gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\techPrototypeLevel.xml");
-            gameLevelController.LoadContent(content, "..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml");
-            gameView.LevelWidth = (int) (gameLevelController.Width / WorldController.DEFAULT_SCALE);
-            gameView.LevelHeight = (int)(gameLevelController.Height / WorldController.DEFAULT_SCALE);
+
+            for (int i = 0; i < NUM_LEVELS; i++)
+            {
+                gameLevelControllers[i].LoadContent(content, levelLoadLocations[i]);
+            }
 
             victory = content.Load<Texture2D>("victory");
             failure = content.Load<Texture2D>("failure");
             menuBackground = content.Load<Texture2D>("badStartScreen");
+            levelSelect = content.Load<Texture2D>("roughLevelSelect");
             pause = content.Load<Texture2D>("paused");
-            currentWorld = new WorldController(new Vector2(0, 0), gameLevelController,content);
+            countdown3 = content.Load<Texture2D>("countdown3");
+            countdown2 = content.Load<Texture2D>("countdown2");
+            countdown1 = content.Load<Texture2D>("countdown1");
+            //currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[0],content,playerInput);
         }
 
         /// <summary>
@@ -119,28 +150,102 @@ namespace DracosD
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (gameState == GameState.Start || gameState == GameState.Pause)
+            playerInput.ReadInput();
+            if (gameState == GameState.Pause)
             {
-                if (currentWorld.PressedStart())
+                if (playerInput.start)
                 {
-                    gameState = GameState.Game;
+                    if (pauseOptionSelected == 0) gameState = GameState.Game;
+                    else if (pauseOptionSelected == 1) {
+                        resetGame();
+                        currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected], content, playerInput);
+                        gameView.LevelHeight = (int)currentWorld.Height;
+                        gameView.LevelWidth = (int)currentWorld.Width;
+                        countdown = 3;
+                        countdownTimer = 1.0f;
+                        gameState = GameState.RaceBegin;
+                    }
+                    else if (pauseOptionSelected == 2)
+                    {
+                        optionSelected = 0;
+                        resetGame();
+                        gameState = GameState.ChooseLevel;
+                    }
+                }
+                else if (playerInput.Down)
+                {
+                    if (pauseOptionSelected < 2) pauseOptionSelected++;
+                }
+                else if (playerInput.Up)
+                {
+                    if (pauseOptionSelected > 0) pauseOptionSelected--;
+                }
+            }
+            else if (gameState == GameState.Start){
+                if (playerInput.start)
+                {
+                    optionSelected = 0;
+                    gameState = GameState.ChooseLevel;
+                }
+            }
+            else if (gameState == GameState.ChooseLevel){    
+                if (playerInput.start)
+                {
+                    currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected],content,playerInput);
+                    gameView.LevelHeight = (int)currentWorld.Height;
+                    gameView.LevelWidth = (int)currentWorld.Width;
+                    countdown = 3;
+                    countdownTimer = 1.0f;
+                    gameState = GameState.RaceBegin;
+                }
+                else if (playerInput.Down)
+                {
+                    Debug.Print("DOWN WAS PRESSED");
+                    if (optionSelected < NUM_LEVELS-1) optionSelected++;
+                }
+                else if (playerInput.Up)
+                {
+                    Debug.Print("UP WAS PRESSED");
+                    if (optionSelected > 0) optionSelected--;
+                }
+                //currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
+                base.Update(gameTime);
+            }
+            else if (gameState == GameState.RaceBegin) {
+                if (countdown == 0) gameState = GameState.Game;
+                else
+                {
+                    if (countdownTimer > 0) countdownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                    else
+                    {
+                        countdown--;
+                        countdownTimer = 1.0f;
+                    }
                 }
             }
             else if (gameState == GameState.Game)
             {
                 gameView.Scale = currentWorld.Scale;
-                if (currentWorld.PressedStart())
+                if (playerInput.start)
                 {
+                    pauseOptionSelected = 0;
                     gameState = GameState.Pause;
                 }
-                else if (currentWorld.isToReset)
+                else if (playerInput.reset)
                 {
-                    gameLevelController = new LevelController();
-                    gameState = GameState.Start;
+                    currentWorld.Reset = false;
+                    //gameState = GameState.Start;
+                    gameLevelControllers = new LevelController[NUM_LEVELS];
+                    for (int i = 0; i < NUM_LEVELS; i++)
+                    {
+                        gameLevelControllers[i] = new LevelController();
+                    }
                     gameView.gateMissed = new bool[4];
                     gameView.prevGates = new float[4];
                     gameView.stoppedPosition = 0.0f;
                     base.Initialize();
+                    base.Update(gameTime);
+                    gameState = GameState.ChooseLevel;
                 }
                 else
                 {
@@ -163,6 +268,39 @@ namespace DracosD
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 gameView.DrawOverlay(menuBackground, Color.White, false);
                 gameView.EndSpritePass();
+            }
+            else if (gameState == GameState.ChooseLevel)
+            {
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                gameView.DrawOverlay(levelSelect, Color.White, false);
+                gameView.EndSpritePass();
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                // GraphicsDevice.DepthStencilState = DepthStencilState.Default;
+                // For some reason this drawtext does not work after a reset...
+                gameView.DrawText("Current Level Selected: " + (optionSelected + 1), Color.DarkCyan, new Vector2(500, 700), true);
+                gameView.EndSpritePass();
+            }
+            else if (gameState == GameState.RaceBegin)
+            {
+                currentWorld.Draw(gameView);
+                if (countdown == 3)
+                {
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(countdown3, Color.White, false);
+                    gameView.EndSpritePass();
+                }
+                else if (countdown == 2)
+                {
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(countdown2, Color.White, false);
+                    gameView.EndSpritePass();
+                }
+                else if (countdown == 1)
+                {
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(countdown1, Color.White, false);
+                    gameView.EndSpritePass();
+                }
             }
             else if (gameState == GameState.Game)
             {
@@ -187,12 +325,32 @@ namespace DracosD
             {
                 currentWorld.Draw(gameView);
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(pause, Color.White, false);
+                //gameView.DrawOverlay(pause, Color.White, false);
+                if (pauseOptionSelected == 0) gameView.DrawText("Resume", Color.White, new Vector2(0, 3));
+                else if (pauseOptionSelected == 1) gameView.DrawText("Restart Race", Color.White, new Vector2(0, 3));
+                else if (pauseOptionSelected == 2) gameView.DrawText("Level Select", Color.White, new Vector2(0, 3));
                 gameView.EndSpritePass();
             }
 
             base.Draw(gameTime);
         }
         #endregion
+
+        private void resetGame()
+        {
+            currentWorld.Reset = false;
+            //gameState = GameState.Start;
+            gameView.gateMissed = new bool[4];
+            gameView.prevGates = new float[4];
+            gameLevelControllers = new LevelController[5];
+            for (int i = 0; i < NUM_LEVELS; i++)
+            {
+                gameLevelControllers[i] = new LevelController();
+            }
+            // gameState = GameState.ChooseLevel;
+             base.Initialize();
+            //base.Update(gameTime);
+             
+        }
     }
 }

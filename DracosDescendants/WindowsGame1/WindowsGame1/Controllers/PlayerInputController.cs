@@ -54,6 +54,10 @@ namespace DracosD.Controllers
         protected bool breathing;
 
         protected bool pressedStart;
+        protected bool up;
+        protected bool upWasDown = false;
+        protected bool down;
+        protected bool downWasDown = false; 
         protected bool startWasDown = false;
 
         #endregion
@@ -177,6 +181,18 @@ namespace DracosD.Controllers
             get { return pressedStart; }
         }
 
+        public bool Up
+        {
+
+            get { return up; }
+        }
+
+        public bool Down
+        {
+
+            get { return down; }
+        }
+
         #endregion
 
         #region Methods
@@ -214,6 +230,27 @@ namespace DracosD.Controllers
             vertical = -gamePad.ThumbSticks.Left.Y;
             breathing = (gamePad.Buttons.A == ButtonState.Pressed);
             pressedStart = (gamePad.Buttons.Start == ButtonState.Pressed);
+
+            // NEED TO ADD LOGIC FOR CONTROLLING MENUS
+            if (vertical > 0)
+            {
+                if (!upWasDown)
+                {
+                    up = true;
+                    upWasDown = true;
+                }
+                else up = false;
+            }
+            else downWasDown = false;
+            if (vertical < 0)
+            {
+                if (!downWasDown)
+                {
+                    down = true;
+                    downWasDown = true;
+                }
+            }
+            else downWasDown = false;
         }
 
         /// <summary>
@@ -240,12 +277,29 @@ namespace DracosD.Controllers
             {
                 vertical -= 1.0f;
                 keyPressed = true;
+                if (!upWasDown)
+                {
+                    up = true;
+                    upWasDown = true;
+                }
+                //else if (keyboard.IsKeyUp(Keys.Up)) upWasDown = false;
+                else up = false;
             }
+            else if (keyboard.IsKeyUp(Keys.Up)) upWasDown = false;
+
             if (keyboard.IsKeyDown(Keys.Down))
             {
                 vertical += 1.0f;
                 keyPressed = true;
+                if (!downWasDown)
+                {
+                    down = true;
+                    downWasDown = true;
+                }
+                //else if (keyboard.IsKeyUp(Keys.Down)) downWasDown = false;
+                else down = false;
             }
+            else if (keyboard.IsKeyUp(Keys.Down)) downWasDown = false;
 
             breathing = false;
             if (keyboard.IsKeyDown(Keys.Space))
@@ -330,6 +384,10 @@ namespace DracosD.Controllers
             if (keyboard.IsKeyDown(Keys.R))
             {
                 resetPressed = true;
+            }
+            if (keyboard.IsKeyUp(Keys.R))
+            {
+                resetPressed = false;
             }
         }
         #endregion

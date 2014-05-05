@@ -59,6 +59,7 @@ namespace DracosD.Views
         //the HUD of the game
         protected Texture2D progressTexture;
         protected Texture2D firebarTexture;
+        protected Texture2D innerfirebarTexture;
         protected Texture2D dragonheadTexture;
         protected Texture2D dragonheadTexture2;
         protected Texture2D dragonheadTexture3;
@@ -70,6 +71,7 @@ namespace DracosD.Views
 
         // For onscreen messages
         protected SpriteFont font;
+        protected SpriteFont fancyFont;
 
         // Private variable for property IsFullscreen.
         protected bool fullscreen;
@@ -316,6 +318,7 @@ namespace DracosD.Views
         public int LevelHeight
         {
             set { levelHeight = value; }
+            get { return levelHeight; }
         }
     #endregion
 
@@ -384,11 +387,13 @@ namespace DracosD.Views
         public void LoadContent(ContentManager content) {
             // Load sprite font
             font = content.Load<SpriteFont>("PhysicsFont");
+            fancyFont = content.Load<SpriteFont>("WillFont");
             //load background
             background = content.Load<Texture2D>("stars");
             f_background = content.Load<Texture2D>("stars-parallax front");
             progressTexture = content.Load<Texture2D>("progressbar");
             firebarTexture = content.Load<Texture2D>("FireBar");
+            innerfirebarTexture = content.Load<Texture2D>("InnerFireBar");
             dragonheadTexture = content.Load<Texture2D>("dragonhead");
             dragonheadTexture2 = content.Load<Texture2D>("dragonhead2");
             dragonheadTexture3 = content.Load<Texture2D>("dragonhead3");
@@ -681,6 +686,18 @@ namespace DracosD.Views
             spriteBatch.DrawString(font, text, position * Scale, tint);
         }
 
+        public void DrawText(String text, Color tint, Vector2 position, bool fancy)
+        {
+            // Enforce invariants.
+            //Vector2 pos = position / Scale;
+            Debug.Assert(state == DrawState.SpritePass, "Drawing state is invalid (expected SpritePass)");
+            if (fancy)
+            {
+                spriteBatch.DrawString(fancyFont, text, position, tint);
+            }
+            else spriteBatch.DrawString(font, text, position * Scale, tint);
+        }
+
         /// <summary>
         /// End the sprite pass, flushing all graphics to the screen.
         /// </summary>
@@ -947,10 +964,11 @@ namespace DracosD.Views
         }
 
         // Draw dragon fire gauge
-        public void BeginHUDPass3()
+        public void BeginHUDPass3(float fireLevel)
         {
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
             spriteBatch.Draw(firebarTexture, new Vector2(50, 200), Color.White);
+            spriteBatch.Draw(innerfirebarTexture, new Vector2(50+firebarTexture.Width*.15f, 200+firebarTexture.Height*(1-.97f*fireLevel-.015f)), null, Color.White, 0.0f, new Vector2(0,0), new Vector2(.7f,.97f*fireLevel),SpriteEffects.None,0);
         }
 
         #endregion

@@ -45,12 +45,14 @@ namespace DracosD.Controllers
             view.EndHUDPass();
         }
 
-        //drawing method for the progress bar
+        //drawing method for the progress bar (and now fire breath)
         public void Draw2(GameView view)
         {
             view.BeginHUDPass2();
             view.EndHUDPass();
-            view.BeginHUDPass3();
+
+            // fire breath bar
+            view.BeginHUDPass3(racer.FireLevel);
             view.EndHUDPass();
         }
 

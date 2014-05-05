@@ -169,9 +169,9 @@ namespace DracosD.Objects {
         /// Look at the class PolygonTools in Farseer to see shapes we omitted.
         /// </remarks>
         protected override void CreateShape() {
-            if (fixture != null) {
+            /*if (fixture != null) {
                 body.DestroyFixture(fixture);
-            }
+            }*/
             Vertices rectangleVertices = PolygonTools.CreateRectangle(dimension.X / 2, dimension.Y / 2);
             PolygonShape rectangleShape = new PolygonShape(rectangleVertices, density);
             fixture = body.CreateFixture(rectangleShape, this);

@@ -25,20 +25,27 @@ namespace DracosD.Models
     {
         #region Fields
 
-        private const int NUM_FRAMES = 6;
-        private Texture2D gateTexture;
+        private const int NUM_FRAMES = 9;
         private PlanetaryObject planet1;
         private PlanetaryObject planet2;
 
         private const int FRAME_DELAY = 4;
         private int delayCount;
         private int animationFrame = 0;
+        private bool framedirection = true;
+        private bool hasBeenHit;
         #endregion
 
         #region Properties (READ-WRITE)
         public int Frame{
             get { return animationFrame; }
             set { animationFrame = value; }
+        }
+
+        public bool Hit
+        {
+            get { return hasBeenHit; }
+            set { hasBeenHit = value; }
         }
 
         public PlanetaryObject Planet1
@@ -87,6 +94,33 @@ namespace DracosD.Models
         #endregion
 
         #region Game Loop (Draw)
+
+        public override void Update(float dt)
+        {
+            if (!hasBeenHit)
+            {
+                if (animationFrame > 3) animationFrame = 2;
+                if (animationFrame < 0) animationFrame = 1;
+                if (delayCount == FRAME_DELAY)
+                {
+                    if (framedirection)
+                    {
+                        animationFrame++;
+                        if (animationFrame == 3) framedirection = false;
+                    }
+                    else
+                    {
+                        animationFrame--;
+                        if (animationFrame == 0) framedirection = true;
+                    }
+                    delayCount = 0;
+                }
+                delayCount++;
+            }
+        
+            base.Update(dt);
+        }
+
         public override void Draw(GameView canvas)
         {
             Vector2 drawScale = scale;
@@ -101,6 +135,7 @@ namespace DracosD.Models
 
         public void incrementFrame()
         {
+            hasBeenHit = true;
             if (delayCount == FRAME_DELAY){
                 animationFrame++;
                 delayCount =0;

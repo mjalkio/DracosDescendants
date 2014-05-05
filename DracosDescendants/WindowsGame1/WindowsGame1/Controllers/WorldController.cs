@@ -13,6 +13,7 @@ using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
 using FarseerPhysics.Factories;
+using WindowsGame1.Models;
 
 namespace DracosD.Controllers
 {
@@ -36,6 +37,8 @@ namespace DracosD.Controllers
         private Texture2D regularPlanetTexture;
         private Texture2D lavaPlanetTexture;
         private Texture2D lavaProjTexture;
+        private Texture2D lap2Texture;
+        private Texture2D lap3Texture;
 
 
         /// <summary>
@@ -47,6 +50,8 @@ namespace DracosD.Controllers
             regularPlanetTexture = content.Load<Texture2D>("earthtile");
             lavaPlanetTexture = content.Load<Texture2D>("lava planet");
             lavaProjTexture = content.Load<Texture2D>("lava projectile");
+            lap2Texture = content.Load<Texture2D>("lap2");
+            lap3Texture = content.Load<Texture2D>("lap3");
         }
 
         /// <summary>
@@ -92,6 +97,12 @@ namespace DracosD.Controllers
         private bool succeeded;
         private bool failed;
 
+        private const int DRAW_LAP_DELAY = 100;
+        private bool drawlap2 = false;
+        private int drawlap2delay;
+        private bool drawlap3 = false;
+        private int drawlap3delay;
+
         //dictionary to check if last gate is passed
         private Dictionary<Dragon, bool> lastGate;
 
@@ -130,6 +141,13 @@ namespace DracosD.Controllers
             get { return succeeded; }
             set { succeeded = value; }
         }
+
+        public bool Reset
+        {
+            get { return toReset; }
+            set { toReset = value; }
+        }
+
         public LinkedList<PhysicsObject> Objects
         {
             get { return objects; }
@@ -231,10 +249,6 @@ namespace DracosD.Controllers
             get { return scale.Y; }
         }
 
-        public bool isToReset
-        {
-            get { return toReset; }
-        }
         #endregion
 
         #region Initialization
@@ -248,10 +262,10 @@ namespace DracosD.Controllers
         /// </remarks>
         /// <param name="bounds">Object boundary for this world</param>
         /// <param name="gravity">Global gravity constant</param>
-        public WorldController(Vector2 gravity, LevelController thisLevel, ContentManager content) :
+        public WorldController(Vector2 gravity, LevelController thisLevel, ContentManager content, PlayerInputController inputController) :
             this(thisLevel.Dimensions / DEFAULT_SCALE, new Vector2(0, 0), new Vector2(DEFAULT_SCALE, DEFAULT_SCALE))
         {
-            playerInput = new PlayerInputController();
+            playerInput = inputController;
             
             currentGates = new Dictionary<Dragon, int>();
             dragons = new Dragon[4];
@@ -326,9 +340,10 @@ namespace DracosD.Controllers
 
         private void PopulateLevel()
         {
-            //Create a bounding box around the level (for now, will add wraparound later)
+            //Create a bounding box around the level 
 
             Vector2[] points = { new Vector2(0f, 0.0f), new Vector2(Width, 0f), new Vector2(Width+1.0f, 0.01f), new Vector2(0f, 0.01f) };
+            //PhysicsObject obj = new BoxObject(regularPlanetTexture, new Vector2(0, 0), new Vector2(Width, .01f));
             PhysicsObject obj = new PolygonObject(regularPlanetTexture, points, Scale);
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
@@ -337,16 +352,18 @@ namespace DracosD.Controllers
 
             Vector2[] points2 = { new Vector2(0f, Height), new Vector2(0f, Height-0.1f), new Vector2(Width, Height-.1f), new Vector2(Width + 1.0f, Height),};
             obj = new PolygonObject(regularPlanetTexture, points2, Scale);
+            //obj = new BoxObject(regularPlanetTexture, new Vector2(Height, 0), new Vector2(Width, .01f));
             obj.BodyType = BodyType.Static;
             obj.Density = BASIC_DENSITY;
             obj.Restitution = BASIC_RESTITION;
             AddObject(obj);
 
-            //Debug.Print("COUNT OF LEVEL: " + level.Racers.Count);
-            //Debug.Print("COUNT OF DRAGONS: " + dragons.Length);
+            obj = new FloatingText("\n\n\n\n\n\n\n\n RIP Bithor", 110,111);
+            AddObject(obj);
+
+
             for (int i = 0; i < level.Racers.Count; i++)
             {
-                //Debug.Print("COUNT: " + i);
                 if (level.Racers[i] != null)
                 {
                     dragons[i] = level.Racers[i];
@@ -434,6 +451,7 @@ namespace DracosD.Controllers
                         if (drag == dragons[0])
                         {
                             level.Gates[(currentGates[drag] - 1 + level.Gates.Count) % level.Gates.Count].Frame = 0;
+                            level.Gates[(currentGates[drag] + 1 + level.Gates.Count) % level.Gates.Count].Hit = false;
                         }
                         //If you pass the last gate, you win
                         if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 3)
@@ -565,14 +583,43 @@ namespace DracosD.Controllers
                         BeginPass(view, state);
                     }
                     obj.Draw(view);
+
+                    if (obj is FloatingText)
+                    {
+                        FloatingText current = (FloatingText)obj;
+                        if (current.Start < dragons[0].Position.X && current.End > dragons[0].Position.X)
+                        {
+                            EndPass(view, state);
+                            BeginTextPass(view, state);
+                            obj.Draw(view);
+                        }
+                    }
+
+                    EndPass(view, state);
+                    BeginPass(view, state);
                 }
 
             }
             EndPass(view, state);
 
+            //Lap counter
             BeginTextPass(view, state);
             view.DrawText("Lap: " + playerLap[dragons[0]], Color.White, new Vector2(0.0f, 0.0f));
             EndPass(view, state);
+
+            //Lap overlay if necessary
+            if (drawlap2)
+            {
+                view.BeginSpritePass(BlendState.AlphaBlend);
+                view.DrawOverlay(lap2Texture, Color.White, false);
+                view.EndSpritePass();
+            }
+            if (drawlap3)
+            {
+                view.BeginSpritePass(BlendState.AlphaBlend);
+                view.DrawOverlay(lap3Texture, Color.White, false);
+                view.EndSpritePass();
+            }
 
             //draw the hud if the game is not finished
             if ((currentGates[dragons[0]] < level.Gates.Count) && (!Failed))
@@ -660,6 +707,20 @@ namespace DracosD.Controllers
             return playerInput.start;
         }
 
+        public bool PressedDown()
+        {
+            playerInput.ReadInput();
+
+            return playerInput.Down;
+        }
+
+        public bool PressedUp()
+        {
+            playerInput.ReadInput();
+
+            return playerInput.Up;
+        }
+
         /// <summary>
         /// The core update loop of any physics world.
         /// </summary>
@@ -672,8 +733,6 @@ namespace DracosD.Controllers
         /// <param name="dt">Timing values from parent loop</param>
         public void Update(float dt, GameTime gametime)
         {
-            // Debug.Print("" + dragon.Thrust);
-            
             // Read input and assign actions to rocket
             playerInput.ReadInput();
 
@@ -698,7 +757,10 @@ namespace DracosD.Controllers
                 if (playerInput.Breathing)
                 {
                     dragons[0].breathFire();
-                    dragons[0].Breath.ActivatePhysics(world);
+                    if (dragons[0].Breath != null)
+                    {
+                        dragons[0].Breath.ActivatePhysics(world);
+                    }
                 }
                 else
                 {
@@ -741,6 +803,15 @@ namespace DracosD.Controllers
                         {
                             playerLap[drag]++;
                             lastGate[drag] = false;
+                            if (drag == dragons[0]) {
+                                if(playerLap[dragons[0]] == 2)
+                                {
+                                    drawlap2 = true;
+                                }
+                                if(playerLap[dragons[0]] ==3){
+                                    drawlap3 = true;
+                                }
+                            }
                         }
                     }
 
@@ -861,9 +932,14 @@ namespace DracosD.Controllers
                 }
             }
 
+            if (drawlap2) drawlap2delay++;
+            if (drawlap2delay > DRAW_LAP_DELAY) drawlap2 = false;
+            if (drawlap3) drawlap3delay++;
+            if (drawlap3delay > DRAW_LAP_DELAY) drawlap3 = false;
+
+
             level.Gates[(currentGates[dragons[0]] - 1 + level.Gates.Count) % level.Gates.Count].incrementFrame();
 
-            //Debug.Print("" + dragon.Position);
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)
             {
@@ -929,10 +1005,6 @@ namespace DracosD.Controllers
             AddQueuedObject(bullet);
         }
 
-        private void shockwave(GaseousPlanet planet)
-        {
-
-        }
 
         #endregion
     }

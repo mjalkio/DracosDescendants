@@ -27,7 +27,7 @@ namespace DracosD.Models
         private const float DEFAULT_RESTITUTION = 0.4f;
         private const int COOLDOWN = 120; //in ticks
         private const int DELAY = 60;
-        private const int FULL_FIRE_LEVEL = 100;
+        private const int FULL_FIRE_LEVEL = 400;
 
         public static int ID = 0;
 
@@ -49,6 +49,7 @@ namespace DracosD.Models
         private FireBreath breath;
         private bool isBreathing;
         private int currentFireLevel;
+        private bool fireReset;
 
         // To animate the rocket flames
         private int animationFrame = 0;
@@ -146,6 +147,11 @@ namespace DracosD.Models
         {
             get { return currCooldown == 0; }
         }
+
+        public float FireLevel
+        {
+            get { return (float)((float)currentFireLevel/(float)FULL_FIRE_LEVEL); }
+        }
         #endregion
 
         #region Initialization
@@ -176,17 +182,29 @@ namespace DracosD.Models
 
         public void breathFire()
         {
-            isBreathing = true;
-            bool fliped = false;
-            if (flip == SpriteEffects.FlipHorizontally)
+            if (currentFireLevel > 0 && !fireReset)
             {
-                fliped = true;
-                breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+                isBreathing = true;
+                bool fliped = false;
+                if (flip == SpriteEffects.FlipHorizontally)
+                {
+                    fliped = true;
+                    breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+                }
+                else
+                {
+                    fliped = false;
+                    breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+                }
+                currentFireLevel--;
+                currentFireLevel--;
+                currentFireLevel--;
+                if (currentFireLevel <= 0) fireReset = true;
             }
             else
             {
-                fliped = false;
-                breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+                breath = null;
+                isBreathing = false;
             }
         }
         /// <summary>
@@ -214,6 +232,9 @@ namespace DracosD.Models
         public override void Update(float dt) {
             //Debug.Print("" + Position);
             Burn(true);
+
+            if (fireReset && currentFireLevel == FULL_FIRE_LEVEL) fireReset = false;
+            if (!isBreathing && currentFireLevel < FULL_FIRE_LEVEL) currentFireLevel++;
 
             if (base.LinearVelocity.Length() > dampeningThreshold)
             {
