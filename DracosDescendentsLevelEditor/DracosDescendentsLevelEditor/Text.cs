@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DracosDescendentsLevelEditor
 {
-    class Text
+    public class Text
     {
         public int startX;
         public int endX;

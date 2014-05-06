@@ -13,7 +13,6 @@ using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
 using FarseerPhysics.Factories;
-using WindowsGame1.Models;
 //using WindowsGame1.Models;
 
 namespace DracosD.Controllers

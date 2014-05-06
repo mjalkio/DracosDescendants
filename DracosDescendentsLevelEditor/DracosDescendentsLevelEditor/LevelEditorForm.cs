@@ -18,7 +18,7 @@ namespace DracosDescendentsLevelEditor
         public static List<Gate> gateList;
         public static List<Planet> planetList;
         public static List<AI> aiList;
-        public List<Text> textList;
+        private List<Text> textList;
         PreviewLevelForm levelForm;
 
         public LevelEditorForm()
