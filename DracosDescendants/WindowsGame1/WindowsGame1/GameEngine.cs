@@ -35,9 +35,11 @@ namespace DracosD
     class GameEngine : Microsoft.Xna.Framework.Game
     {
         protected const int NUM_LEVELS = 5;
-        protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\level1.xml", "..\\..\\..\\..\\WindowsGame1Content\\level2.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\level3.xml", "..\\..\\..\\..\\WindowsGame1Content\\alphaLevel.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\betaLevel.xml"};
+
+        protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\level3.xml"};
+
 
         #region Fields
         // Used to load the sounds and graphics (CONTROLLER CLASS)

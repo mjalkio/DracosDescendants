@@ -89,6 +89,7 @@ namespace DracosD.Controllers
             gateList = new List<Gate>();
             planetList = new List<PlanetaryObject>();
             aiList = new List<List<Vector2>>();
+            textList = new List<FloatingText>();
             levelHeight = 0;
             levelWidth = 0;
         }
@@ -114,7 +115,7 @@ namespace DracosD.Controllers
             gaseousTexture = content.Load<Texture2D>("gaseous planet");
             igniteTexture = content.Load<Texture2D>("Igniting Filmstrip");
             flamingTexture = content.Load<Texture2D>("Flaming Filmstrip");
-            fireBreath = content.Load<Texture2D>("fire_breath_strip");
+            fireBreath = content.Load<Texture2D>("breath");
             dragonOnFireTexture = content.Load<Texture2D>("DragonFlaming");
 
             parseLevelFromXML(xmlFile);

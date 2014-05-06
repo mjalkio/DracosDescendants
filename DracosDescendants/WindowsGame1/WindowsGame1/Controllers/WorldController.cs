@@ -13,7 +13,7 @@ using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
 using FarseerPhysics.Factories;
-using DracosD.Models;
+
 
 namespace DracosD.Controllers
 {
