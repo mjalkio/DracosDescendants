@@ -309,5 +309,11 @@ namespace DracosDescendentsLevelEditor
             }
             catch { }
         }
+
+        private void textButton_Click(object sender, EventArgs e)
+        {
+            ManageTextForm textForm = new ManageTextForm(textList);
+            textForm.Show();
+        }
     }
 }

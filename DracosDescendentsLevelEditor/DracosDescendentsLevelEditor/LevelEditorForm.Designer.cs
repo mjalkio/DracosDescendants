@@ -259,6 +259,7 @@
             this.textButton.TabIndex = 17;
             this.textButton.Text = "Dat Tutorial Text";
             this.textButton.UseVisualStyleBackColor = true;
+            this.textButton.Click += new System.EventHandler(this.textButton_Click);
             // 
             // LevelEditorForm
             // 

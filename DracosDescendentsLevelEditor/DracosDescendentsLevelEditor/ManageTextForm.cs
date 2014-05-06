@@ -33,6 +33,8 @@ namespace DracosDescendentsLevelEditor
             {
                 oldTextBox.SelectedItem = textList[0];
             }
+
+            oldTextBox.DisplayMember = "Display";
         }
 
         private void deleteTextButton_Click(object sender, EventArgs e)
