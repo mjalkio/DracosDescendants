@@ -47,6 +47,7 @@
             this.scaleBox = new System.Windows.Forms.TextBox();
             this.label4 = new System.Windows.Forms.Label();
             this.manageAIbutton = new System.Windows.Forms.Button();
+            this.textButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.levelHeightUpDown)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.levelWidthUpDown)).BeginInit();
             this.SuspendLayout();
@@ -250,11 +251,21 @@
             this.manageAIbutton.UseVisualStyleBackColor = true;
             this.manageAIbutton.Click += new System.EventHandler(this.manageAIbutton_Click);
             // 
+            // textButton
+            // 
+            this.textButton.Location = new System.Drawing.Point(12, 97);
+            this.textButton.Name = "textButton";
+            this.textButton.Size = new System.Drawing.Size(90, 55);
+            this.textButton.TabIndex = 17;
+            this.textButton.Text = "Dat Tutorial Text";
+            this.textButton.UseVisualStyleBackColor = true;
+            // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(399, 303);
+            this.Controls.Add(this.textButton);
             this.Controls.Add(this.manageAIbutton);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.scaleBox);
@@ -302,6 +313,7 @@
         private System.Windows.Forms.TextBox scaleBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button manageAIbutton;
+        private System.Windows.Forms.Button textButton;
     }
 }
 

@@ -19,6 +19,7 @@ namespace DracosD.Controllers
         private List<Gate> gateList;
         private List<PlanetaryObject> planetList;
         private List<List<Vector2>> aiList;
+        private List<FloatingText> textList;
         private int levelHeight;
         private int levelWidth;
 
@@ -243,6 +244,20 @@ namespace DracosD.Controllers
                 }
 
                 aiList.Add(newAI);
+            }
+
+            var textMessages = from t in xml.Root.Descendants("text")
+                               select new
+                               {
+                                   Content = t.Element("content").Value,
+                                   Start = t.Element("start").Value,
+                                   End = t.Element("end").Value
+                               };
+
+            foreach (var textMessage in textMessages)
+            {
+                FloatingText t = new FloatingText(textMessage.Content, Convert.ToInt32(textMessage.Start), Convert.ToInt32(textMessage.End));
+                textList.Add(t);
             }
         }
         #endregion

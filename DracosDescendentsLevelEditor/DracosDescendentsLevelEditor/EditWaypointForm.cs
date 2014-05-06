@@ -55,6 +55,8 @@ namespace DracosDescendentsLevelEditor
                 int y = Convert.ToInt32(yBox.Text);
 
                 ai.updateWaypoint(waypoint, (Tuple<int, int>)waypointBox.SelectedItem, x, y);
+
+                this.Dispose();
             }
             catch { }
         }

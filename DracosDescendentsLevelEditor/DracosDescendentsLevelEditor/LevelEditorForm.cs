@@ -18,6 +18,7 @@ namespace DracosDescendentsLevelEditor
         public static List<Gate> gateList;
         public static List<Planet> planetList;
         public static List<AI> aiList;
+        public List<Text> textList;
         PreviewLevelForm levelForm;
 
         public LevelEditorForm()
@@ -27,6 +28,7 @@ namespace DracosDescendentsLevelEditor
             gateList = new List<Gate>();
             planetList = new List<Planet>();
             aiList = new List<AI>();
+            textList = new List<Text>();
             addDragons();
             addAI();
         }
@@ -157,7 +159,16 @@ namespace DracosDescendentsLevelEditor
                 }
                 xmlString += "  </ai>\r\n";
             }
+            xmlString += "\r\n";
 
+            foreach (Text txt in textList)
+            {
+                xmlString += "  <text>\r\n";
+                xmlString += "    <start>" + txt.startX + "</start>\r\n";
+                xmlString += "    <end>" + txt.endX + "</end>\r\n";
+                xmlString += "    <content>" + txt.txt + "</content>\r\n";
+                xmlString += "  </text>\r\n";
+            }
             xmlString += "\r\n";
 
             xmlString += "</level>";
@@ -171,6 +182,7 @@ namespace DracosDescendentsLevelEditor
             gateList = new List<Gate>();
             planetList = new List<Planet>();
             aiList = new List<AI>();
+            textList = new List<Text>();
 
             var xml = XDocument.Load(openXML.FileName);
 
@@ -248,10 +260,18 @@ namespace DracosDescendentsLevelEditor
                 aiList.Add(newAI);
             }
 
-            foreach (var gate in gates)
+            var textMessages = from t in xml.Root.Descendants("text")
+                          select new
+                          {
+                              Content = t.Element("content").Value,
+                              Start = t.Element("start").Value,
+                              End = t.Element("end").Value
+                          };
+
+            foreach (var textMessage in textMessages)
             {
-                Gate g = new Gate(planetList[Convert.ToInt32(gate.Planet1)], planetList[Convert.ToInt32(gate.Planet2)]);
-                gateList.Add(g);
+                Text t = new Text(Convert.ToInt32(textMessage.Start), Convert.ToInt32(textMessage.End), textMessage.Content);
+                textList.Add(t);
             }
 
             if (aiList.Count == 0)

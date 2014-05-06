@@ -10,7 +10,7 @@ using Color = Microsoft.Xna.Framework.Color;
 using FarseerPhysics.Dynamics;
 using System.Diagnostics;
 
-namespace WindowsGame1.Models
+namespace DracosD.Models
 {
     class FloatingText : PhysicsObject
     {
