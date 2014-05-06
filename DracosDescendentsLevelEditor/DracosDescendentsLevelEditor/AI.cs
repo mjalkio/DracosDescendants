@@ -14,6 +14,17 @@ namespace DracosDescendentsLevelEditor
             waypoints = new List<Tuple<int, int>>();
         }
 
+        public void scale(float scale_value)
+        {
+            for (int i = 0; i < waypoints.Count() ; i++)
+            {
+                Tuple<int, int> old_waypoint = waypoints[i];
+                Tuple<int, int> new_waypoint = Tuple.Create((int)(old_waypoint.Item1 * scale_value), 
+                    (int)(old_waypoint.Item2 * scale_value));
+                waypoints[i] = new_waypoint;
+            }
+        }
+
         public void clearAI()
         {
             waypoints = new List<Tuple<int, int>>();
@@ -49,7 +60,14 @@ namespace DracosDescendentsLevelEditor
         public void updateWaypoint(Tuple<int, int> waypoint, Tuple<int, int> insertAfterMe, int x, int y)
         {
             waypoints.Remove(waypoint);
-            waypoints.Insert(waypoints.IndexOf(insertAfterMe), Tuple.Create(x,y));
+            if (insertAfterMe != null)
+            {
+                waypoints.Insert(waypoints.IndexOf(insertAfterMe), Tuple.Create(x, y));
+            }
+            else
+            {
+                waypoints.Insert(0, Tuple.Create(x, y));
+            }
         }
 
         /// <summary>

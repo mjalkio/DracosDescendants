@@ -290,21 +290,32 @@ namespace DracosDescendentsLevelEditor
         {
             try
             {
-                float scale = Convert.ToInt32(scaleBox.Text);
+                float scale = Convert.ToSingle(scaleBox.Text);
 
                 levelWidthUpDown.Value = (decimal) ((float)levelWidthUpDown.Value * scale);
                 levelHeightUpDown.Value = (decimal)((float)levelHeightUpDown.Value * scale);
 
                 foreach (Dragon d in dragonList)
                 {
-                    d.x = d.x * scale;
-                    d.y = d.y * scale;
+                    d.x = (int) (d.x * scale);
+                    d.y = (int) (d.y * scale);
                 }
                 foreach (Planet p in planetList)
                 {
-                    p.radius = p.radius * scale;
-                    p.x = p.x * scale;
-                    p.y = p.y * scale;
+                    p.radius = (int) (p.radius * scale);
+                    p.x = (int) (p.x * scale);
+                    p.y = (int) (p.y * scale);
+                }
+
+                foreach (Text t in textList)
+                {
+                    t.startX = (int) (t.startX * scale);
+                    t.endX = (int) (t.endX * scale);
+                }
+
+                foreach (AI a in aiList)
+                {
+                    a.scale(scale);
                 }
             }
             catch { }

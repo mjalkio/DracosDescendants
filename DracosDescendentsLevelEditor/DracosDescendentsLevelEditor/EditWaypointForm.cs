@@ -38,7 +38,7 @@ namespace DracosDescendentsLevelEditor
 
             int waypointIndex = waypoints.IndexOf(waypoint);
 
-            if (waypoints.Count > 1)
+            if (waypoints.Count > 1 && waypointIndex != 0)
             {
                 waypointBox.SelectedItem = waypoints[waypointIndex - 1];
             }
