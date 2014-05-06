@@ -129,6 +129,11 @@ namespace DracosD.Objects {
                 }
             }
         }
+
+        public Fixture Fix
+        {
+            get { return fixture; }
+        }
     #endregion
 
     #region Physics Initialization

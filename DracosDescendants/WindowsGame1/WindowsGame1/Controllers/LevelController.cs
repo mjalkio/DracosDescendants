@@ -116,7 +116,7 @@ namespace DracosD.Controllers
             flamingTexture = content.Load<Texture2D>("Flaming Filmstrip");
 
 
-            fireBreath = content.Load<Texture2D>("flames");
+            fireBreath = content.Load<Texture2D>("breath");
             dragonOnFireTexture = content.Load<Texture2D>("DragonFlaming");
 
             parseLevelFromXML(xmlFile);
@@ -229,6 +229,7 @@ namespace DracosD.Controllers
 
             foreach (XElement ai in ais)
             {
+                //Debug.Print("ai");
                 List<Vector2> newAI = new List<Vector2>();
 
                 var waypoints = from wp in ai.Descendants("waypoint")
@@ -242,7 +243,7 @@ namespace DracosD.Controllers
                 {
                     newAI.Add(new Vector2(Convert.ToInt32(waypoint.x), Convert.ToInt32(waypoint.y)));
                 }
-
+                newAI.Reverse();
                 aiList.Add(newAI);
             }
 

@@ -442,7 +442,7 @@ namespace DracosD.Objects {
         /// </summary>
         /// <param name="view">Drawing context</param>
         public override void Draw(GameView view) {
-            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend);
+            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend,false,Vector2.Zero);
         }
     #endregion
 

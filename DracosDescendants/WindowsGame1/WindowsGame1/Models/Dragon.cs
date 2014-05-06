@@ -189,12 +189,17 @@ namespace DracosD.Models
                 if (flip == SpriteEffects.FlipHorizontally)
                 {
                     fliped = true;
-                    breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+                    if(id == 0)
+                        breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), fliped, false, Position);//breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped, false, Position);
+                    else breath = new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), fliped, true, Position); //new FireBreath(flameTexture, new Vector2(Position.X - 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped, true, Position);
                 }
                 else
                 {
                     fliped = false;
-                    breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped);
+                    if (id == 0)
+                        breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), fliped, false, Position);//breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped, false, Position);
+                    else breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), fliped, true, Position);//breath = new FireBreath(flameTexture, new Vector2(Position.X + 6.5f, Position.Y + 2.1f), new Vector2(10.0f, 10.0f), fliped, true, Position);
+
                 }
                 currentFireLevel--;
                 currentFireLevel--;
@@ -206,6 +211,7 @@ namespace DracosD.Models
                 breath = null;
                 isBreathing = false;
             }
+            
         }
         /// <summary>
         /// Creates the physics Body for this object, adding it to the world.

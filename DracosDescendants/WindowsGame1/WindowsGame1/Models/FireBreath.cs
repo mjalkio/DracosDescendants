@@ -20,17 +20,33 @@ using System;
 #endregion
 namespace DracosD.Models
 {
-    class FireBreath : PolygonObject
+    class FireBreath : BoxObject
     {
         protected Vector2 rPos;
         protected bool flipText;
-        public FireBreath(Texture2D flameTexture, Vector2 center, Vector2 scale, bool flip) :
+        SpriteEffects fliped;
+        protected bool ai;
+        protected Vector2 d;
+        /*public FireBreath(Texture2D flameTexture, Vector2 center, Vector2 scale, bool flip, bool ai, Vector2 drag) :
             base(flameTexture, new Vector2[]
             {
                 center, new Vector2(center.X+5.0f,center.Y-2.0f), new Vector2(center.X+5.0f,center.Y+2.0f)}, scale)
         {
             rPos = center;
             flipText = flip;
+            this.ai = ai;
+            d = drag;
+            Density = 0.0f;
+            Friction = 0.0f;
+            Restitution = 0.0f;
+        }*/
+        public FireBreath(Texture2D flameTexture, Vector2 center, bool flip, bool ai, Vector2 drag) :
+            base(flameTexture, center, new Vector2(flameTexture.Width / 10.0f, flameTexture.Height / 10.0f))
+        {
+            rPos = center;
+            flipText = flip;
+            this.ai = ai;
+            d = drag;
             Density = 0.0f;
             Friction = 0.0f;
             Restitution = 0.0f;
@@ -53,7 +69,7 @@ namespace DracosD.Models
 
         public override void Draw(GameView view)
         {
-            if (flipText)
+            /*if (flipText)
             {
                 Rotation = (float)Math.PI;
             }
@@ -61,7 +77,12 @@ namespace DracosD.Models
             {
                 Rotation = 0.0f;
             }
-            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend);
+            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend,ai,d);*/
+
+            fliped = flipText ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+            
+            //view.DrawSprite(Texture, Color.White, Position, new Vector2(scale.X, scale.Y*2.0f), Rotation, 1, 2, fliped);
+            view.DrawSprite(Texture, Color.White, Position, scale, Rotation, fliped);
             //base.Draw(view);
         }
         #endregion

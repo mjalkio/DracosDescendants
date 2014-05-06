@@ -251,6 +251,7 @@ namespace DracosD.Controllers
                 }
             }
             else downWasDown = false;
+            //resetPressed = (gamePad.Buttons.Back == ButtonState.Pressed);
         }
 
         /// <summary>

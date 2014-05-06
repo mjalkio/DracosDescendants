@@ -62,6 +62,11 @@ namespace DracosD.Objects {
             }
         }
 
+        public Fixture Fixture
+        {
+            get { return fixture; }
+        }
+
         /// <summary>
         /// Friction of this body
         /// </summary>
