@@ -908,11 +908,11 @@ namespace DracosD.Views
                 }
                 if (distance > (width / 10))
                 {
-                    spriteBatch.Draw(arrowTexture, new Vector2(1100, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+                    spriteBatch.Draw(arrowTexture, new Vector2(1080, positionGate.Y * 10 - playerYCorr * 2), Color.White);
                 }
                 if (-distance > (width / 10))
                 {
-                    spriteBatch.Draw(arrowTexture, new Vector2(45, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2), 1, SpriteEffects.FlipHorizontally, 0);
+                    spriteBatch.Draw(arrowTexture, new Vector2(65, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2), 1, SpriteEffects.FlipHorizontally, 0);
 
                 }
             }
