@@ -923,18 +923,13 @@ namespace DracosD.Views
         public void BeginHUDPassPlayer(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, float width)
         {
             Texture2D drawingTexture = dragonheadTexture;
+            float drawRatio = width * 3 / progressTexture.Width;
+
 
             //if the dragon missed a gate, then the progress bar shouldn't move anymore
-
-            //if relative position is greater than the gate position
-
             if (relativeDragonPosition.X > positionGate.X)
             {
                 gateMissed[0] = true;
-                if (Math.Round(positionGate.X) == 73)
-                {
-                    gateMissed[0] = false;
-                }
             }
             //if relative position is smaller than the gate position
             else
@@ -960,19 +955,14 @@ namespace DracosD.Views
                 }
             }
 
-
             if (gateMissed[0])
             {
                 spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition, 50), Color.White);
-                //assume AIs never missed the gates
-            
-                //gateMissed[d_id] = false;
             }
             else
             {
-                //spriteBatch.Draw(dragonheadTexture, new Vector2(relativeDragonPosition.X + 140 + (lapNum-1)*400, 50), Color.White);
-                spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
-                stoppedPosition = relativeDragonPosition.X + (playerLap - 1) * width + 140;
+                spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
+                stoppedPosition = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
             }
 
 
@@ -990,6 +980,7 @@ namespace DracosD.Views
         //Draw the hud and dragon head on the progress bar
         public void BeginHUDPassAI(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, int d_id, float width)
         {
+            float drawRatio = width * 3 / progressTexture.Width;
             Texture2D drawingTexture = dragonheadTexture;
             if (d_id == 1)
             {
@@ -1003,12 +994,13 @@ namespace DracosD.Views
             {
                 drawingTexture = dragonheadTexture4;
             }
-            
+
             //assume AIs never miss gates
             gateMissed[d_id] = false;
-            spriteBatch.Draw(drawingTexture, new Vector2(relativeDragonPosition.X + (playerLap - 1) * width + 140, 50), Color.White);
+            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
             prevGates[d_id] = positionGate.X;
         }
+
 
         public void BeginHUDPass2()
         {
