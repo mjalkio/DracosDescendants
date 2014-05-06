@@ -114,9 +114,7 @@ namespace DracosD.Controllers
             gaseousTexture = content.Load<Texture2D>("gaseous planet");
             igniteTexture = content.Load<Texture2D>("Igniting Filmstrip");
             flamingTexture = content.Load<Texture2D>("Flaming Filmstrip");
-
-
-            fireBreath = content.Load<Texture2D>("breath");
+            fireBreath = content.Load<Texture2D>("fire_breath_strip");
             dragonOnFireTexture = content.Load<Texture2D>("DragonFlaming");
 
             parseLevelFromXML(xmlFile);

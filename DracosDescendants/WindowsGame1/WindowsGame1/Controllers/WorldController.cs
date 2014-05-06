@@ -13,7 +13,7 @@ using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
 using FarseerPhysics.Factories;
-//using WindowsGame1.Models;
+using DracosD.Models;
 
 namespace DracosD.Controllers
 {
@@ -499,6 +499,9 @@ namespace DracosD.Controllers
                             level.Gates[(currentGates[drag] - 1 + level.Gates.Count) % level.Gates.Count].Frame = 0;
                             level.Gates[(currentGates[drag] + 1 + level.Gates.Count) % level.Gates.Count].Hit = false;
                         }
+
+                        // Debug.Print("Dragon Gate: " + currentGates[drag] + "\nGate Count: " + level.Gates.Count);
+                        
                         //If you pass the last gate, you win
                         if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 3)
                         {
@@ -517,6 +520,7 @@ namespace DracosD.Controllers
                         else
                         {
                             currentGates[drag]++;
+                            Debug.Print(""+lastGate[drag]);
                         }
 
                     }
@@ -847,6 +851,7 @@ namespace DracosD.Controllers
                     if (obje is Dragon)
                     {
                         Dragon drag = (Dragon)obje;
+                        //Debug.Print("" + lastGate[drag]);
                         if (lapNum[drag] > playerLap[drag] && playerLap[drag] < 3 && lastGate[drag])
                         {
                             playerLap[drag]++;

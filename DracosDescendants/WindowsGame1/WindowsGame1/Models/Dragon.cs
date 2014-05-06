@@ -33,6 +33,7 @@ namespace DracosD.Models
 
         // Thrust amount to convert player input into thrust
         private const int NUM_FRAMES = 11;
+        private const int NUM_FIRE_FRAMES = 12;
 
         #endregion
 
