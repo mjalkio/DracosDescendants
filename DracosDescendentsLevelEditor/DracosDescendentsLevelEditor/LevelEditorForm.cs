@@ -207,7 +207,7 @@ namespace DracosDescendentsLevelEditor
                     isPlayer = true;
                 }
 
-                Dragon d = new Dragon(Convert.ToInt32(dragon.Y), Convert.ToInt32(dragon.Y), isPlayer);
+                Dragon d = new Dragon(Convert.ToInt32(dragon.X), Convert.ToInt32(dragon.Y), isPlayer);
                 dragonList.Add(d);
             }
 
