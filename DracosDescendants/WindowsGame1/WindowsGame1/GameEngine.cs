@@ -65,9 +65,16 @@ namespace DracosD
         private Texture2D countdown3;
         private Texture2D countdown2;
         private Texture2D countdown1;
+        private Texture2D level1Selected;
+        private Texture2D level2Selected;
+        private Texture2D level3Selected;
+        private Texture2D tutorialSelected;
 
         private int countdown;
         private float countdownTimer;
+
+        // To give time after victory before returning to level select
+        private int successCountdown;
 
         private GameState gameState;
 
@@ -136,6 +143,10 @@ namespace DracosD
             countdown3 = content.Load<Texture2D>("countdown3");
             countdown2 = content.Load<Texture2D>("countdown2");
             countdown1 = content.Load<Texture2D>("countdown1");
+            level1Selected = content.Load<Texture2D>("Level_Select_Level_1");
+            level2Selected = content.Load<Texture2D>("Level_Select_Level_2");
+            level3Selected = content.Load<Texture2D>("Level_Select_Level_3");
+            tutorialSelected = content.Load<Texture2D>("Level_Select_Tutorial");
             //currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[0],content,playerInput);
         }
 
@@ -159,6 +170,14 @@ namespace DracosD
         protected override void Update(GameTime gameTime)
         {
             playerInput.ReadInput();
+
+            if (!(currentWorld == null) && currentWorld.Succeeded) successCountdown--;
+            if (successCountdown == 0 && gameState == GameState.Game)
+            {
+                resetGame();
+                gameState = GameState.ChooseLevel;
+            }
+
             if (gameState == GameState.Pause)
             {
                 if (playerInput.start)
@@ -204,6 +223,7 @@ namespace DracosD
                     gameView.LevelWidth = (int)currentWorld.Width;
                     countdown = 3;
                     countdownTimer = 1.0f;
+                    successCountdown = 180;
                     gameState = GameState.RaceBegin;
                 }
                 else if (playerInput.Down)
@@ -239,7 +259,7 @@ namespace DracosD
                     pauseOptionSelected = 0;
                     gameState = GameState.Pause;
                 }
-                else if (playerInput.reset)
+                /*else if (playerInput.reset)
                 {
                     currentWorld.Reset = false;
                     //gameState = GameState.Start;
@@ -254,7 +274,7 @@ namespace DracosD
                     base.Initialize();
                     base.Update(gameTime);
                     gameState = GameState.ChooseLevel;
-                }
+                }*/
                 else
                 {
                     currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
@@ -280,13 +300,32 @@ namespace DracosD
             else if (gameState == GameState.ChooseLevel)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(levelSelect, Color.White, false);
+                switch(optionSelected+1){
+                    case 1:
+                        gameView.DrawOverlay(tutorialSelected, Color.White, false);
+                        break;
+                    case 2:
+                        gameView.DrawOverlay(level1Selected, Color.White, false);
+                        break;
+                    case 3:
+                        gameView.DrawOverlay(level2Selected, Color.White, false);
+                        break;
+                    case 4:
+                        gameView.DrawOverlay(level3Selected, Color.White, false);
+                        break;
+                    case 5:
+                        gameView.DrawOverlay(level3Selected, Color.White, false);
+                        break;
+            }
+
                 gameView.EndSpritePass();
-                gameView.BeginSpritePass(BlendState.AlphaBlend);
+
+
+                /*gameView.BeginSpritePass(BlendState.AlphaBlend);
                 // GraphicsDevice.DepthStencilState = DepthStencilState.Default;
                 // For some reason this drawtext does not work after a reset...
                 gameView.DrawText("Current Level Selected: " + (optionSelected + 1), Color.DarkCyan, new Vector2(500, 700), true);
-                gameView.EndSpritePass();
+                gameView.EndSpritePass();*/
             }
             else if (gameState == GameState.RaceBegin)
             {

@@ -31,9 +31,10 @@ namespace DracosD.Models
 
         public static int ID = 0;
 
-        // Thrust amount to convert player input into thrust
+        // Constants for animation of film strips
         private const int NUM_FRAMES = 11;
-        private const int NUM_FIRE_FRAMES = 12;
+        private const int NUM_FLAMING_FRAMES = 13;
+        private const int NUM_TURNING_FRAMES = 5;
 
         #endregion
 
@@ -41,11 +42,15 @@ namespace DracosD.Models
         private Vector2 force;
         private bool isOnFire;
         private bool isFlapping = false;
+        private bool turning;
+        // false is facing left true is facing right
+        private bool previousDirection = true;
 
         // texture for dragon
         private Texture2D flapEffect;
         private Texture2D flameTexture;
         private Texture2D onFireTexture;
+        private Texture2D turningTexture;
 
         private FireBreath breath;
         private bool isBreathing;
@@ -55,6 +60,16 @@ namespace DracosD.Models
         // To animate the rocket flames
         private int animationFrame = 0;
         private bool frameDirection = true;
+
+        // To animate while on fire
+        private int fireAnimationFrame = 0;
+        private int fireAnimationDelay = 5;
+        private int fireElapsed;
+
+        // For turning animation
+        private int turningFrame;
+        private int turningDelay = 7;
+        private int turningElapsed;
 
         //delayed time for animation frame
         private int delay = 1;
@@ -77,6 +92,12 @@ namespace DracosD.Models
         {
             get { return onFireTexture; }
             set { onFireTexture = value; }
+        }
+
+        public Texture2D TurningTexture
+        {
+            get { return turningTexture; }
+            set { turningTexture = value; }
         }
 
         /// <summary>
@@ -187,7 +208,7 @@ namespace DracosD.Models
             {
                 isBreathing = true;
                 bool fliped = false;
-                if (flip == SpriteEffects.FlipHorizontally)
+                if (force.X <0)
                 {
                     fliped = true;
                     if(id == 0)
@@ -289,6 +310,41 @@ namespace DracosD.Models
                 animationFrame = 0;
             }
 
+            
+            fireElapsed++;
+            if (fireElapsed > fireAnimationDelay)
+            {
+                if (fireAnimationFrame < NUM_FLAMING_FRAMES - 1)
+                {
+                    fireAnimationFrame++;
+                    fireElapsed = 0;
+                }
+            }
+            if (CanMove) fireAnimationFrame = 0;
+
+            // Animation code for flipping
+            if (previousDirection != (force.X > 0)) turning = true;
+            if (turningFrame == NUM_TURNING_FRAMES-1)
+            {
+                turning = false;
+                previousDirection = (force.X > 0);
+            }
+
+            if (!turning) { 
+                turningFrame = 0;
+            }
+            else
+            {
+                turningElapsed++;
+                if (turningElapsed == turningDelay)
+                {
+                    turningFrame++;
+                    turningElapsed = 0;
+                }
+            }
+
+
+
             base.Update(dt);
 
 
@@ -318,12 +374,20 @@ namespace DracosD.Models
             {
                 flip = force.X > 0 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
             }
-            view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES, flip);
+            if (turning)
+            {
+                flip = previousDirection ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
+            }
             if (!CanMove)
             {
-                view.DrawSprite(onFireTexture, Color.White, Position, new Vector2((scale.X * NUM_FRAMES)/2.0f, scale.Y/4.0f), 0.0f);
+                view.DrawSprite(onFireTexture, Color.White, Position, new Vector2(scale.X * NUM_FLAMING_FRAMES , scale.Y), Rotation,fireAnimationFrame,NUM_FLAMING_FRAMES,flip);
             }
-
+            else if (turning)
+            {
+                view.DrawSprite(turningTexture, Color.White, Position, new Vector2(scale.X * NUM_TURNING_FRAMES * 1.6f * 2, scale.Y), Rotation, turningFrame, NUM_TURNING_FRAMES, flip);
+            }
+            else view.DrawSprite(flapEffect, Color.White, Position, new Vector2(scale.X * NUM_FRAMES * 2, scale.Y), Rotation, animationFrame, NUM_FRAMES, flip);
+            
         }
 
         #endregion

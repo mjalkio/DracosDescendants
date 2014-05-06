@@ -75,6 +75,7 @@ namespace DracosD.Controllers
         #region Fields
         // All the objects in the world
         private LevelController level;
+        private bool tutorial = false;
 
         // lapNum used to count 
         private Dictionary<Dragon, int> lapNum;
@@ -274,7 +275,8 @@ namespace DracosD.Controllers
             LoadContent(content);
             PopulateLevel();
 
-
+            // Only the tutorial has a power level of OVER 9000!!!!!!!!!!!
+            tutorial = level.Width > 9000;
             succeeded = false;
 
             //level is populated so initialize and populate the current gates for each racer
@@ -298,38 +300,7 @@ namespace DracosD.Controllers
             //ai 0,1
             for (int i = 1; i < dragons.Length; i++)
             {
-                /*List<Vector2> waypoints = new List<Vector2>();
-                waypoints.Add(new Vector2(20,40));
-                waypoints.Add(new Vector2(30,40));
-                waypoints.Add(new Vector2(40,40));
-                waypoints.Add(new Vector2(50,36));
-                waypoints.Add(new Vector2(60,33));
-                waypoints.Add(new Vector2(70,33));
-                waypoints.Add(new Vector2(80, 37));
-                waypoints.Add(new Vector2(90, 42));
-                waypoints.Add(new Vector2(100, 47));
-                waypoints.Add(new Vector2(110, 55));
-                waypoints.Add(new Vector2(120, 63));
-                waypoints.Add(new Vector2(130, 65));
-                waypoints.Add(new Vector2(140, 67));
-                waypoints.Add(new Vector2(150, 67));
-                waypoints.Add(new Vector2(160, 67));
-                waypoints.Add(new Vector2(170, 67));
-                waypoints.Add(new Vector2(180, 67));
-                waypoints.Add(new Vector2(190, 67));
-                waypoints.Add(new Vector2(200, 63));
-                waypoints.Add(new Vector2(210, 60));
-                waypoints.Add(new Vector2(220, 61));
-                waypoints.Add(new Vector2(230, 62));
-                waypoints.Add(new Vector2(240, 62));
-                waypoints.Add(new Vector2(250, 62));
-                waypoints.Add(new Vector2(260, 62));
-                waypoints.Add(new Vector2(270, 62));
-                waypoints.Add(new Vector2(280, 62));
-                waypoints.Add(new Vector2(290, 62));
-                waypoints.Add(new Vector2(300, 58));
-                waypoints.Add(new Vector2(310, 55));
-                waypoints.Add(new Vector2(320, 52));*/
+                
                 List<List<Vector2>> aiLists = new List<List<Vector2>>();
                 foreach (List<Vector2> ais in level.AIs)
                 {
@@ -502,6 +473,16 @@ namespace DracosD.Controllers
 
                         // Debug.Print("Dragon Gate: " + currentGates[drag] + "\nGate Count: " + level.Gates.Count);
                         
+                        //CHECK FOR TUTORIAL - ONLY ONE LAP
+                        //If you pass the last gate, you win
+                        if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 1 && tutorial)
+                        {
+                            if (drag == dragons[0] && !Failed)
+                            {
+                                Succeeded = true;
+                            }
+                        }
+
                         //If you pass the last gate, you win
                         if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 3)
                         {
@@ -520,7 +501,6 @@ namespace DracosD.Controllers
                         else
                         {
                             currentGates[drag]++;
-                            Debug.Print(""+lastGate[drag]);
                         }
 
                     }
@@ -852,12 +832,12 @@ namespace DracosD.Controllers
                     {
                         Dragon drag = (Dragon)obje;
                         //Debug.Print("" + lastGate[drag]);
-                        if (lapNum[drag] > playerLap[drag] && playerLap[drag] < 3 && lastGate[drag])
+                        if (/*lapNum[drag] > playerLap[drag] && playerLap[drag] < 3 && */lastGate[drag])
                         {
                             playerLap[drag]++;
                             lastGate[drag] = false;
                             if (drag == dragons[0]) {
-                                if(playerLap[dragons[0]] == 2)
+                                if(playerLap[dragons[0]] == 2 && !tutorial)
                                 {
                                     drawlap2 = true;
                                 }

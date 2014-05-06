@@ -22,6 +22,14 @@ namespace DracosD.Models
 {
     class FireBreath : BoxObject
     {
+        protected const int NUM_FRAMES = 12;
+        protected const int ANIMATION_DELAY = 10;
+
+        // For animation
+        protected bool frameDirection = true;
+        protected int animationFrame;
+        protected int delayCounter;
+
         protected Vector2 rPos;
         protected bool flipText;
         SpriteEffects fliped;
@@ -56,6 +64,22 @@ namespace DracosD.Models
         public override void Update(float dt)
         {
             //TODO: If we give flames animations, do it here
+            delayCounter++;
+            if (delayCounter == ANIMATION_DELAY)
+            {
+                if (frameDirection)
+                {
+                    animationFrame++;
+                    if (animationFrame == 9) frameDirection = false;
+                }
+                else
+                {
+                    animationFrame--;
+                    if (animationFrame == 10) frameDirection = true;
+                }
+                delayCounter = 0;
+            }
+
             base.Update(dt);
         }
 
@@ -69,20 +93,10 @@ namespace DracosD.Models
 
         public override void Draw(GameView view)
         {
-            /*if (flipText)
-            {
-                Rotation = (float)Math.PI;
-            }
-            else
-            {
-                Rotation = 0.0f;
-            }
-            view.DrawPolygons(vertices, Texture, Position, Rotation, 1.0f, BlendState.AlphaBlend,ai,d);*/
-
             fliped = flipText ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             
             //view.DrawSprite(Texture, Color.White, Position, new Vector2(scale.X, scale.Y*2.0f), Rotation, 1, 2, fliped);
-            view.DrawSprite(Texture, Color.White, Position, scale, Rotation, fliped);
+            view.DrawSprite(Texture, Color.White, Position, scale, Rotation, 8, NUM_FRAMES, fliped);
             //base.Draw(view);
         }
         #endregion
