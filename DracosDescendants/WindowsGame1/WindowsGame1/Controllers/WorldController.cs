@@ -273,10 +273,10 @@ namespace DracosD.Controllers
             AIControllers = new AIController[3];
             level = thisLevel;
             LoadContent(content);
-            PopulateLevel();
-
             // Only the tutorial has a power level of OVER 9000!!!!!!!!!!!
             tutorial = level.Width > 9000;
+            PopulateLevel();
+
             succeeded = false;
 
             //level is populated so initialize and populate the current gates for each racer
@@ -375,8 +375,8 @@ namespace DracosD.Controllers
             obj.Restitution = BASIC_RESTITION;
             AddObject(obj);
 
-            obj = new FloatingText("\n\n\n\n\n\n\n\n RIP Bithor", 110,111);
-            AddObject(obj);
+            //obj = new FloatingText("\n\n\n\n\n\n\n\n RIP Bithor", 110,111);
+            //AddObject(obj);
 
 
             for (int i = 0; i < level.Racers.Count; i++)
@@ -397,6 +397,15 @@ namespace DracosD.Controllers
             {
                 planets.Add(planet);
                 AddObject(planet);
+            }
+
+            if (tutorial)
+            {
+                foreach (FloatingText t in level.TextList)
+                {
+                    AddObject(t);
+                }
+
             }
 
         }
@@ -977,7 +986,7 @@ namespace DracosD.Controllers
                     dir = AIControllers[i - 1].GetAction(gametime, currentGates, true);
 
                     //control dragon breath
-                    /*if (AIControllers[i - 1].shouldBreathFire(dragons))
+                    if (AIControllers[i - 1].shouldBreathFire(dragons))
                     {
                         dragons[i].breathFire();
                         if (dragons[i].Breath != null)
@@ -992,11 +1001,18 @@ namespace DracosD.Controllers
                             dragons[i].Breath.DeactivatePhysics(world);
                         }
                         dragons[i].stopBreathing();
-                    }*/
+                    }
                 }
                 else
                 {
-                    dir = AIControllers[i - 1].GetAction(gametime, currentGates, false);
+                    if (!tutorial)
+                    {
+                        dir = AIControllers[i - 1].GetAction(gametime, currentGates, false);
+                    }
+                    else
+                    {
+                        dir = Vector2.Zero;
+                    }
                 }
                 dragons[i].Force = dragons[i].Thrust * dir;
                 if (dir.X != 0 || dir.Y != 0) dragons[i].IsFlapping = true;

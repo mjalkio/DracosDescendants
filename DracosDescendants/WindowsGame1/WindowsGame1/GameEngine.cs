@@ -171,7 +171,7 @@ namespace DracosD
         {
             playerInput.ReadInput();
 
-            if (!(currentWorld == null) && currentWorld.Succeeded) successCountdown--;
+            if (!(currentWorld == null) && (currentWorld.Succeeded || currentWorld.Failed)) successCountdown--;
             if (successCountdown == 0 && gameState == GameState.Game)
             {
                 resetGame();

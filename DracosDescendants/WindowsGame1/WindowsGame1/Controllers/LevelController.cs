@@ -67,6 +67,11 @@ namespace DracosD.Controllers
             get { return levelWidth; }
         }
 
+        public List<FloatingText> TextList
+        {
+            get { return textList; }
+        }
+
         public int Height
         {
             get { return levelHeight; }
@@ -262,7 +267,7 @@ namespace DracosD.Controllers
 
             foreach (var textMessage in textMessages)
             {
-                FloatingText t = new FloatingText(textMessage.Content, Convert.ToInt32(textMessage.Start), Convert.ToInt32(textMessage.End));
+                FloatingText t = new FloatingText(textMessage.Content, Convert.ToInt32(textMessage.Start)/(int)worldscale, Convert.ToInt32(textMessage.End)/(int)worldscale);
                 textList.Add(t);
             }
         }

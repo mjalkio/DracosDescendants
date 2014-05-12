@@ -49,7 +49,7 @@ namespace DracosD.Models
             Restitution = 0.0f;
         }*/
         public FireBreath(Texture2D flameTexture, Vector2 center, bool flip, bool ai, Vector2 drag) :
-            base(flameTexture, center, new Vector2(flameTexture.Width / 10.0f, flameTexture.Height / 10.0f))
+            base(flameTexture, center, new Vector2(flameTexture.Width / 10.0f / NUM_FRAMES, flameTexture.Height / 10.0f))
         {
             rPos = center;
             flipText = flip;
@@ -96,7 +96,7 @@ namespace DracosD.Models
             fliped = flipText ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
             
             //view.DrawSprite(Texture, Color.White, Position, new Vector2(scale.X, scale.Y*2.0f), Rotation, 1, 2, fliped);
-            view.DrawSprite(Texture, Color.White, Position, scale, Rotation, 8, NUM_FRAMES, fliped);
+            view.DrawSprite(Texture, Color.White, Position, new Vector2(scale.X * NUM_FRAMES,scale.Y), Rotation, 8, NUM_FRAMES, fliped);
             //base.Draw(view);
         }
         #endregion

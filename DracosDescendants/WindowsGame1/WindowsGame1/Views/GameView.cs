@@ -997,7 +997,7 @@ namespace DracosD.Views
 
             //assume AIs never miss gates
             gateMissed[d_id] = false;
-            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
+            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (lapNum - 1) * width) / drawRatio + 140, 50), Color.White);
             prevGates[d_id] = positionGate.X;
         }
 

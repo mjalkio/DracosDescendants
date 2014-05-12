@@ -43,6 +43,7 @@ namespace DracosD.Models
         private bool isOnFire;
         private bool isFlapping = false;
         private bool turning;
+        private bool wasFlapping = false;
         // false is facing left true is facing right
         private bool previousDirection = true;
 
@@ -323,7 +324,8 @@ namespace DracosD.Models
             if (CanMove) fireAnimationFrame = 0;
 
             // Animation code for flipping
-            if (previousDirection != (force.X > 0)) turning = true;
+            if (previousDirection != (force.X > 0) && isFlapping && wasFlapping) turning = true;
+            wasFlapping = isFlapping;
             if (turningFrame == NUM_TURNING_FRAMES-1)
             {
                 turning = false;
