@@ -48,6 +48,12 @@ namespace DracosD.Models
             set { hasBeenHit = value; }
         }
 
+        public int AnimationFrame
+        {
+            get { return animationFrame; }
+            set { animationFrame = value; }
+        }
+
         public PlanetaryObject Planet1
         {
             get { return planet1; }

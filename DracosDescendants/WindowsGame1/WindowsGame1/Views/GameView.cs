@@ -676,6 +676,28 @@ namespace DracosD.Views
             spriteBatch.Draw(image, pos, null, tint, 0.0f, orig, scale, SpriteEffects.None, 0);
         }
 
+        public void DrawOverlay(Texture2D image, Color tint, Vector2 pos, Vector2 scale, float angle, int frame, int framesize, SpriteEffects effect)
+        {
+            // Enforce invariants.
+            Debug.Assert(state == DrawState.SpritePass, "Drawing state is invalid (expected SpritePass)");
+
+            // Pick out the right frame
+            int width = image.Width / framesize;
+            int height = image.Height;
+
+            // Rescale position to align
+            pos = pos / Scale;
+            scale = new Vector2(scale.X / SX, scale.Y / SY); // To counter global scale
+
+            // Compute frame position assuming only 1 row of frames.
+            Rectangle src = new Rectangle(frame * width, 0, width, height);
+            Vector2 origin = new Vector2(width / 2, height / 2);
+
+            // Draw it.
+            spriteBatch.Draw(image, pos, src, tint, angle, origin, scale, effect, 0);
+
+        }
+
         /// <summary>
         /// Draw text to the screen.
         /// </summary>
@@ -919,6 +941,7 @@ namespace DracosD.Views
         }
 
 
+        //Draw the hud and dragon head on the progress bar
         //Draw the hud and dragon head on the progress bar
         public void BeginHUDPassPlayer(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, float width)
         {

@@ -52,7 +52,7 @@ namespace DracosD.Models
         private Texture2D flameTexture;
         private Texture2D onFireTexture;
         private Texture2D turningTexture;
-
+       
         private FireBreath breath;
         private bool isBreathing;
         private int currentFireLevel;

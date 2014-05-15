@@ -29,6 +29,12 @@ namespace DracosD.Controllers
         private static Texture2D enemyTexture3;
         private static Texture2D dragonOnFireTexture;
         private static Texture2D dragonTurningTexture;
+        private static Texture2D enemy1OnFireTexture;
+        private static Texture2D enemy1TurningTexture;
+        private static Texture2D enemy2OnFireTexture;
+        private static Texture2D enemy2TurningTexture;
+        private static Texture2D enemy3OnFireTexture;
+        private static Texture2D enemy3TurningTexture;
         private static Texture2D regularPlanetTexture;
         private static Texture2D lavaPlanetTexture;
         private static Texture2D otherPlanetTexture;
@@ -124,6 +130,12 @@ namespace DracosD.Controllers
             fireBreath = content.Load<Texture2D>("fire_breath_strip");
             dragonOnFireTexture = content.Load<Texture2D>("torch_on_fire_strip_reduced");
             dragonTurningTexture = content.Load<Texture2D>("torch_turning_filmstrip_attempt_1");
+            enemy1OnFireTexture = content.Load<Texture2D>("enemy1_on_fire_strip");
+            enemy1TurningTexture = content.Load<Texture2D>("enemy1_turning_filmstrip_attempt_1");
+            enemy2OnFireTexture = content.Load<Texture2D>("enemy2_on_fire_strip");
+            enemy2TurningTexture = content.Load<Texture2D>("enemy2_turning_filmstrip_attempt_1");
+            enemy3OnFireTexture = content.Load<Texture2D>("enemy4_on_fire_strip");
+            enemy3TurningTexture = content.Load<Texture2D>("enemy4_turning_filmstrip_attempt_1");
 
             parseLevelFromXML(xmlFile);
         }
@@ -161,8 +173,8 @@ namespace DracosD.Controllers
                 {
                     Dragon playerDragon = new Dragon(enemyTexture1, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
                         Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
-                    playerDragon.OnFireTexture = dragonOnFireTexture;
-                    playerDragon.TurningTexture = dragonTurningTexture;
+                    playerDragon.OnFireTexture = enemy1OnFireTexture;
+                    playerDragon.TurningTexture = enemy1TurningTexture;
                     racerList.Add(playerDragon);
                     temp++;
 
@@ -171,8 +183,8 @@ namespace DracosD.Controllers
                 {
                     Dragon playerDragon = new Dragon(enemyTexture2, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
                         Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
-                    playerDragon.OnFireTexture = dragonOnFireTexture;
-                    playerDragon.TurningTexture = dragonTurningTexture;
+                    playerDragon.OnFireTexture = enemy2OnFireTexture;
+                    playerDragon.TurningTexture = enemy2TurningTexture;
                     racerList.Add(playerDragon);
                     temp++;
 
@@ -181,8 +193,8 @@ namespace DracosD.Controllers
                 {
                     Dragon playerDragon = new Dragon(enemyTexture3, new Vector2((Convert.ToInt32(dragon.X) / worldscale),
                         Convert.ToInt32(dragon.Y) / worldscale), new Vector2(dragonTexture.Width / worldscale, dragonTexture.Height / worldscale), fireBreath);
-                    playerDragon.OnFireTexture = dragonOnFireTexture;
-                    playerDragon.TurningTexture = dragonTurningTexture;
+                    playerDragon.OnFireTexture = enemy3OnFireTexture;
+                    playerDragon.TurningTexture = enemy3TurningTexture;
                     racerList.Add(playerDragon);
                     temp++;
                 }

@@ -57,7 +57,12 @@ namespace DracosD.Controllers
         protected bool up;
         protected bool upWasDown = false;
         protected bool down;
-        protected bool downWasDown = false; 
+        protected bool downWasDown = false;
+        protected bool right;
+        protected bool rightWasDown = false;
+        protected bool left;
+        protected bool leftWasDown = false; 
+
         protected bool startWasDown = false;
 
         #endregion
@@ -193,6 +198,18 @@ namespace DracosD.Controllers
             get { return down; }
         }
 
+        public bool Right
+        {
+
+            get { return right; }
+        }
+
+        public bool Left
+        {
+
+            get { return left; }
+        }
+
         #endregion
 
         #region Methods
@@ -229,10 +246,26 @@ namespace DracosD.Controllers
             horizontal = gamePad.ThumbSticks.Left.X;
             vertical = -gamePad.ThumbSticks.Left.Y;
             breathing = (gamePad.Buttons.A == ButtonState.Pressed);
-            pressedStart = (gamePad.Buttons.Start == ButtonState.Pressed);
+            //pressedStart = (gamePad.Buttons.Start == ButtonState.Pressed);
 
+            if (startWasDown && (gamePad.Buttons.Start == ButtonState.Pressed))
+            {
+                pressedStart = false;
+                keyPressed = true;
+            }
+            else if ((gamePad.Buttons.Start == ButtonState.Pressed))
+            {
+                startWasDown = true;
+                pressedStart = true;
+            }
+            else
+            {
+                pressedStart = false;
+                startWasDown = false;
+            }
+            
             // NEED TO ADD LOGIC FOR CONTROLLING MENUS
-            if (vertical > 0)
+            if (vertical < 0)
             {
                 if (!upWasDown)
                 {
@@ -241,16 +274,55 @@ namespace DracosD.Controllers
                 }
                 else up = false;
             }
-            else downWasDown = false;
-            if (vertical < 0)
+            else
+            {
+                upWasDown = false;
+                up = false;
+            }
+            if (vertical > 0)
             {
                 if (!downWasDown)
                 {
                     down = true;
                     downWasDown = true;
                 }
+                else down = false;
             }
-            else downWasDown = false;
+            else
+            {
+                downWasDown = false;
+                down = false;
+            }
+
+            //Left/right 
+            if (horizontal < 0)
+            {
+                if (!leftWasDown)
+                {
+                    left = true;
+                    leftWasDown = true;
+                }
+                else left = false;
+            }
+            else
+            {
+                leftWasDown = false;
+                left = false;
+            }
+            if (horizontal > 0)
+            {
+                if (!rightWasDown)
+                {
+                    right = true;
+                    rightWasDown = true;
+                }
+                else right = false;
+            }
+            else
+            {
+                rightWasDown = false;
+                right = false;
+            }
             //resetPressed = (gamePad.Buttons.Back == ButtonState.Pressed);
         }
 
@@ -266,12 +338,29 @@ namespace DracosD.Controllers
             {
                 horizontal += 1.0f;
                 keyPressed = true;
+                if (!rightWasDown)
+                {
+                    right = true;
+                    rightWasDown = true;
+                }
+                //else if (keyboard.IsKeyUp(Keys.Up)) upWasDown = false;
+                else right = false;
             }
+            else if (keyboard.IsKeyUp(Keys.Right)) rightWasDown = false;
+
             if (keyboard.IsKeyDown(Keys.Left))
             {
                 horizontal -= 1.0f;
                 keyPressed = true;
+                if (!leftWasDown)
+                {
+                    left = true;
+                    leftWasDown = true;
+                }
+                //else if (keyboard.IsKeyUp(Keys.Up)) upWasDown = false;
+                else left = false;
             }
+            else if (keyboard.IsKeyUp(Keys.Left)) leftWasDown = false;
 
             vertical = 0.0f;
             if (keyboard.IsKeyDown(Keys.Up))

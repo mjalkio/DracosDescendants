@@ -31,6 +31,8 @@ namespace DracosD.Controllers
         private const float BASIC_DENSITY = 0.0f;
         private const float BASIC_FRICTION = 0.1f;
         private const float BASIC_RESTITION = 0.1f;
+
+        private const int LAP_NUM_FRAMES = 6;
         #endregion
 
         #region Graphics Resources
@@ -39,6 +41,12 @@ namespace DracosD.Controllers
         private Texture2D lavaProjTexture;
         private Texture2D lap2Texture;
         private Texture2D lap3Texture;
+
+        private int lapAnimationFrame;
+        private int lapAnimationDelay = 3;
+        private int lapDelayCounter;
+        private int lapHesitationDelay = 25;
+        private int lapHesitationCounter;
 
 
         /// <summary>
@@ -50,8 +58,8 @@ namespace DracosD.Controllers
             regularPlanetTexture = content.Load<Texture2D>("earthtile");
             lavaPlanetTexture = content.Load<Texture2D>("lava planet");
             lavaProjTexture = content.Load<Texture2D>("lava projectile");
-            lap2Texture = content.Load<Texture2D>("lap2");
-            lap3Texture = content.Load<Texture2D>("lap3");
+            lap2Texture = content.Load<Texture2D>("Lap 2 Filmstrip");
+            lap3Texture = content.Load<Texture2D>("Final Lap FIlmstrip");
         }
 
         /// <summary>
@@ -98,7 +106,7 @@ namespace DracosD.Controllers
         private bool succeeded;
         private bool failed;
 
-        private const int DRAW_LAP_DELAY = 100;
+        private const int DRAW_LAP_DELAY = 200;
         private bool drawlap2 = false;
         private int drawlap2delay;
         private bool drawlap3 = false;
@@ -388,10 +396,12 @@ namespace DracosD.Controllers
                 }
             }
 
+            level.Gates[level.Gates.Count - 1].AnimationFrame = 100;
             foreach (Gate gate in level.Gates)
             {
                 AddObject(gate);
             }
+            
 
             foreach (PlanetaryObject planet in level.Planets)
             {
@@ -649,14 +659,20 @@ namespace DracosD.Controllers
             //Lap overlay if necessary
             if (drawlap2)
             {
+                Vector2 pos   = new Vector2(view.Width,view.Height)/2.0f;
+                Vector2 scale = new Vector2(1, 1); // To counter global scale
+                int lapFrameSize = (int)(lap2Texture.Width/LAP_NUM_FRAMES);
                 view.BeginSpritePass(BlendState.AlphaBlend);
-                view.DrawOverlay(lap2Texture, Color.White, false);
+                view.DrawOverlay(lap2Texture, Color.White, pos, scale, 0.0f, lapAnimationFrame, LAP_NUM_FRAMES, SpriteEffects.None);
                 view.EndSpritePass();
             }
             if (drawlap3)
             {
+                Vector2 pos = new Vector2(view.Width, view.Height) / 2.0f;
+                Vector2 scale = new Vector2(1, 1); // To counter global scale
+                int lapFrameSize = (int)(lap2Texture.Width / LAP_NUM_FRAMES);
                 view.BeginSpritePass(BlendState.AlphaBlend);
-                view.DrawOverlay(lap3Texture, Color.White, false);
+                view.DrawOverlay(lap3Texture, Color.White, pos, scale, 0.0f, lapAnimationFrame, LAP_NUM_FRAMES, SpriteEffects.None);
                 view.EndSpritePass();
             }
 
@@ -849,9 +865,11 @@ namespace DracosD.Controllers
                                 if(playerLap[dragons[0]] == 2 && !tutorial)
                                 {
                                     drawlap2 = true;
+                                    lapAnimationFrame = 0;
                                 }
                                 if(playerLap[dragons[0]] ==3){
                                     drawlap3 = true;
+                                    lapAnimationFrame = 0;
                                 }
                             }
                         }
@@ -1033,8 +1051,35 @@ namespace DracosD.Controllers
             if (drawlap3) drawlap3delay++;
             if (drawlap3delay > DRAW_LAP_DELAY) drawlap3 = false;
 
-
+            // animation updates if necessary
             level.Gates[(currentGates[dragons[0]] - 1 + level.Gates.Count) % level.Gates.Count].incrementFrame();
+
+            
+            if (lapAnimationFrame != 3)
+            {
+                lapDelayCounter++;
+                if (lapDelayCounter == lapAnimationDelay)
+                {
+                    lapAnimationFrame++;
+                    lapDelayCounter = 0;
+                }
+            }
+            else
+            {
+                lapHesitationCounter++;
+                if (lapHesitationCounter == lapHesitationDelay)
+                {
+                    lapDelayCounter++;
+                    if (lapDelayCounter == lapAnimationDelay)
+                    {
+                        lapAnimationFrame++;
+                        lapDelayCounter = 0;
+                    }
+                    lapHesitationCounter = 0;
+                }
+            }
+            
+
 
             // Add any objects created by actions
             foreach (PhysicsObject o in addQueue)

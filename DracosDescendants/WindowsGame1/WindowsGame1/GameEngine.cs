@@ -34,11 +34,13 @@ namespace DracosD
 
     class GameEngine : Microsoft.Xna.Framework.Game
     {
-        protected const int NUM_LEVELS = 5;
+        protected const int NUM_LEVELS = 9;
 
         protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\level3.xml"};
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml","..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\level3.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\level3.xml"};
 
 
         #region Fields
@@ -65,10 +67,28 @@ namespace DracosD
         private Texture2D countdown3;
         private Texture2D countdown2;
         private Texture2D countdown1;
-        private Texture2D level1Selected;
-        private Texture2D level2Selected;
-        private Texture2D level3Selected;
-        private Texture2D tutorialSelected;
+        private Texture2D level1Unlocked;
+        private Texture2D level2Unlocked;
+        private Texture2D level3Unlocked;
+        private Texture2D level4Unlocked;
+        private Texture2D level5Unlocked;
+        private Texture2D level6Unlocked;
+        private Texture2D level7Unlocked;
+        private Texture2D level8Unlocked;
+        private Texture2D tutorialUnlocked;
+
+        private Texture2D selectionSparkleFilmstrip;
+        // Contstants decided from level select texture to place sparkle
+        private int startX = 423;
+        private int incrementX = 180;
+        private int startY = 365;
+        private int incrementY = 170;
+
+        // For sparkling animation
+        private int animationFrame = 0;
+        private int numSparkleFrames = 4;
+        private int sparkleDelay = 4;
+        private int sparkleTimer;
 
         private int countdown;
         private float countdownTimer;
@@ -149,10 +169,17 @@ namespace DracosD
             countdown3 = content.Load<Texture2D>("countdown3");
             countdown2 = content.Load<Texture2D>("countdown2");
             countdown1 = content.Load<Texture2D>("countdown1");
-            level1Selected = content.Load<Texture2D>("Level_Select_Level_1");
-            level2Selected = content.Load<Texture2D>("Level_Select_Level_2");
-            level3Selected = content.Load<Texture2D>("Level_Select_Level_3");
-            tutorialSelected = content.Load<Texture2D>("Level_Select_Tutorial");
+            level1Unlocked = content.Load<Texture2D>("Level1Unlocked");
+            level2Unlocked = content.Load<Texture2D>("Level2Unlocked");
+            level3Unlocked = content.Load<Texture2D>("Level3Unlocked");
+            level4Unlocked = content.Load<Texture2D>("Level4Unlocked");
+            level5Unlocked = content.Load<Texture2D>("Level5Unlocked");
+            level6Unlocked = content.Load<Texture2D>("Level6Unlocked");
+            level7Unlocked = content.Load<Texture2D>("Level7Unlocked");
+            level8Unlocked = content.Load<Texture2D>("Level8Unlocked");
+            tutorialUnlocked = content.Load<Texture2D>("TutorialUnlocked");
+
+            selectionSparkleFilmstrip = content.Load<Texture2D>("SelectionSparkle");
             //currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[0],content,playerInput);
 
             //Umf umf umf umf
@@ -183,7 +210,16 @@ namespace DracosD
         {
             playerInput.ReadInput();
 
-            if (!(currentWorld == null) && (currentWorld.Succeeded || currentWorld.Failed)) successCountdown--;
+            sparkleTimer++;
+            if (sparkleTimer == sparkleDelay)
+            {
+                sparkleTimer = 0;
+                animationFrame++;
+                if (animationFrame == numSparkleFrames) animationFrame = 0;
+            }
+
+            if (!(currentWorld == null) && currentWorld.Succeeded) successCountdown--;
+
             if (successCountdown == 0 && gameState == GameState.Game)
             {
                 resetGame();
@@ -260,15 +296,23 @@ namespace DracosD
                     raceCue.Play();
 
                 }
+                else if (playerInput.Right)
+                {
+                    if (optionSelected < NUM_LEVELS - 1) optionSelected++;
+                }
+                else if (playerInput.Left)
+                {
+                    if (optionSelected > 0) optionSelected--;
+                }
                 else if (playerInput.Down)
                 {
                     //Debug.Print("DOWN WAS PRESSED");
-                    if (optionSelected < NUM_LEVELS-1) optionSelected++;
+                    if (optionSelected + 3 < NUM_LEVELS) optionSelected += 3;
                 }
                 else if (playerInput.Up)
                 {
                     //Debug.Print("UP WAS PRESSED");
-                    if (optionSelected > 0) optionSelected--;
+                    if (optionSelected - 3 >= 0) optionSelected -= 3;
                 }
                 //currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
                 base.Update(gameTime);
@@ -336,32 +380,17 @@ namespace DracosD
             else if (gameState == GameState.ChooseLevel)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                switch(optionSelected+1){
-                    case 1:
-                        gameView.DrawOverlay(tutorialSelected, Color.White, false);
-                        break;
-                    case 2:
-                        gameView.DrawOverlay(level1Selected, Color.White, false);
-                        break;
-                    case 3:
-                        gameView.DrawOverlay(level2Selected, Color.White, false);
-                        break;
-                    case 4:
-                        gameView.DrawOverlay(level3Selected, Color.White, false);
-                        break;
-                    case 5:
-                        gameView.DrawOverlay(level3Selected, Color.White, false);
-                        break;
-            }
-
+                gameView.DrawOverlay(level3Unlocked, Color.White, false);
                 gameView.EndSpritePass();
 
-
-                /*gameView.BeginSpritePass(BlendState.AlphaBlend);
-                // GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-                // For some reason this drawtext does not work after a reset...
-                gameView.DrawText("Current Level Selected: " + (optionSelected + 1), Color.DarkCyan, new Vector2(500, 700), true);
-                gameView.EndSpritePass();*/
+                int gridX = optionSelected%3;
+                int gridY = optionSelected/3;
+                
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                gameView.DrawOverlay(selectionSparkleFilmstrip,Color.White,new Vector2(startX+gridX*incrementX,startY+gridY*incrementX),
+                    new Vector2(0.85f, 0.85f), 0.0f, animationFrame, 4, SpriteEffects.None);
+                gameView.EndSpritePass();
+                
             }
             else if (gameState == GameState.RaceBegin)
             {
@@ -425,7 +454,7 @@ namespace DracosD
             //gameState = GameState.Start;
             gameView.gateMissed = new bool[4];
             gameView.prevGates = new float[4];
-            gameLevelControllers = new LevelController[5];
+            gameLevelControllers = new LevelController[NUM_LEVELS];
             for (int i = 0; i < NUM_LEVELS; i++)
             {
                 gameLevelControllers[i] = new LevelController();
