@@ -83,6 +83,12 @@ namespace DracosD
         private int pauseOptionSelected;
         private PlayerInputController playerInput;
 
+        //Puttin in dat music yo'
+        private AudioEngine audioEngine;
+        private WaveBank waveBank;
+        private SoundBank soundBank;
+        private Cue raceCue;
+        private Cue menuCue;
 
         #endregion
 
@@ -148,6 +154,12 @@ namespace DracosD
             level3Selected = content.Load<Texture2D>("Level_Select_Level_3");
             tutorialSelected = content.Load<Texture2D>("Level_Select_Tutorial");
             //currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[0],content,playerInput);
+
+            //Umf umf umf umf
+            audioEngine = new AudioEngine("Content/DracoMusic.xgs");
+            waveBank = new WaveBank(audioEngine, "Content/Waves.xwb");
+            soundBank = new SoundBank(audioEngine, "Content/Sounds.xsb");
+            menuCue = soundBank.GetCue("menu_music");
         }
 
         /// <summary>
@@ -175,6 +187,8 @@ namespace DracosD
             if (successCountdown == 0 && gameState == GameState.Game)
             {
                 resetGame();
+                raceCue.Stop(AudioStopOptions.AsAuthored);
+                menuCue.Resume();
                 gameState = GameState.ChooseLevel;
             }
 
@@ -182,18 +196,28 @@ namespace DracosD
             {
                 if (playerInput.start)
                 {
-                    if (pauseOptionSelected == 0) gameState = GameState.Game;
-                    else if (pauseOptionSelected == 1) {
+                    if (pauseOptionSelected == 0)
+                    {
+                        gameState = GameState.Game;
+                        menuCue.Pause();
+                        raceCue.Play();
+                    }
+                    else if (pauseOptionSelected == 1)
+                    {
                         resetGame();
+                        raceCue.Stop(AudioStopOptions.AsAuthored);
                         currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected], content, playerInput);
                         gameView.LevelHeight = (int)currentWorld.Height;
                         gameView.LevelWidth = (int)currentWorld.Width;
                         countdown = 3;
                         countdownTimer = 1.0f;
+                        raceCue = soundBank.GetCue("race_music");
+                        raceCue.Play();
                         gameState = GameState.RaceBegin;
                     }
                     else if (pauseOptionSelected == 2)
                     {
+                        raceCue.Stop(AudioStopOptions.AsAuthored);
                         optionSelected = 0;
                         resetGame();
                         gameState = GameState.ChooseLevel;
@@ -209,13 +233,18 @@ namespace DracosD
                 }
             }
             else if (gameState == GameState.Start){
+                if (!menuCue.IsPlaying)
+                {
+                    menuCue.Play();
+                }
+
                 if (playerInput.start)
                 {
                     optionSelected = 0;
                     gameState = GameState.ChooseLevel;
                 }
             }
-            else if (gameState == GameState.ChooseLevel){    
+            else if (gameState == GameState.ChooseLevel){
                 if (playerInput.start)
                 {
                     currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected],content,playerInput);
@@ -225,6 +254,11 @@ namespace DracosD
                     countdownTimer = 1.0f;
                     successCountdown = 180;
                     gameState = GameState.RaceBegin;
+
+                    menuCue.Pause();
+                    raceCue = soundBank.GetCue("race_music");
+                    raceCue.Play();
+
                 }
                 else if (playerInput.Down)
                 {
@@ -258,6 +292,8 @@ namespace DracosD
                 {
                     pauseOptionSelected = 0;
                     gameState = GameState.Pause;
+                    raceCue.Pause();
+                    menuCue.Resume();
                 }
                 /*else if (playerInput.reset)
                 {
