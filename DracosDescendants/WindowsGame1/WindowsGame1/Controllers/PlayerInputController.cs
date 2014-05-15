@@ -382,14 +382,6 @@ namespace DracosD.Controllers
             {
                 lessDampenThresholdPressed = true;
             }
-            if (keyboard.IsKeyDown(Keys.R))
-            {
-                resetPressed = true;
-            }
-            if (keyboard.IsKeyUp(Keys.R))
-            {
-                resetPressed = false;
-            }
         }
         #endregion
 
