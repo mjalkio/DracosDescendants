@@ -929,7 +929,14 @@ namespace DracosD.Views
             //if the dragon missed a gate, then the progress bar shouldn't move anymore
             if (relativeDragonPosition.X > positionGate.X)
             {
-                gateMissed[0] = true;
+                if (playerLap > lapNum)
+                {
+                    gateMissed[0] = false;
+                }
+                else
+                {
+                    gateMissed[0] = true;
+                }
             }
             //if relative position is smaller than the gate position
             else
@@ -961,8 +968,16 @@ namespace DracosD.Views
             }
             else
             {
-                spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
-                stoppedPosition = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                if (playerLap > lapNum)
+                {
+                    spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
+                    stoppedPosition = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                }
+                else
+                {
+                    spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
+                    stoppedPosition = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                }
             }
 
 
