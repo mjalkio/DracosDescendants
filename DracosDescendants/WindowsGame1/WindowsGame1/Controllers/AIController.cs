@@ -198,6 +198,7 @@ namespace DracosD.Controllers
                 //the AI uses a defined path
                 else
                 {
+                    currentGates = gates;
                     if (currentGates[racer] != level.Gates.Count)
                     {
                         //Debug.Print("here");
@@ -219,17 +220,13 @@ namespace DracosD.Controllers
 
                         if (currPath == aiPath.Count - 1)
                         {
-                            //Debug.Print("end");
-                            //Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
+                            Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
                             currPath = 0;
                         }
                         else
                         {
-                            //Debug.Print("close");
                             //Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
                             currPath++;
-                            //bool b = currPath < aiPath.Count;
-                            //Debug.Print("" +racer.Id+""+ b);
                         }
                         if (((currPath == aiPath.Count - 2) || (currPath == aiPath.Count - 3)) && racer.Position.X >= (level.Width - 100)/10)
                         {
@@ -248,6 +245,7 @@ namespace DracosD.Controllers
                     //have waypoint goal set, so now compute how to get to that goal
                     List<Vector2> potentials = new List<Vector2>();
                     potentials.Add(gradientPotentialWaypoint(racer.Position, goalPath, 1.0f)); //change radius of goal
+                    //potentials.Add(gradientPotentialGoal(racer.Position, GoalPosition(), 1.0f));
 
                     //TODO come up with a way to not loop through all objects AND detect the lava projectiles
                     foreach (PlanetaryObject planet in level.Planets)

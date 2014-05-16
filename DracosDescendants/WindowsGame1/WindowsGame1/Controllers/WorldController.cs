@@ -1284,8 +1284,8 @@ namespace DracosD.Controllers
 
 
                 differenceModifier += (float)Math.Pow(PLACE_DIFFERENCE_MODIFIER, placeDifference) - 1;
-                if (differenceModifier > 1.5f) differenceModifier = 1.5f;
-                if (differenceModifier < 0.66f) differenceModifier = .66f;
+                if (differenceModifier > 1.3f) differenceModifier = 1.3f;
+                if (differenceModifier < 1.0f / 1.3f) differenceModifier = 1.0f / 1.3f;
                 dragons[i].Thrust = DEFAULT_DRAGON_THRUST * (float)Math.Pow(differenceModifier,.5);
                 dragons[i].DampenThreshold = DEFAULT_DRAGON_TOPSPEED * differenceModifier;
             }

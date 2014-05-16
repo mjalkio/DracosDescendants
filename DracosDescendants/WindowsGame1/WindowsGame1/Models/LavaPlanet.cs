@@ -22,7 +22,7 @@ namespace DracosD.Models
         private const float DEFAULT_DENSITY = 5.0f;
         private const float DEFAULT_FRICTION = 0.0f;
         private const float DEFAULT_RESTITUTION = 0.0f;
-        private const float maxTime = 2.0f;
+        private const float maxTime = 2.25f;
         private double randomdouble;
 
         private float lastFlare;

@@ -25,8 +25,8 @@ namespace DracosD.Models
         private const float DEFAULT_DENSITY = 1.0f;
         private const float DEFAULT_FRICTION = 0.1f;
         private const float DEFAULT_RESTITUTION = 0.4f;
-        private const int COOLDOWN = 120; //in ticks
-        private const int DELAY = 60;
+        private const int COOLDOWN = 70; //in ticks
+        private const int DELAY = 50;
         private const int FULL_FIRE_LEVEL = 400;
 
         public static int ID = 0;

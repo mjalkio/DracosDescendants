@@ -52,6 +52,8 @@ namespace DracosD.Controllers
         protected bool keyPressed;
 
         protected bool breathing;
+        protected bool confirm;
+        protected bool confirmWasDown = false;
 
         protected bool pressedStart;
         protected bool up;
@@ -68,6 +70,10 @@ namespace DracosD.Controllers
         #endregion
 
         #region Properties (READ-ONLY)
+
+        public bool Confirm{
+            get { return confirm; }
+        }
 
         public bool Breathing
         {
@@ -248,6 +254,20 @@ namespace DracosD.Controllers
             breathing = (gamePad.Buttons.A == ButtonState.Pressed);
             //pressedStart = (gamePad.Buttons.Start == ButtonState.Pressed);
 
+            if (confirmWasDown && breathing)
+            {
+                confirm = false;
+            }
+            else if (breathing)
+            {
+                confirm = true;
+                confirmWasDown = true;
+            }
+            else{
+                confirm=false;
+                confirmWasDown=false;
+            }
+
             if (startWasDown && (gamePad.Buttons.Start == ButtonState.Pressed))
             {
                 pressedStart = false;
@@ -396,6 +416,23 @@ namespace DracosD.Controllers
             {
                 breathing = true;
             }
+
+
+            if (confirmWasDown && breathing)
+            {
+                confirm = false;
+            }
+            else if (breathing)
+            {
+                confirm = true;
+                confirmWasDown = true;
+            }
+            else{
+                confirm=false;
+                confirmWasDown=false;
+            }
+
+
             pressedStart = false;
             if (startWasDown && keyboard.IsKeyUp(Keys.Enter))
             {
