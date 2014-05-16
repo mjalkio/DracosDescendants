@@ -111,6 +111,7 @@ namespace DracosD
         private int optionSelected;
         private int pauseOptionSelected;
         private PlayerInputController playerInput;
+        private int levelCompleted = -1;
 
         //Puttin in dat music yo'
         private AudioEngine audioEngine;
@@ -310,35 +311,54 @@ namespace DracosD
             else if (gameState == GameState.ChooseLevel){
                 if (playerInput.start)
                 {
-                    menuCue.Pause();
-                    currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected],content,playerInput);
-                    gameView.LevelHeight = (int)currentWorld.Height;
-                    gameView.LevelWidth = (int)currentWorld.Width;
-                    countdown = 3;
-                    countdownAnimationFrame = 0;
-                    countdownTimer = 0.25f;
-                    successCountdown = 180;
-                    gameState = GameState.RaceBegin;
-                    raceCue = soundBank.GetCue("race_music");
-                    raceCue.Play();
+                    if (optionSelected - 1 > levelCompleted)
+                    {
+
+                    }
+                    else
+                    {
+                        menuCue.Pause();
+                        currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected], content, playerInput);
+                        gameView.LevelHeight = (int)currentWorld.Height;
+                        gameView.LevelWidth = (int)currentWorld.Width;
+                        countdown = 3;
+                        countdownAnimationFrame = 0;
+                        countdownTimer = 0.25f;
+                        successCountdown = 180;
+                        gameState = GameState.RaceBegin;
+                        raceCue = soundBank.GetCue("race_music");
+                        raceCue.Play();
+                    }
 
                 }
                 else if (playerInput.Right)
                 {
-                    if (optionSelected < NUM_LEVELS - 1) optionSelected++;
+                    if (optionSelected < NUM_LEVELS - 1)
+                    {
+                        if (optionSelected <= levelCompleted)
+                        {
+                            optionSelected++;
+                        }
+                    }
                 }
+                //no need to change
                 else if (playerInput.Left)
                 {
                     if (optionSelected > 0) optionSelected--;
                 }
                 else if (playerInput.Down)
                 {
-                    //Debug.Print("DOWN WAS PRESSED");
-                    if (optionSelected + 3 < NUM_LEVELS) optionSelected += 3;
+                    if (optionSelected + 3 < NUM_LEVELS)
+                    {
+                        if (optionSelected + 1 < levelCompleted)
+                        {
+                            optionSelected += 3;
+                        }
+                    }
                 }
+                //no need to change
                 else if (playerInput.Up)
                 {
-                    //Debug.Print("UP WAS PRESSED");
                     if (optionSelected - 3 >= 0) optionSelected -= 3;
                 }
                 //currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
@@ -425,6 +445,45 @@ namespace DracosD
             }
             else if (gameState == GameState.ChooseLevel)
             {
+                Texture2D levelUnlockedSpecific;
+                levelUnlockedSpecific = tutorialUnlocked;
+                if (levelCompleted == 0)
+                {
+                    levelUnlockedSpecific = level1Unlocked;
+                }
+                if (levelCompleted == 1)
+                {
+                    levelUnlockedSpecific = level2Unlocked;
+                }
+                if (levelCompleted == 2)
+                {
+                    levelUnlockedSpecific = level3Unlocked;
+                }
+                if (levelCompleted == 3)
+                {
+                    levelUnlockedSpecific = level4Unlocked;
+                }
+                if (levelCompleted == 4)
+                {
+                    levelUnlockedSpecific = level5Unlocked;
+                }
+                if (levelCompleted == 5)
+                {
+                    levelUnlockedSpecific = level6Unlocked;
+                }
+                if (levelCompleted == 6)
+                {
+                    levelUnlockedSpecific = level7Unlocked;
+                }
+                if (levelCompleted == 7)
+                {
+                    levelUnlockedSpecific = level8Unlocked;
+                }
+                if (levelCompleted == 8)
+                {
+                    levelUnlockedSpecific = level8Unlocked;
+                }
+
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 gameView.DrawOverlay(level3Unlocked, Color.White, false);
                 gameView.EndSpritePass();
@@ -506,6 +565,10 @@ namespace DracosD
                             gameView.DrawOverlay(fourthplace, Color.White, false);
                             gameView.EndSpritePass();
                             break;
+                    }
+                    if (optionSelected > levelCompleted)
+                    {
+                        levelCompleted = optionSelected;
                     }
                 }
                 if (currentWorld.Failed)
