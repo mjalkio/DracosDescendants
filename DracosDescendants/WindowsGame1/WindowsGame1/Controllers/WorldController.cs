@@ -1034,7 +1034,7 @@ namespace DracosD.Controllers
                 //if (i == 1 || i==2)
                 //{
                     dir = AIControllers[i - 1].GetAction(gametime, currentGates, true);
-
+                    //if (i == 1 && dragons[i].Position.X > 600) Debug.Print("" + dragons[i].Position);
                     //control dragon breath
                     if (AIControllers[i - 1].shouldBreathFire(dragons))
                     {
@@ -1069,6 +1069,15 @@ namespace DracosD.Controllers
                 if ((i == 1 || i==2) && dragons[i].Position.X >= (level.Width - 50)/10)
                 {
                     dir = Vector2.Normalize(new Vector2(1.0f,0.0f));
+                }
+                if ((i == 3) && dragons[i].Position.X >= (level.Width - 25) / 10)
+                {
+                    //Debug.Print("here");
+                    dir = Vector2.Normalize(new Vector2(1.0f, 0.0f));
+                }
+                if (i == 3 && tutorial)
+                {
+                    dir = Vector2.Zero;
                 }
                 dragons[i].Force = dragons[i].Thrust * dir;
                 if (dir.X != 0 || dir.Y != 0) dragons[i].IsFlapping = true;

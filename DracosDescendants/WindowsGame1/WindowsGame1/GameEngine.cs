@@ -39,7 +39,7 @@ namespace DracosD
         protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level1a.xml","..\\..\\..\\..\\WindowsGame1Content\\level4.xml",
-                                                         "..\\..\\..\\..\\WindowsGame1Content\\level5.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\level5.xml", "..\\..\\..\\..\\WindowsGame1Content\\level6.xml",
                                                          "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml"};
 
 
