@@ -116,7 +116,7 @@ namespace DracosD.Controllers
         public void LoadContent(ContentManager content, string xmlFile)
         {
             dragonTexture = content.Load<Texture2D>("rocket");
-            enemyTexture1 = content.Load<Texture2D>("enemy1");
+            enemyTexture1 = content.Load<Texture2D>("blaze_strip");
             enemyTexture2 = content.Load<Texture2D>("enemy2");
             enemyTexture3 = content.Load<Texture2D>("enemy3");
             regularPlanetTexture = content.Load<Texture2D>("planet");
@@ -130,8 +130,8 @@ namespace DracosD.Controllers
             fireBreath = content.Load<Texture2D>("fire_breath_strip");
             dragonOnFireTexture = content.Load<Texture2D>("torch_on_fire_strip_reduced");
             dragonTurningTexture = content.Load<Texture2D>("torch_turning_filmstrip_attempt_1");
-            enemy1OnFireTexture = content.Load<Texture2D>("enemy1_on_fire_strip");
-            enemy1TurningTexture = content.Load<Texture2D>("enemy1_turning_filmstrip_attempt_1");
+            enemy1OnFireTexture = content.Load<Texture2D>("blaze_on_fire");
+            enemy1TurningTexture = content.Load<Texture2D>("blaze_turning");
             enemy2OnFireTexture = content.Load<Texture2D>("enemy2_on_fire_strip");
             enemy2TurningTexture = content.Load<Texture2D>("enemy2_turning_filmstrip_attempt_1");
             enemy3OnFireTexture = content.Load<Texture2D>("enemy4_on_fire_strip");
