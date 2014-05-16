@@ -79,7 +79,7 @@ namespace DracosD.Views
         //if a gate is missed, used for HUD display
         public bool[] gateMissed = new bool[4];
         public float[] prevGates = new float[4];
-        public float stoppedPosition = 0.0f;
+        public float[] stoppedPosition = new float[4];
 
         // Attributes to rescale the image
         protected Matrix transform;
@@ -987,32 +987,24 @@ namespace DracosD.Views
 
             if (gateMissed[0])
             {
-                spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition, 50), Color.White);
+                spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[0], 50), Color.White);
             }
             else
             {
                 if (playerLap > lapNum)
                 {
                     spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
-                    stoppedPosition = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    stoppedPosition[0] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
                 }
                 else
                 {
                     spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
-                    stoppedPosition = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    stoppedPosition[0] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
                 }
             }
 
 
             prevGates[0] = positionGate.X;
-
-
-            //debug print for the player dragon
-            /*
-            Debug.Print("the arbitrary dragon position " + positionDragon.X.ToString());
-            Debug.Print("the next gate position " + positionGate.X.ToString());
-            Debug.Print("the relative dragon position " + relativeDragonPosition.X.ToString());
-            */
         }
 
         //Draw the hud and dragon head on the progress bar
@@ -1033,9 +1025,59 @@ namespace DracosD.Views
                 drawingTexture = dragonheadTexture4;
             }
 
-            //assume AIs never miss gates
-            gateMissed[d_id] = false;
-            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (lapNum - 1) * width) / drawRatio + 140, 50), Color.White);
+            //if the dragon missed a gate, then the progress bar shouldn't move anymore
+            if (relativeDragonPosition.X > positionGate.X)
+            {
+                if (playerLap > lapNum)
+                {
+                    gateMissed[d_id] = false;
+                }
+                else
+                {
+                    gateMissed[d_id] = true;
+                }
+            }
+            //if relative position is smaller than the gate position
+            else
+            {
+                //if we have previously missed a gate
+                if (gateMissed[d_id] == true)
+                {
+                    //it is the same gate we have been keep making
+                    if (positionGate.X == prevGates[d_id])
+                    {
+                        gateMissed[d_id] = true;
+                    }
+                    //it is not the same gate, so we need to update
+                    else
+                    {
+                        gateMissed[d_id] = false;
+                    }
+                }
+                //if we have not previously missed a gate
+                else
+                {
+                    gateMissed[d_id] = false;
+                }
+            }
+
+            if (gateMissed[d_id])
+            {
+                spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 50), Color.White);
+            }
+            else
+            {
+                if (playerLap > lapNum)
+                {
+                    spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
+                    stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                }
+                else
+                {
+                    spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
+                    stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                }
+            }
             prevGates[d_id] = positionGate.X;
         }
 
