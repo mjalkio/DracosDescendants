@@ -448,7 +448,7 @@ namespace DracosD
             if (gameState == GameState.Start)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(menuBackground, Color.White, false);
+                gameView.DrawOverlay(menuBackground, Color.White, true);
                 gameView.EndSpritePass();
             }
             else if (gameState == GameState.ChooseLevel)
@@ -493,7 +493,7 @@ namespace DracosD
                 }
 
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(level3Unlocked, Color.White, false);
+                gameView.DrawOverlay(levelUnlockedSpecific, Color.White, false);
                 gameView.EndSpritePass();
 
                 int gridX = optionSelected%3;
