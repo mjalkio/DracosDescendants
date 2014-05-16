@@ -132,6 +132,7 @@ namespace DracosD
         private SoundEffectInstance dragonSound;
         private SoundEffect onFireSound;
         private SoundEffect gateSound;
+        private SoundEffect shortFireSound;
 
         #endregion
 
@@ -227,6 +228,7 @@ namespace DracosD
             dragonFireSound = content.Load<SoundEffect>("fire_breath_sound");
             onFireSound = content.Load<SoundEffect>("on_fire_sound");
             gateSound = content.Load<SoundEffect>("gate_sound");
+            shortFireSound = content.Load<SoundEffect>("short_breath_sound");
             dragonSound = null;
         }
 
@@ -442,6 +444,7 @@ namespace DracosD
                     }
                     if (currentWorld.ShouldPlayFireSound && dragonSound == null)
                     {
+                        shortFireSound.Play();
                         dragonSound = dragonFireSound.CreateInstance();
                         dragonSound.Play();
                     }
