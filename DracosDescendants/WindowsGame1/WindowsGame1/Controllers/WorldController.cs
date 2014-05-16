@@ -13,6 +13,7 @@ using DracosD.Models;
 using FarseerPhysics.Dynamics.Contacts;
 using DracosD.Views;
 using FarseerPhysics.Factories;
+using Microsoft.Xna.Framework.Audio;
 
 
 namespace DracosD.Controllers
@@ -139,6 +140,9 @@ namespace DracosD.Controllers
         //the HUD controller
         protected HUDController hud;
 
+        //Sound of fire breath
+        protected bool fireSound;
+
         #endregion
 
         #region Properties (Read-Write)
@@ -256,6 +260,11 @@ namespace DracosD.Controllers
         public float SY
         {
             get { return scale.Y; }
+        }
+
+        public bool ShouldPlayFireSound
+        {
+            get { return fireSound; }
         }
 
         #endregion
@@ -809,14 +818,15 @@ namespace DracosD.Controllers
 
             
                 //control dragon breath
+                fireSound = false;
                 if (playerInput.Breathing)
                 {
                     dragons[0].breathFire();
                     if (dragons[0].Breath != null)
                     {
 
-                            dragons[0].Breath.ActivatePhysics(world);
-                        
+                        dragons[0].Breath.ActivatePhysics(world);
+                        fireSound = true;
                     }
                 }
                 else

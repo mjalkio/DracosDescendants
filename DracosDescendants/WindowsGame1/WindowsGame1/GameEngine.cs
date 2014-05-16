@@ -110,6 +110,10 @@ namespace DracosD
         private Cue raceCue;
         private Cue menuCue;
 
+        private SoundEffect dragonFireSound;
+        private SoundEffect gasPlanetSound;
+        private SoundEffectInstance dragonSound;
+
         #endregion
 
         #region Initialization
@@ -187,6 +191,10 @@ namespace DracosD
             waveBank = new WaveBank(audioEngine, "Content/Waves.xwb");
             soundBank = new SoundBank(audioEngine, "Content/Sounds.xsb");
             menuCue = soundBank.GetCue("menu_music");
+
+            gasPlanetSound = content.Load<SoundEffect>("gas_planet_sound");
+            dragonFireSound = content.Load<SoundEffect>("fire_breath_sound");
+            dragonSound = null;
         }
 
         /// <summary>
@@ -223,9 +231,9 @@ namespace DracosD
             if (successCountdown == 0 && gameState == GameState.Game)
             {
                 resetGame();
-                raceCue.Stop(AudioStopOptions.AsAuthored);
-                menuCue.Resume();
+                raceCue.Stop(AudioStopOptions.Immediate);
                 gameState = GameState.ChooseLevel;
+                menuCue.Resume();
             }
 
             if (gameState == GameState.Pause)
@@ -236,12 +244,13 @@ namespace DracosD
                     {
                         gameState = GameState.Game;
                         menuCue.Pause();
-                        raceCue.Play();
+                        raceCue.Resume();
                     }
                     else if (pauseOptionSelected == 1)
                     {
+                        menuCue.Stop(AudioStopOptions.Immediate);
                         resetGame();
-                        raceCue.Stop(AudioStopOptions.AsAuthored);
+                        raceCue.Stop(AudioStopOptions.Immediate);
                         currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected], content, playerInput);
                         gameView.LevelHeight = (int)currentWorld.Height;
                         gameView.LevelWidth = (int)currentWorld.Width;
@@ -253,10 +262,12 @@ namespace DracosD
                     }
                     else if (pauseOptionSelected == 2)
                     {
-                        raceCue.Stop(AudioStopOptions.AsAuthored);
+                        raceCue.Stop(AudioStopOptions.Immediate);
                         optionSelected = 0;
+                        menuCue.Stop(AudioStopOptions.Immediate);
                         resetGame();
                         gameState = GameState.ChooseLevel;
+                        menuCue.Resume();
                     }
                 }
                 else if (playerInput.Down)
@@ -283,6 +294,7 @@ namespace DracosD
             else if (gameState == GameState.ChooseLevel){
                 if (playerInput.start)
                 {
+                    menuCue.Pause();
                     currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected],content,playerInput);
                     gameView.LevelHeight = (int)currentWorld.Height;
                     gameView.LevelWidth = (int)currentWorld.Width;
@@ -290,8 +302,6 @@ namespace DracosD
                     countdownTimer = 1.0f;
                     successCountdown = 180;
                     gameState = GameState.RaceBegin;
-
-                    menuCue.Pause();
                     raceCue = soundBank.GetCue("race_music");
                     raceCue.Play();
 
@@ -358,6 +368,18 @@ namespace DracosD
                 else
                 {
                     currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
+
+                    if (currentWorld.ShouldPlayFireSound && dragonSound == null)
+                    {
+                        dragonSound = dragonFireSound.CreateInstance();
+                        dragonSound.Play();
+                    }
+                    else if (!currentWorld.ShouldPlayFireSound && dragonSound != null)
+                    {
+                        dragonSound.Stop();
+                        dragonSound = null;
+                    }
+
                     base.Update(gameTime);
                 }
             }
@@ -462,7 +484,9 @@ namespace DracosD
             // gameState = GameState.ChooseLevel;
              base.Initialize();
             //base.Update(gameTime);
-             
+             menuCue = soundBank.GetCue("menu_music");
+             menuCue.Play();
+             menuCue.Pause();
         }
     }
 }
