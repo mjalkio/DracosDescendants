@@ -84,6 +84,10 @@ namespace DracosD
         private Texture2D level8Unlocked;
         private Texture2D tutorialUnlocked;
 
+        private Texture2D pauseMenuResume;
+        private Texture2D pauseMenuRestart;
+        private Texture2D pauseMenuLevelSelect;
+
         private Texture2D selectionSparkleFilmstrip;
         // Contstants decided from level select texture to place sparkle
         private int startX = 423;
@@ -188,6 +192,10 @@ namespace DracosD
             secondplace = content.Load<Texture2D>("2nd");
             thirdplace = content.Load<Texture2D>("3rd");
             fourthplace = content.Load<Texture2D>("4th");
+
+            pauseMenuResume = content.Load<Texture2D>("MidGameMenuResume");
+            pauseMenuRestart = content.Load<Texture2D>("MidGameMenuRestart");
+            pauseMenuLevelSelect = content.Load<Texture2D>("MidGameMenuSelectLevel");
 
             level1Unlocked = content.Load<Texture2D>("Level1Unlocked");
             level2Unlocked = content.Load<Texture2D>("Level2Unlocked");
@@ -583,9 +591,9 @@ namespace DracosD
                 currentWorld.Draw(gameView);
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 //gameView.DrawOverlay(pause, Color.White, false);
-                if (pauseOptionSelected == 0) gameView.DrawText("Resume", Color.White, new Vector2(0, 3));
-                else if (pauseOptionSelected == 1) gameView.DrawText("Restart Race", Color.White, new Vector2(0, 3));
-                else if (pauseOptionSelected == 2) gameView.DrawText("Level Select", Color.White, new Vector2(0, 3));
+                if (pauseOptionSelected == 0) gameView.DrawOverlay(pauseMenuResume, Color.White, false);
+                else if (pauseOptionSelected == 1) gameView.DrawOverlay(pauseMenuRestart, Color.White, false);
+                else if (pauseOptionSelected == 2) gameView.DrawOverlay(pauseMenuLevelSelect, Color.White, false);
                 gameView.EndSpritePass();
             }
 
