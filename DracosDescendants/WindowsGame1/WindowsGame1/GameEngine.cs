@@ -113,7 +113,10 @@ namespace DracosD
 
         private SoundEffect dragonFireSound;
         private SoundEffect gasPlanetSound;
+        private SoundEffectInstance gasSound;
         private SoundEffectInstance dragonSound;
+        private SoundEffect onFireSound;
+        private SoundEffect gateSound;
 
         #endregion
 
@@ -194,7 +197,11 @@ namespace DracosD
             menuCue = soundBank.GetCue("menu_music");
 
             gasPlanetSound = content.Load<SoundEffect>("gas_planet_sound");
+            gasSound = gasPlanetSound.CreateInstance();
+            gasSound.Dispose();
             dragonFireSound = content.Load<SoundEffect>("fire_breath_sound");
+            onFireSound = content.Load<SoundEffect>("on_fire_sound");
+            gateSound = content.Load<SoundEffect>("gate_sound");
             dragonSound = null;
         }
 
@@ -370,6 +377,15 @@ namespace DracosD
                 {
                     currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
 
+                    if (currentWorld.ShouldPlayGasSound && gasSound.IsDisposed)
+                    {
+                        gasSound = gasPlanetSound.CreateInstance();
+                        gasPlanetSound.Play();
+                    }
+                    else if (!currentWorld.ShouldPlayGasSound && !gasSound.IsDisposed)
+                    {
+                        gasSound.Dispose();
+                    }
                     if (currentWorld.ShouldPlayFireSound && dragonSound == null)
                     {
                         dragonSound = dragonFireSound.CreateInstance();
@@ -379,6 +395,14 @@ namespace DracosD
                     {
                         dragonSound.Stop();
                         dragonSound = null;
+                    }
+                    if (currentWorld.ShouldPlayOnFireSound)
+                    {
+                        onFireSound.Play();
+                    }
+                    if (currentWorld.ShouldPlayGateSound)
+                    {
+                        gateSound.Play();
                     }
 
                     base.Update(gameTime);

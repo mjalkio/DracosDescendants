@@ -140,8 +140,11 @@ namespace DracosD.Controllers
         //the HUD controller
         protected HUDController hud;
 
-        //Sound of fire breath
+        //Stupid sound triggers
         protected bool fireSound;
+        protected bool planetGoBoom;
+        protected bool thisDragIsOnFire;
+        protected bool gateSound;
 
         #endregion
 
@@ -265,6 +268,21 @@ namespace DracosD.Controllers
         public bool ShouldPlayFireSound
         {
             get { return fireSound; }
+        }
+
+        public bool ShouldPlayGasSound
+        {
+            get { return planetGoBoom; }
+        }
+
+        public bool ShouldPlayOnFireSound
+        {
+            get { return thisDragIsOnFire; }
+        }
+
+        public bool ShouldPlayGateSound
+        {
+            get { return gateSound; }
         }
 
         #endregion
@@ -497,6 +515,7 @@ namespace DracosD.Controllers
                         {
                             level.Gates[(currentGates[drag] - 1 + level.Gates.Count) % level.Gates.Count].Frame = 0;
                             level.Gates[(currentGates[drag] + 1 + level.Gates.Count) % level.Gates.Count].Hit = false;
+                            gateSound = true;
                         }
 
                         // Debug.Print("Dragon Gate: " + currentGates[drag] + "\nGate Count: " + level.Gates.Count);
@@ -553,6 +572,10 @@ namespace DracosD.Controllers
             {
                 if (gp.OnFire)
                 {
+                    if (curr_drag == dragons[0] && curr_drag.CanBeOnFire)
+                    {
+                        thisDragIsOnFire = true;
+                    }
                     curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
                 }
             }
@@ -572,7 +595,11 @@ namespace DracosD.Controllers
 
             if (curr_drag != null && fireObject != null)
             {
-                    curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
+                if (curr_drag == dragons[0] && curr_drag.CanBeOnFire)
+                {
+                    thisDragIsOnFire = true;
+                }
+                curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
             }
 
             LavaPlanet lavaObject = null;
@@ -589,6 +616,10 @@ namespace DracosD.Controllers
 
             if (curr_drag != null && lavaObject != null)
             {
+                if (curr_drag == dragons[0] && curr_drag.CanBeOnFire)
+                {
+                    thisDragIsOnFire = true;
+                }
                 curr_drag.Burn(false); //set the cooldown for the dragon to not be able to enter input
             }
 
@@ -811,6 +842,10 @@ namespace DracosD.Controllers
 
             else
             {
+                thisDragIsOnFire = false;
+                planetGoBoom = false;
+                gateSound = false;
+
                 //NEED TO EDIT THIS SO THAT EACH DRAGON FLAPS
                 //if arrow key is pressed, then flap the dragon
                 if (playerInput.Horizontal !=0 || playerInput.Vertical != 0) dragons[0].IsFlapping = true;
@@ -827,7 +862,6 @@ namespace DracosD.Controllers
                     dragons[0].breathFire();
                     if (dragons[0].Breath != null)
                     {
-
                         dragons[0].Breath.ActivatePhysics(world);
                         fireSound = true;
                     }
@@ -919,6 +953,7 @@ namespace DracosD.Controllers
                                 if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5) || fix.TestPoint(ref p6) || fix.TestPoint(ref p7) || fix.TestPoint(ref p8) || fix.TestPoint(ref p9))
                                     && !gp.OnFire)
                                 {
+                                    planetGoBoom = true;
                                     gp.Torch(false);
                                     break;
                                 }
@@ -958,6 +993,10 @@ namespace DracosD.Controllers
                                 if ((fix.TestPoint(ref p1) || fix.TestPoint(ref p2) || fix.TestPoint(ref p3) || fix.TestPoint(ref p4) || fix.TestPoint(ref p5))
                                     && gp.CanMove)
                                 {
+                                    if (gp == dragons[0] && gp.CanBeOnFire)
+                                    {
+                                        thisDragIsOnFire = true;
+                                    }
                                     gp.Burn(false);
                                     break;
                                 }

@@ -175,6 +175,11 @@ namespace DracosD.Models
         {
             get { return (float)((float)currentFireLevel/(float)FULL_FIRE_LEVEL); }
         }
+
+        public bool CanBeOnFire
+        {
+            get { return delayTime == 0; }
+        }
         #endregion
 
         #region Initialization
