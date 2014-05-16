@@ -688,12 +688,15 @@ namespace DracosD.Controllers
             //draw the hud if the game is not finished
             if ((currentGates[dragons[0]] < level.Gates.Count) && (!Failed))
             {
-                Gate goal = level.Gates[currentGates[dragons[0]]];
+                Gate goal0 = level.Gates[currentGates[dragons[0]]];
+                Gate goal1 = level.Gates[currentGates[dragons[1]]];
+                Gate goal2 = level.Gates[currentGates[dragons[2]]];
+                Gate goal3 = level.Gates[currentGates[dragons[3]]];
                 hud.Draw2(view);
-                hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], playerLap[dragons[1]], goal, 1, Width);
-                hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], playerLap[dragons[2]], goal, 2, Width);
-                hud.Draw(view, dragons[3].Position, dragons[3].Position + new Vector2((lapNum[dragons[3]]) * Width, 0), lapNum[dragons[3]], playerLap[dragons[3]], goal, 3, Width);
-                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], playerLap[dragons[0]], goal, 0, Width);
+                hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], playerLap[dragons[1]], goal1, 1, Width);
+                hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], playerLap[dragons[2]], goal2, 2, Width);
+                hud.Draw(view, dragons[3].Position, dragons[3].Position + new Vector2((lapNum[dragons[3]]) * Width, 0), lapNum[dragons[3]], playerLap[dragons[3]], goal3, 3, Width);
+                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], playerLap[dragons[0]], goal0, 0, Width);
             }
         }
 
@@ -1009,8 +1012,8 @@ namespace DracosD.Controllers
             for (int i = 1; i < dragons.Length; i++)
             {
                 Vector2 dir;
-                if (i == 1 || i==2)
-                {
+                //if (i == 1 || i==2)
+                //{
                     dir = AIControllers[i - 1].GetAction(gametime, currentGates, true);
 
                     //control dragon breath
@@ -1030,8 +1033,8 @@ namespace DracosD.Controllers
                         }
                         dragons[i].stopBreathing();
                     }
-                }
-                else
+                //}
+                /*else
                 {
                     if (!tutorial)
                     {
@@ -1041,6 +1044,12 @@ namespace DracosD.Controllers
                     {
                         dir = Vector2.Zero;
                     }
+                }*/
+                //make them complete a lap
+                    //Debug.Print("" + (level.Width - 50) / 10);
+                if ((i == 1 || i==2) && dragons[i].Position.X >= (level.Width - 50)/10)
+                {
+                    dir = Vector2.Normalize(new Vector2(1.0f,0.0f));
                 }
                 dragons[i].Force = dragons[i].Thrust * dir;
                 if (dir.X != 0 || dir.Y != 0) dragons[i].IsFlapping = true;

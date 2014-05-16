@@ -126,7 +126,6 @@ namespace DracosD.Controllers
         /// <returns>Vector2 encoding the next direction this dragon should move in.</returns>
         public Vector2 GetAction(GameTime gameTime, Dictionary<Dragon, int> gates, bool isPathAI)
         {
-            
             // Do not need to recalculate our direction every frame.  Just every 10 ticks.
             if ((racer.Id + gameTime.TotalGameTime.Ticks) % 1 == 0)
             {
@@ -216,17 +215,26 @@ namespace DracosD.Controllers
                     if (reachedPath(racer.Position, goalPath, distToPath))
                     {
 
-                         //Debug.Print(""+aiPath[currPath]);
+                        
 
                         if (currPath == aiPath.Count - 1)
                         {
                             //Debug.Print("end");
+                            //Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
                             currPath = 0;
                         }
                         else
                         {
                             //Debug.Print("close");
+                            //Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
                             currPath++;
+                            //bool b = currPath < aiPath.Count;
+                            //Debug.Print("" +racer.Id+""+ b);
+                        }
+                        if (((currPath == aiPath.Count - 2) || (currPath == aiPath.Count - 3)) && racer.Position.X >= (level.Width - 100)/10)
+                        {
+                            //Debug.Print("here" + racer.Id);
+                            currPath = aiPath.Count - 1;
                         }
                     }
                     /*//ai reach the current waypoint and is not at end of level, so increment the waypoint he is on
@@ -381,11 +389,18 @@ namespace DracosD.Controllers
         /// </summary>
         private void SelectGoal(bool path)
         {
-            if(!path) {
-                if(GoalGate != null)
+            if (!path)
+            {
+                if (GoalGate != null)
                     goalGate = GoalGate;
             }
-            else goalPath = aiPath[currPath];
+            else 
+            {
+                if (currPath >= 0 && currPath < aiPath.Count)
+                {
+                    goalPath = aiPath[currPath];
+                }
+            }
         }
 
         /// <summary>
