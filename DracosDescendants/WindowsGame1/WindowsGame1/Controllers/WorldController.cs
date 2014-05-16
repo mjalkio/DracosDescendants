@@ -700,9 +700,21 @@ namespace DracosD.Controllers
             if ((currentGates[dragons[0]] < level.Gates.Count) && (!Failed))
             {
                 Gate goal0 = level.Gates[currentGates[dragons[0]]];
-                Gate goal1 = level.Gates[currentGates[dragons[1]]];
-                Gate goal2 = level.Gates[currentGates[dragons[2]]];
-                Gate goal3 = level.Gates[currentGates[dragons[3]]];
+                Gate goal1 = level.Gates[0];
+                Gate goal2 = level.Gates[0];
+                Gate goal3 = level.Gates[0];
+                if (currentGates[dragons[1]] < level.Gates.Count)
+                {
+                    goal1 = level.Gates[currentGates[dragons[1]]];
+                }
+                if (currentGates[dragons[2]] < level.Gates.Count)
+                {
+                    goal2 = level.Gates[currentGates[dragons[2]]];
+                }
+                if (currentGates[dragons[3]] < level.Gates.Count)
+                {
+                    goal3 = level.Gates[currentGates[dragons[3]]];
+                }
                 hud.Draw2(view);
                 hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], playerLap[dragons[1]], goal1, 1, Width);
                 hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], playerLap[dragons[2]], goal2, 2, Width);
@@ -827,9 +839,9 @@ namespace DracosD.Controllers
                     speedracer.Thrust = DEFAULT_DRAGON_THRUST;
                     speedracer.DampenThreshold = DEFAULT_DRAGON_TOPSPEED;
                 }
-                Debug.Print("GreenThrust: " + dragons[1].Thrust + "\nGreenSpeed: " + dragons[1].DampenThreshold);
+                //Debug.Print("GreenThrust: " + dragons[1].Thrust + "\nGreenSpeed: " + dragons[1].DampenThreshold);
                 updateThrusts();
-                Debug.Print("GreenThrust: " + dragons[1].Thrust + "\nGreenSpeed: " + dragons[1].DampenThreshold);
+                //Debug.Print("GreenThrust: " + dragons[1].Thrust + "\nGreenSpeed: " + dragons[1].DampenThreshold);
                 //NEED TO EDIT THIS SO THAT EACH DRAGON FLAPS
                 //if arrow key is pressed, then flap the dragon
                 if (playerInput.Horizontal !=0 || playerInput.Vertical != 0) dragons[0].IsFlapping = true;
