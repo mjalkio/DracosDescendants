@@ -38,9 +38,9 @@ namespace DracosD
 
         protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml","..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                         "..\\..\\..\\..\\WindowsGame1Content\\level3.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                         "..\\..\\..\\..\\WindowsGame1Content\\level3.xml"};
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\level1a.xml","..\\..\\..\\..\\WindowsGame1Content\\level4.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\level5.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml"};
 
 
 
@@ -61,6 +61,11 @@ namespace DracosD
         protected GameView gameView;
 
         private Texture2D victory;
+        private Texture2D firstplace;
+        private Texture2D secondplace;
+        private Texture2D thirdplace;
+        private Texture2D fourthplace;
+
         private Texture2D failure;
         private Texture2D menuBackground;
         private Texture2D levelSelect;
@@ -68,6 +73,7 @@ namespace DracosD
         private Texture2D countdown3;
         private Texture2D countdown2;
         private Texture2D countdown1;
+        private Texture2D countdownFilmstrip;
         private Texture2D level1Unlocked;
         private Texture2D level2Unlocked;
         private Texture2D level3Unlocked;
@@ -90,9 +96,11 @@ namespace DracosD
         private int numSparkleFrames = 4;
         private int sparkleDelay = 4;
         private int sparkleTimer;
+        private int countdownAnimationFrame;
 
         private int countdown;
         private float countdownTimer;
+        private const int COUNTDOWN_FRAMES= 13;
 
         // To give time after victory before returning to level select
         private int successCountdown;
@@ -174,6 +182,12 @@ namespace DracosD
             countdown3 = content.Load<Texture2D>("countdown3");
             countdown2 = content.Load<Texture2D>("countdown2");
             countdown1 = content.Load<Texture2D>("countdown1");
+            countdownFilmstrip = content.Load<Texture2D>("Countdown");
+            firstplace = content.Load<Texture2D>("1st");
+            secondplace = content.Load<Texture2D>("2nd");
+            thirdplace = content.Load<Texture2D>("3rd");
+            fourthplace = content.Load<Texture2D>("4th");
+
             level1Unlocked = content.Load<Texture2D>("Level1Unlocked");
             level2Unlocked = content.Load<Texture2D>("Level2Unlocked");
             level3Unlocked = content.Load<Texture2D>("Level3Unlocked");
@@ -256,7 +270,8 @@ namespace DracosD
                         gameView.LevelHeight = (int)currentWorld.Height;
                         gameView.LevelWidth = (int)currentWorld.Width;
                         countdown = 3;
-                        countdownTimer = 1.0f;
+                        countdownTimer = 0.25f;
+                        countdownAnimationFrame = 0;
                         raceCue = soundBank.GetCue("race_music");
                         raceCue.Play();
                         gameState = GameState.RaceBegin;
@@ -300,7 +315,8 @@ namespace DracosD
                     gameView.LevelHeight = (int)currentWorld.Height;
                     gameView.LevelWidth = (int)currentWorld.Width;
                     countdown = 3;
-                    countdownTimer = 1.0f;
+                    countdownAnimationFrame = 0;
+                    countdownTimer = 0.25f;
                     successCountdown = 180;
                     gameState = GameState.RaceBegin;
                     raceCue = soundBank.GetCue("race_music");
@@ -329,14 +345,20 @@ namespace DracosD
                 base.Update(gameTime);
             }
             else if (gameState == GameState.RaceBegin) {
-                if (countdown == 0) gameState = GameState.Game;
+                if (countdownAnimationFrame == COUNTDOWN_FRAMES - 2)
+                {
+                    countdownAnimationFrame++;
+                    countdownTimer = 1.0f;
+                    gameState = GameState.Game;
+                }
                 else
                 {
                     if (countdownTimer > 0) countdownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     else
                     {
-                        countdown--;
-                        countdownTimer = 1.0f;
+                        countdownAnimationFrame++;
+                        countdownTimer = 0.25f;
+                        //if (countdownAnimationFrame == 15) countdownTimer = 0.0f;
                     }
                 }
             }
@@ -368,6 +390,7 @@ namespace DracosD
                 }*/
                 else
                 {
+                    if (countdownTimer > 0) countdownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
 
                     if (currentWorld.ShouldPlayFireSound && dragonSound == null)
@@ -418,7 +441,13 @@ namespace DracosD
             else if (gameState == GameState.RaceBegin)
             {
                 currentWorld.Draw(gameView);
-                if (countdown == 3)
+                Vector2 pos   = new Vector2(gameView.Width,gameView.Height)/2.0f;
+                Vector2 scale = new Vector2(1, 1); // To counter global scale
+                int lapFrameSize = (int)(countdownFilmstrip.Width/COUNTDOWN_FRAMES);
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                gameView.DrawOverlay(countdownFilmstrip, Color.White, pos, scale, 0.0f, countdownAnimationFrame, COUNTDOWN_FRAMES, SpriteEffects.None);
+                gameView.EndSpritePass();
+                /*if (countdown == 3)
                 {
                     gameView.BeginSpritePass(BlendState.AlphaBlend);
                     gameView.DrawOverlay(countdown3, Color.White, false);
@@ -435,19 +464,49 @@ namespace DracosD
                     gameView.BeginSpritePass(BlendState.AlphaBlend);
                     gameView.DrawOverlay(countdown1, Color.White, false);
                     gameView.EndSpritePass();
-                }
+                }*/
             }
             else if (gameState == GameState.Game)
             {
                 // World specific drawing
                 currentWorld.Draw(gameView);
 
+                if (countdownTimer > 0)
+                {
+                    Vector2 pos = new Vector2(gameView.Width, gameView.Height) / 2.0f;
+                    Vector2 scale = new Vector2(1, 1); // To counter global scale
+                    int lapFrameSize = (int)(countdownFilmstrip.Width / COUNTDOWN_FRAMES);
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(countdownFilmstrip, Color.White, pos, scale, 0.0f, countdownAnimationFrame, COUNTDOWN_FRAMES, SpriteEffects.None);
+                    gameView.EndSpritePass();
+                }
+
                 // Final message
                 if (currentWorld.Succeeded)
                 {
-                    gameView.BeginSpritePass(BlendState.AlphaBlend);
-                    gameView.DrawOverlay(victory, Color.White, false);
-                    gameView.EndSpritePass();
+                    switch (currentWorld.FinishingPlace)
+                    {
+                        case 1:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(firstplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                        case 2:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(secondplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                        case 3:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(thirdplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                        case 4:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(fourthplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                    }
                 }
                 if (currentWorld.Failed)
                 {
