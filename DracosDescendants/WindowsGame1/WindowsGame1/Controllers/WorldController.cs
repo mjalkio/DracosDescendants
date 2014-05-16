@@ -747,10 +747,10 @@ namespace DracosD.Controllers
                     goal3 = level.Gates[currentGates[dragons[3]]];
                 }
                 hud.Draw2(view);
-                hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], playerLap[dragons[1]], goal1, 1, Width);
-                hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], playerLap[dragons[2]], goal2, 2, Width);
-                hud.Draw(view, dragons[3].Position, dragons[3].Position + new Vector2((lapNum[dragons[3]]) * Width, 0), lapNum[dragons[3]], playerLap[dragons[3]], goal3, 3, Width);
-                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], playerLap[dragons[0]], goal0, 0, Width);
+                hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], playerLap[dragons[1]], goal1, 1, Width, level.Width);
+                hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], playerLap[dragons[2]], goal2, 2, Width, level.Width);
+                hud.Draw(view, dragons[3].Position, dragons[3].Position + new Vector2((lapNum[dragons[3]]) * Width, 0), lapNum[dragons[3]], playerLap[dragons[3]], goal3, 3, Width, level.Width);
+                hud.Draw(view, dragons[0].Position, dragons[0].Position + new Vector2((lapNum[dragons[0]]) * Width, 0), lapNum[dragons[0]], playerLap[dragons[0]], goal0, 0, Width, level.Width);
             }
         }
 

@@ -31,7 +31,7 @@ namespace DracosD.Controllers
 
         #region Methods
         //drawing method for the dragon heads
-        public void Draw(GameView view, Vector2 relPosition, Vector2 Position, int lapNum, int playerLap, Gate goal, int d_id, float gameOffset)
+        public void Draw(GameView view, Vector2 relPosition, Vector2 Position, int lapNum, int playerLap, Gate goal, int d_id, float gameOffset, float levelWidth)
         {
             view.BeginArrowPass(goal.Position, relPosition.X, Position.Y, d_id, gameOffset);
             if (d_id == 0)
@@ -40,7 +40,7 @@ namespace DracosD.Controllers
             }
             else
             {
-                view.BeginHUDPassAI(relPosition, Position, goal.Position, lapNum, playerLap, d_id, gameOffset);
+                view.BeginHUDPassAI(relPosition, Position, goal.Position, lapNum, playerLap, d_id, gameOffset, levelWidth);
             }
             view.EndHUDPass();
         }

@@ -1008,7 +1008,7 @@ namespace DracosD.Views
         }
 
         //Draw the hud and dragon head on the progress bar
-        public void BeginHUDPassAI(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, int d_id, float width)
+        public void BeginHUDPassAI(Vector2 relativeDragonPosition, Vector2 positionDragon, Vector2 positionGate, int lapNum, int playerLap, int d_id, float width, float levelWidth)
         {
             float drawRatio = width * 3 / progressTexture.Width;
             Texture2D drawingTexture = dragonheadTexture;
@@ -1025,82 +1025,98 @@ namespace DracosD.Views
                 drawingTexture = dragonheadTexture4;
             }
 
-            //if the dragon missed a gate, then the progress bar shouldn't move anymore
-            if (relativeDragonPosition.X > positionGate.X)
+            Debug.Print(levelWidth.ToString());
+            if (levelWidth == 21000)
             {
-                if (playerLap > lapNum)
+                if (d_id == 1)
                 {
-                    gateMissed[d_id] = false;
+                    spriteBatch.Draw(drawingTexture, new Vector2(140, 40), Color.White);
                 }
                 else
                 {
-                    gateMissed[d_id] = true;
+                    spriteBatch.Draw(drawingTexture, new Vector2(140, 50), Color.White);
                 }
             }
-            //if relative position is smaller than the gate position
+
             else
             {
-                //if we have previously missed a gate
-                if (gateMissed[d_id] == true)
+                //if the dragon missed a gate, then the progress bar shouldn't move anymore
+                if (relativeDragonPosition.X > positionGate.X)
                 {
-                    //it is the same gate we have been keep making
-                    if (positionGate.X == prevGates[d_id])
+                    if (playerLap > lapNum)
+                    {
+                        gateMissed[d_id] = false;
+                    }
+                    else
                     {
                         gateMissed[d_id] = true;
                     }
-                    //it is not the same gate, so we need to update
+                }
+                //if relative position is smaller than the gate position
+                else
+                {
+                    //if we have previously missed a gate
+                    if (gateMissed[d_id] == true)
+                    {
+                        //it is the same gate we have been keep making
+                        if (positionGate.X == prevGates[d_id])
+                        {
+                            gateMissed[d_id] = true;
+                        }
+                        //it is not the same gate, so we need to update
+                        else
+                        {
+                            gateMissed[d_id] = false;
+                        }
+                    }
+                    //if we have not previously missed a gate
                     else
                     {
                         gateMissed[d_id] = false;
                     }
                 }
-                //if we have not previously missed a gate
-                else
-                {
-                    gateMissed[d_id] = false;
-                }
-            }
 
-            if (d_id == 1)
-            {
-                if (gateMissed[d_id])
+                if (d_id == 1)
                 {
-                    spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 40), Color.White);
-                }
-                else
-                {
-                    if (playerLap > lapNum)
+                    if (gateMissed[d_id])
                     {
-                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 40), Color.White);
-                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 40), Color.White);
                     }
                     else
                     {
-                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 40), Color.White);
-                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        if (playerLap > lapNum)
+                        {
+                            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 40), Color.White);
+                            stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 40), Color.White);
+                            stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        }
                     }
-                }
-            }
-            else
-            {
-                if (gateMissed[d_id])
-                {
-                    spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 50), Color.White);
                 }
                 else
                 {
-                    if (playerLap > lapNum)
+                    if (gateMissed[d_id])
                     {
-                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
-                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 50), Color.White);
                     }
                     else
                     {
-                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
-                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        if (playerLap > lapNum)
+                        {
+                            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
+                            stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        }
+                        else
+                        {
+                            spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
+                            stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                        }
                     }
-                }
 
+                }
             }
             prevGates[d_id] = positionGate.X;
         }
