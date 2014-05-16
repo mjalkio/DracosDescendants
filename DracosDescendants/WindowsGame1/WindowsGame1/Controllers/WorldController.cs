@@ -34,6 +34,9 @@ namespace DracosD.Controllers
         private const float BASIC_RESTITION = 0.1f;
 
         private const int LAP_NUM_FRAMES = 6;
+        private const float DEFAULT_DRAGON_THRUST = 2000.0f;
+        private const float DEFAULT_DRAGON_TOPSPEED = 40.0f;
+        private const float PLACE_DIFFERENCE_MODIFIER = 1.1f;
         #endregion
 
         #region Graphics Resources
@@ -90,6 +93,8 @@ namespace DracosD.Controllers
         private Dictionary<Dragon, int> lapNum;
         private Dictionary<Dragon,int> playerLap;
 
+        private Dictionary<Dragon, int> placeCounter;
+
         private LinkedList<PhysicsObject> objects = new LinkedList<PhysicsObject>();
 
         // Queue for adding objects
@@ -127,6 +132,11 @@ namespace DracosD.Controllers
         public Dragon[] Dragon
         {
             get { return dragons; }
+        }
+
+        public int FinishingPlace
+        {
+            get { return placeCounter[dragons[0]]; }
         }
 
         // Controller to move the dragon
@@ -304,6 +314,7 @@ namespace DracosD.Controllers
             playerInput = inputController;
             
             currentGates = new Dictionary<Dragon, int>();
+            placeCounter = new Dictionary<Dragon, int>();
             dragons = new Dragon[4];
             AIControllers = new AIController[3];
             level = thisLevel;
@@ -328,6 +339,7 @@ namespace DracosD.Controllers
                 lastGate[drag] = false;
                 forceController = new ForceController(drag, planets, Width);
                 world.AddController(forceController);
+                placeCounter[drag] = 3;
             }
 
             world.ContactManager.BeginContact += ContactAdded;
@@ -533,11 +545,10 @@ namespace DracosD.Controllers
                         //If you pass the last gate, you win
                         if (currentGates[drag] == level.Gates.Count - 1 && playerLap[drag] == 3)
                         {
-                            if (drag == dragons[0] && !Failed)
+                            if (drag == dragons[0])
                             {
                                 Succeeded = true;
                             }
-                            else if (!Succeeded) Failed = true;
                             currentGates[drag]++;
                         }
                         else if (currentGates[drag] == level.Gates.Count - 1)
@@ -720,9 +731,21 @@ namespace DracosD.Controllers
             if ((currentGates[dragons[0]] < level.Gates.Count) && (!Failed))
             {
                 Gate goal0 = level.Gates[currentGates[dragons[0]]];
-                Gate goal1 = level.Gates[currentGates[dragons[1]]];
-                Gate goal2 = level.Gates[currentGates[dragons[2]]];
-                Gate goal3 = level.Gates[currentGates[dragons[3]]];
+                Gate goal1 = level.Gates[0];
+                Gate goal2 = level.Gates[0];
+                Gate goal3 = level.Gates[0];
+                if (currentGates[dragons[1]] < level.Gates.Count)
+                {
+                    goal1 = level.Gates[currentGates[dragons[1]]];
+                }
+                if (currentGates[dragons[2]] < level.Gates.Count)
+                {
+                    goal2 = level.Gates[currentGates[dragons[2]]];
+                }
+                if (currentGates[dragons[3]] < level.Gates.Count)
+                {
+                    goal3 = level.Gates[currentGates[dragons[3]]];
+                }
                 hud.Draw2(view);
                 hud.Draw(view, dragons[1].Position, dragons[1].Position + new Vector2((lapNum[dragons[1]]) * Width, 0), lapNum[dragons[1]], playerLap[dragons[1]], goal1, 1, Width);
                 hud.Draw(view, dragons[2].Position, dragons[2].Position + new Vector2((lapNum[dragons[2]]) * Width, 0), lapNum[dragons[2]], playerLap[dragons[2]], goal2, 2, Width);
@@ -846,6 +869,14 @@ namespace DracosD.Controllers
                 planetGoBoom = false;
                 gateSound = false;
 
+                foreach (Dragon speedracer in dragons)
+                {
+                    speedracer.Thrust = DEFAULT_DRAGON_THRUST;
+                    speedracer.DampenThreshold = DEFAULT_DRAGON_TOPSPEED;
+                }
+                //Debug.Print("GreenThrust: " + dragons[1].Thrust + "\nGreenSpeed: " + dragons[1].DampenThreshold);
+                updateThrusts();
+                //Debug.Print("GreenThrust: " + dragons[1].Thrust + "\nGreenSpeed: " + dragons[1].DampenThreshold);
                 //NEED TO EDIT THIS SO THAT EACH DRAGON FLAPS
                 //if arrow key is pressed, then flap the dragon
                 if (playerInput.Horizontal !=0 || playerInput.Vertical != 0) dragons[0].IsFlapping = true;
@@ -1054,7 +1085,7 @@ namespace DracosD.Controllers
                 //if (i == 1 || i==2)
                 //{
                     dir = AIControllers[i - 1].GetAction(gametime, currentGates, true);
-
+                    //if (i == 1 && dragons[i].Position.X > 600) Debug.Print("" + dragons[i].Position);
                     //control dragon breath
                     if (AIControllers[i - 1].shouldBreathFire(dragons))
                     {
@@ -1090,6 +1121,15 @@ namespace DracosD.Controllers
                 {
                     dir = Vector2.Normalize(new Vector2(1.0f,0.0f));
                 }
+                if ((i == 3) && dragons[i].Position.X >= (level.Width - 25) / 10)
+                {
+                    //Debug.Print("here");
+                    dir = Vector2.Normalize(new Vector2(1.0f, 0.0f));
+                }
+                if (i == 3 && tutorial)
+                {
+                    dir = Vector2.Zero;
+                }
                 dragons[i].Force = dragons[i].Thrust * dir;
                 if (dir.X != 0 || dir.Y != 0) dragons[i].IsFlapping = true;
                 else dragons[i].IsFlapping = false;
@@ -1102,7 +1142,23 @@ namespace DracosD.Controllers
                 {
                     drag.Force = new Vector2(0f, 0f);
                 }
+
+                // Also this handles logic for place detection
+                int whichPlace = 1;
+                foreach (Dragon enemydrag in dragons)
+                {
+                    if (enemydrag != drag)
+                    {
+                        if(placeCompare(enemydrag,drag)) whichPlace++;
+                    }
+                    if (!succeeded)
+                    {
+                        placeCounter[drag] = whichPlace;
+                    }
+                }
+
             }
+            
 
             if (drawlap2) drawlap2delay++;
             if (drawlap2delay > DRAW_LAP_DELAY) drawlap2 = false;
@@ -1202,6 +1258,37 @@ namespace DracosD.Controllers
             bullet.Position = planet.Position + bulletDirection;
             bullet.LinearVelocity = (speed*bulletDirection) + randomDirection2Vec;
             AddQueuedObject(bullet);
+        }
+
+        // Returns true if drag1 is ahead of drag2, false if the converse
+        private bool placeCompare(Dragon drag1, Dragon drag2)
+        {
+            if (playerLap[drag1] != playerLap[drag2]) return playerLap[drag1]>playerLap[drag2];
+            else if (currentGates[drag1] != currentGates[drag2])
+            {
+                return currentGates[drag1]>currentGates[drag2];
+            }
+            else return (drag1.Position.X > drag2.Position.X);
+        }
+
+        private void updateThrusts()
+        {
+            for (int i = 1; i <= 3; i++)
+            {
+                int placeDifference = placeCounter[dragons[i]] - placeCounter[dragons[0]];
+                float xdifference = (playerLap[dragons[0]] * Width + dragons[0].Position.X) -
+                    (playerLap[dragons[i]] * Width + dragons[i].Position.X);
+
+
+                float differenceModifier = (xdifference / (Width * 3)) + 1.0f;
+
+
+                differenceModifier += (float)Math.Pow(PLACE_DIFFERENCE_MODIFIER, placeDifference) - 1;
+                if (differenceModifier > 1.5f) differenceModifier = 1.5f;
+                if (differenceModifier < 0.66f) differenceModifier = .66f;
+                dragons[i].Thrust = DEFAULT_DRAGON_THRUST * (float)Math.Pow(differenceModifier,.5);
+                dragons[i].DampenThreshold = DEFAULT_DRAGON_TOPSPEED * differenceModifier;
+            }
         }
 
 

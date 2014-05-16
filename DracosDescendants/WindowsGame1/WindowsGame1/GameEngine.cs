@@ -38,9 +38,9 @@ namespace DracosD
 
         protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml","..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                         "..\\..\\..\\..\\WindowsGame1Content\\level3.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                         "..\\..\\..\\..\\WindowsGame1Content\\level3.xml"};
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\level1a.xml","..\\..\\..\\..\\WindowsGame1Content\\level4.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\level5.xml", "..\\..\\..\\..\\WindowsGame1Content\\level6.xml",
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml"};
 
 
 
@@ -61,6 +61,11 @@ namespace DracosD
         protected GameView gameView;
 
         private Texture2D victory;
+        private Texture2D firstplace;
+        private Texture2D secondplace;
+        private Texture2D thirdplace;
+        private Texture2D fourthplace;
+
         private Texture2D failure;
         private Texture2D menuBackground;
         private Texture2D levelSelect;
@@ -68,6 +73,7 @@ namespace DracosD
         private Texture2D countdown3;
         private Texture2D countdown2;
         private Texture2D countdown1;
+        private Texture2D countdownFilmstrip;
         private Texture2D level1Unlocked;
         private Texture2D level2Unlocked;
         private Texture2D level3Unlocked;
@@ -77,6 +83,10 @@ namespace DracosD
         private Texture2D level7Unlocked;
         private Texture2D level8Unlocked;
         private Texture2D tutorialUnlocked;
+
+        private Texture2D pauseMenuResume;
+        private Texture2D pauseMenuRestart;
+        private Texture2D pauseMenuLevelSelect;
 
         private Texture2D selectionSparkleFilmstrip;
         // Contstants decided from level select texture to place sparkle
@@ -90,9 +100,11 @@ namespace DracosD
         private int numSparkleFrames = 4;
         private int sparkleDelay = 4;
         private int sparkleTimer;
+        private int countdownAnimationFrame;
 
         private int countdown;
         private float countdownTimer;
+        private const int COUNTDOWN_FRAMES= 13;
 
         // To give time after victory before returning to level select
         private int successCountdown;
@@ -103,6 +115,7 @@ namespace DracosD
         private int optionSelected;
         private int pauseOptionSelected;
         private PlayerInputController playerInput;
+        private int levelCompleted = -1;
 
         //Puttin in dat music yo'
         private AudioEngine audioEngine;
@@ -177,6 +190,16 @@ namespace DracosD
             countdown3 = content.Load<Texture2D>("countdown3");
             countdown2 = content.Load<Texture2D>("countdown2");
             countdown1 = content.Load<Texture2D>("countdown1");
+            countdownFilmstrip = content.Load<Texture2D>("Countdown");
+            firstplace = content.Load<Texture2D>("1st");
+            secondplace = content.Load<Texture2D>("2nd");
+            thirdplace = content.Load<Texture2D>("3rd");
+            fourthplace = content.Load<Texture2D>("4th");
+
+            pauseMenuResume = content.Load<Texture2D>("MidGameMenuResume");
+            pauseMenuRestart = content.Load<Texture2D>("MidGameMenuRestart");
+            pauseMenuLevelSelect = content.Load<Texture2D>("MidGameMenuSelectLevel");
+
             level1Unlocked = content.Load<Texture2D>("Level1Unlocked");
             level2Unlocked = content.Load<Texture2D>("Level2Unlocked");
             level3Unlocked = content.Load<Texture2D>("Level3Unlocked");
@@ -263,7 +286,8 @@ namespace DracosD
                         gameView.LevelHeight = (int)currentWorld.Height;
                         gameView.LevelWidth = (int)currentWorld.Width;
                         countdown = 3;
-                        countdownTimer = 1.0f;
+                        countdownTimer = 0.25f;
+                        countdownAnimationFrame = 0;
                         raceCue = soundBank.GetCue("race_music");
                         raceCue.Play();
                         gameState = GameState.RaceBegin;
@@ -302,48 +326,74 @@ namespace DracosD
             else if (gameState == GameState.ChooseLevel){
                 if (playerInput.start)
                 {
-                    menuCue.Pause();
-                    currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected],content,playerInput);
-                    gameView.LevelHeight = (int)currentWorld.Height;
-                    gameView.LevelWidth = (int)currentWorld.Width;
-                    countdown = 3;
-                    countdownTimer = 1.0f;
-                    successCountdown = 180;
-                    gameState = GameState.RaceBegin;
-                    raceCue = soundBank.GetCue("race_music");
-                    raceCue.Play();
+                    if (optionSelected - 1 > levelCompleted)
+                    {
+
+                    }
+                    else
+                    {
+                        menuCue.Pause();
+                        currentWorld = new WorldController(new Vector2(0, 0), gameLevelControllers[optionSelected], content, playerInput);
+                        gameView.LevelHeight = (int)currentWorld.Height;
+                        gameView.LevelWidth = (int)currentWorld.Width;
+                        countdown = 3;
+                        countdownAnimationFrame = 0;
+                        countdownTimer = 0.25f;
+                        successCountdown = 180;
+                        gameState = GameState.RaceBegin;
+                        raceCue = soundBank.GetCue("race_music");
+                        raceCue.Play();
+                    }
 
                 }
                 else if (playerInput.Right)
                 {
-                    if (optionSelected < NUM_LEVELS - 1) optionSelected++;
+                    if (optionSelected < NUM_LEVELS - 1)
+                    {
+                        if (optionSelected <= levelCompleted)
+                        {
+                            optionSelected++;
+                        }
+                    }
                 }
+                //no need to change
                 else if (playerInput.Left)
                 {
                     if (optionSelected > 0) optionSelected--;
                 }
                 else if (playerInput.Down)
                 {
-                    //Debug.Print("DOWN WAS PRESSED");
-                    if (optionSelected + 3 < NUM_LEVELS) optionSelected += 3;
+                    if (optionSelected + 3 < NUM_LEVELS)
+                    {
+                        if (optionSelected + 1 < levelCompleted)
+                        {
+                            optionSelected += 3;
+                        }
+                    }
                 }
+                //no need to change
                 else if (playerInput.Up)
                 {
-                    //Debug.Print("UP WAS PRESSED");
                     if (optionSelected - 3 >= 0) optionSelected -= 3;
                 }
                 //currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
                 base.Update(gameTime);
             }
             else if (gameState == GameState.RaceBegin) {
-                if (countdown == 0) gameState = GameState.Game;
+                if (countdownAnimationFrame == COUNTDOWN_FRAMES - 2)
+                {
+                    countdownAnimationFrame++;
+                    countdownTimer = 1.0f;
+                    gameState = GameState.Game;
+                }
                 else
                 {
                     if (countdownTimer > 0) countdownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     else
                     {
-                        countdown--;
-                        countdownTimer = 1.0f;
+                        countdownAnimationFrame++;
+                        countdownTimer = 0.25f;
+                        //if (countdownAnimationFrame == 15) countdownTimer = 0.0f;
                     }
                 }
             }
@@ -375,6 +425,7 @@ namespace DracosD
                 }*/
                 else
                 {
+                    if (countdownTimer > 0) countdownTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
                     currentWorld.Update((float)gameTime.ElapsedGameTime.TotalSeconds, gameTime);
 
                     if (currentWorld.ShouldPlayGasSound && gasSound.IsDisposed)
@@ -421,13 +472,52 @@ namespace DracosD
             if (gameState == GameState.Start)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(menuBackground, Color.White, false);
+                gameView.DrawOverlay(menuBackground, Color.White, true);
                 gameView.EndSpritePass();
             }
             else if (gameState == GameState.ChooseLevel)
             {
+                Texture2D levelUnlockedSpecific;
+                levelUnlockedSpecific = tutorialUnlocked;
+                if (levelCompleted == 0)
+                {
+                    levelUnlockedSpecific = level1Unlocked;
+                }
+                if (levelCompleted == 1)
+                {
+                    levelUnlockedSpecific = level2Unlocked;
+                }
+                if (levelCompleted == 2)
+                {
+                    levelUnlockedSpecific = level3Unlocked;
+                }
+                if (levelCompleted == 3)
+                {
+                    levelUnlockedSpecific = level4Unlocked;
+                }
+                if (levelCompleted == 4)
+                {
+                    levelUnlockedSpecific = level5Unlocked;
+                }
+                if (levelCompleted == 5)
+                {
+                    levelUnlockedSpecific = level6Unlocked;
+                }
+                if (levelCompleted == 6)
+                {
+                    levelUnlockedSpecific = level7Unlocked;
+                }
+                if (levelCompleted == 7)
+                {
+                    levelUnlockedSpecific = level8Unlocked;
+                }
+                if (levelCompleted == 8)
+                {
+                    levelUnlockedSpecific = level8Unlocked;
+                }
+
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
-                gameView.DrawOverlay(level3Unlocked, Color.White, false);
+                gameView.DrawOverlay(levelUnlockedSpecific, Color.White, false);
                 gameView.EndSpritePass();
 
                 int gridX = optionSelected%3;
@@ -442,7 +532,13 @@ namespace DracosD
             else if (gameState == GameState.RaceBegin)
             {
                 currentWorld.Draw(gameView);
-                if (countdown == 3)
+                Vector2 pos   = new Vector2(gameView.Width,gameView.Height)/2.0f;
+                Vector2 scale = new Vector2(1, 1); // To counter global scale
+                int lapFrameSize = (int)(countdownFilmstrip.Width/COUNTDOWN_FRAMES);
+                gameView.BeginSpritePass(BlendState.AlphaBlend);
+                gameView.DrawOverlay(countdownFilmstrip, Color.White, pos, scale, 0.0f, countdownAnimationFrame, COUNTDOWN_FRAMES, SpriteEffects.None);
+                gameView.EndSpritePass();
+                /*if (countdown == 3)
                 {
                     gameView.BeginSpritePass(BlendState.AlphaBlend);
                     gameView.DrawOverlay(countdown3, Color.White, false);
@@ -459,19 +555,53 @@ namespace DracosD
                     gameView.BeginSpritePass(BlendState.AlphaBlend);
                     gameView.DrawOverlay(countdown1, Color.White, false);
                     gameView.EndSpritePass();
-                }
+                }*/
             }
             else if (gameState == GameState.Game)
             {
                 // World specific drawing
                 currentWorld.Draw(gameView);
 
+                if (countdownTimer > 0)
+                {
+                    Vector2 pos = new Vector2(gameView.Width, gameView.Height) / 2.0f;
+                    Vector2 scale = new Vector2(1, 1); // To counter global scale
+                    int lapFrameSize = (int)(countdownFilmstrip.Width / COUNTDOWN_FRAMES);
+                    gameView.BeginSpritePass(BlendState.AlphaBlend);
+                    gameView.DrawOverlay(countdownFilmstrip, Color.White, pos, scale, 0.0f, countdownAnimationFrame, COUNTDOWN_FRAMES, SpriteEffects.None);
+                    gameView.EndSpritePass();
+                }
+
                 // Final message
                 if (currentWorld.Succeeded)
                 {
-                    gameView.BeginSpritePass(BlendState.AlphaBlend);
-                    gameView.DrawOverlay(victory, Color.White, false);
-                    gameView.EndSpritePass();
+                    switch (currentWorld.FinishingPlace)
+                    {
+                        case 1:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(firstplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                        case 2:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(secondplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                        case 3:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(thirdplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                        case 4:
+                            gameView.BeginSpritePass(BlendState.AlphaBlend);
+                            gameView.DrawOverlay(fourthplace, Color.White, false);
+                            gameView.EndSpritePass();
+                            break;
+                    }
+                    if (optionSelected > levelCompleted)
+                    {
+                        levelCompleted = optionSelected;
+                    }
                 }
                 if (currentWorld.Failed)
                 {
@@ -485,9 +615,9 @@ namespace DracosD
                 currentWorld.Draw(gameView);
                 gameView.BeginSpritePass(BlendState.AlphaBlend);
                 //gameView.DrawOverlay(pause, Color.White, false);
-                if (pauseOptionSelected == 0) gameView.DrawText("Resume", Color.White, new Vector2(0, 3));
-                else if (pauseOptionSelected == 1) gameView.DrawText("Restart Race", Color.White, new Vector2(0, 3));
-                else if (pauseOptionSelected == 2) gameView.DrawText("Level Select", Color.White, new Vector2(0, 3));
+                if (pauseOptionSelected == 0) gameView.DrawOverlay(pauseMenuResume, Color.White, false);
+                else if (pauseOptionSelected == 1) gameView.DrawOverlay(pauseMenuRestart, Color.White, false);
+                else if (pauseOptionSelected == 2) gameView.DrawOverlay(pauseMenuLevelSelect, Color.White, false);
                 gameView.EndSpritePass();
             }
 
