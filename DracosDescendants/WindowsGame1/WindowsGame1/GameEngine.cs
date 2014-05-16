@@ -36,11 +36,13 @@ namespace DracosD
     {
         protected const int NUM_LEVELS = 9;
 
-        protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
+        /*protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
                                                       "..\\..\\..\\..\\WindowsGame1Content\\level1a.xml","..\\..\\..\\..\\WindowsGame1Content\\level4.xml",
                                                          "..\\..\\..\\..\\WindowsGame1Content\\level5.xml", "..\\..\\..\\..\\WindowsGame1Content\\level6.xml",
-                                                         "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml"};
+                                                         "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml"};*/
+        protected readonly string[] levelLoadLocations = {"Content//tutorialLevel.xml", "Content//level1.xml","Content//level2.xml", "Content//level3.xml",
+                                                      "Content//level1a.xml","Content//level4.xml","Content//level5.xml", "Content//level6.xml","Content//WillLevel.xml"};
 
 
 

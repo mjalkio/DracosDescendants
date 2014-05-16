@@ -220,7 +220,7 @@ namespace DracosD.Controllers
                         if (currPath == aiPath.Count - 1)
                         {
                             //Debug.Print("end");
-                            Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
+                            //Debug.Print("" + racer.Id + ": " + currPath + " " + aiPath[currPath]);
                             currPath = 0;
                         }
                         else
