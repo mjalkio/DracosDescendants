@@ -46,6 +46,10 @@ namespace DracosD.Controllers
         private Texture2D lap2Texture;
         private Texture2D lap3Texture;
 
+        private Texture2D lap1Counter;
+        private Texture2D lap2Counter;
+        private Texture2D lap3Counter;
+
         private int lapAnimationFrame;
         private int lapAnimationDelay = 3;
         private int lapDelayCounter;
@@ -64,6 +68,10 @@ namespace DracosD.Controllers
             lavaProjTexture = content.Load<Texture2D>("lava projectile");
             lap2Texture = content.Load<Texture2D>("Lap 2 Filmstrip");
             lap3Texture = content.Load<Texture2D>("Final Lap FIlmstrip");
+
+            lap1Counter = content.Load<Texture2D>("lap1counter");
+            lap2Counter = content.Load<Texture2D>("lap2counter");
+            lap3Counter = content.Load<Texture2D>("lap3counter");
         }
 
         /// <summary>
@@ -702,9 +710,23 @@ namespace DracosD.Controllers
             }
             EndPass(view, state);
 
-            //Lap counter
-            BeginTextPass(view, state);
-            view.DrawText("Lap: " + playerLap[dragons[0]], Color.White, new Vector2(0.0f, 0.0f));
+            view.BeginSpritePass(BlendState.AlphaBlend);
+            switch (playerLap[dragons[0]])
+            {
+                case 1:
+                    view.DrawOverlay(lap1Counter, Color.White, new Vector2(70, 70));
+                    break;
+                case 2:
+                    view.DrawOverlay(lap2Counter, Color.White, new Vector2(70, 70));
+                    break;
+                case 3:
+                    view.DrawOverlay(lap3Counter, Color.White, new Vector2(70, 70));
+                    break;
+                default:
+                    view.DrawOverlay(lap3Counter, Color.White, new Vector2(70, 70));
+                    break;
+            }
+            
             EndPass(view, state);
 
             //Lap overlay if necessary

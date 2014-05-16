@@ -906,7 +906,7 @@ namespace DracosD.Views
         #endregion
 
         #region HUD pass
-        public void BeginArrowPass(Vector2 positionGate, float playerXCorr, float playerYCorr, int player_ID, float width)
+        public void BeginArrowPass(Vector2 positionGate, float playerXCorr, float playerYCorr, int player_ID, float width, float levelWidth)
         {
             //draw the arrow
             spriteBatch.Begin(SpriteSortMode.Deferred, null, SamplerState.LinearWrap, null, null, null);
@@ -928,13 +928,30 @@ namespace DracosD.Views
                 {
                     distance = distance2;
                 }
-                if (distance > (width / 10))
+                if (levelWidth == 21000)
                 {
-                    spriteBatch.Draw(arrowTexture, new Vector2(1080, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+
+                    if (distance > (width / 30))
+                    {
+                        spriteBatch.Draw(arrowTexture, new Vector2(1080, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+                    }
+                    if (-distance > (width / 30))
+                    {
+                        spriteBatch.Draw(arrowTexture, new Vector2(65, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2), 1, SpriteEffects.FlipHorizontally, 0);
+
+                    }
                 }
-                if (-distance > (width / 10))
+                else
                 {
-                    spriteBatch.Draw(arrowTexture, new Vector2(65, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2), 1, SpriteEffects.FlipHorizontally, 0);
+                    if (distance > (width / 10))
+                    {
+                        spriteBatch.Draw(arrowTexture, new Vector2(1080, positionGate.Y * 10 - playerYCorr * 2), Color.White);
+                    }
+                    if (-distance > (width / 10))
+                    {
+                        spriteBatch.Draw(arrowTexture, new Vector2(65, positionGate.Y * 10 - playerYCorr * 2), null, Color.White, 0, new Vector2(arrowTexture.Width / 2, arrowTexture.Height / 2), 1, SpriteEffects.FlipHorizontally, 0);
+
+                    }
 
                 }
             }
