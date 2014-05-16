@@ -37,8 +37,8 @@ namespace DracosD
         protected const int NUM_LEVELS = 9;
 
         protected readonly string[] levelLoadLocations = {"..\\..\\..\\..\\WindowsGame1Content\\tutorialLevel.xml", "..\\..\\..\\..\\WindowsGame1Content\\level1a.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\level2.xml", "..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
-                                                      "..\\..\\..\\..\\WindowsGame1Content\\level1.xml","..\\..\\..\\..\\WindowsGame1Content\\level4.xml",
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\level1.xml", "..\\..\\..\\..\\WindowsGame1Content\\level2.xml",
+                                                      "..\\..\\..\\..\\WindowsGame1Content\\level4.xml","..\\..\\..\\..\\WindowsGame1Content\\level3.xml",
                                                          "..\\..\\..\\..\\WindowsGame1Content\\level5.xml", "..\\..\\..\\..\\WindowsGame1Content\\level6.xml",
                                                          "..\\..\\..\\..\\WindowsGame1Content\\WillLevel.xml"};
         /*protected readonly string[] levelLoadLocations = {"Content//tutorialLevel.xml", "Content//level1.xml","Content//level2.xml", "Content//level3.xml",
@@ -471,7 +471,7 @@ namespace DracosD
         protected override void Draw(GameTime gameTime)
         {
             gameView.Reset();
-            levelCompleted = 8;
+            //levelCompleted = 8;
             if (gameState == GameState.Start)
             {
                 gameView.BeginSpritePass(BlendState.AlphaBlend);

@@ -61,7 +61,7 @@ namespace DracosD.Views
         protected Texture2D firebarTexture;
         protected Texture2D innerfirebarTexture;
         protected Texture2D dragonheadTexture;
-        protected Texture2D dragonheadTexture2;
+        protected Texture2D dragonheadTexture2; //the blaze head
         protected Texture2D dragonheadTexture3;
         protected Texture2D dragonheadTexture4;
         protected Texture2D arrowTexture;
@@ -395,7 +395,7 @@ namespace DracosD.Views
             firebarTexture = content.Load<Texture2D>("FireBar");
             innerfirebarTexture = content.Load<Texture2D>("InnerFireBar");
             dragonheadTexture = content.Load<Texture2D>("dragonhead");
-            dragonheadTexture2 = content.Load<Texture2D>("dragonhead2");
+            dragonheadTexture2 = content.Load<Texture2D>("blaze_head");
             dragonheadTexture3 = content.Load<Texture2D>("dragonhead3");
             dragonheadTexture4 = content.Load<Texture2D>("dragonhead4");
             arrowTexture = content.Load<Texture2D>("arrow");
@@ -1061,22 +1061,46 @@ namespace DracosD.Views
                 }
             }
 
-            if (gateMissed[d_id])
+            if (d_id == 1)
             {
-                spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 50), Color.White);
-            }
-            else
-            {
-                if (playerLap > lapNum)
+                if (gateMissed[d_id])
                 {
-                    spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
-                    stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 40), Color.White);
                 }
                 else
                 {
-                    spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
-                    stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    if (playerLap > lapNum)
+                    {
+                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 40), Color.White);
+                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 40), Color.White);
+                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    }
                 }
+            }
+            else
+            {
+                if (gateMissed[d_id])
+                {
+                    spriteBatch.Draw(drawingTexture, new Vector2(stoppedPosition[d_id], 50), Color.White);
+                }
+                else
+                {
+                    if (playerLap > lapNum)
+                    {
+                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 2) * width) / drawRatio + 140, 50), Color.White);
+                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    }
+                    else
+                    {
+                        spriteBatch.Draw(drawingTexture, new Vector2((relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140, 50), Color.White);
+                        stoppedPosition[d_id] = (relativeDragonPosition.X + (playerLap - 1) * width) / drawRatio + 140;
+                    }
+                }
+
             }
             prevGates[d_id] = positionGate.X;
         }
